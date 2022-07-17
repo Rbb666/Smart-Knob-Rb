@@ -7,9 +7,10 @@ static lv_obj_t *contApps;
 
 extern "C"
 {
-    LV_IMG_DECLARE(IMG_Fun);
     LV_IMG_DECLARE(IMG_Switch);
-    LV_IMG_DECLARE(IMG_Computer);
+    LV_IMG_DECLARE(IMG_Smart);
+    LV_IMG_DECLARE(IMG_Win);
+    LV_IMG_DECLARE(IMG_Music);
 }
 
 typedef struct
@@ -26,15 +27,63 @@ typedef struct
         &IMG_##name, #name, PAGE_##name, color, NULL \
     }
 
-#define APP_ICON_SIZE_START 10
-#define APP_ICON_SIZE_END 100
-#define APP_ICON_SIZE 100
+#define APP_ICON_SIZE 90
+#define APP_ICON_SIZE_START 0
+#define APP_ICON_SIZE_END APP_ICON_SIZE
 
 static AppICON_TypeDef AppICON_Grp[] = {
     APP_DEF(Switch, LV_COLOR_MAKE(0, 40, 255)),
-    APP_DEF(Fun, LV_COLOR_MAKE(75, 216, 99)),
-    APP_DEF(Computer, LV_COLOR_MAKE(75, 216, 99)),
+    APP_DEF(Smart, LV_COLOR_MAKE(75, 216, 99)),
+    APP_DEF(Win, LV_COLOR_MAKE(75, 216, 99)),
+    APP_DEF(Music, LV_COLOR_MAKE(75, 216, 99)),
 };
+
+static void scroll_event_cb(lv_event_t *e)
+{
+    lv_obj_t *cont = lv_event_get_target(e);
+
+    lv_area_t cont_a;
+    lv_obj_get_coords(cont, &cont_a);
+    lv_coord_t cont_y_center = cont_a.y1 + lv_area_get_height(&cont_a) / 2;
+
+    lv_coord_t r = lv_obj_get_height(cont) * 7 / 10;
+    uint32_t i;
+    uint32_t child_cnt = lv_obj_get_child_cnt(cont);
+    for (i = 0; i < child_cnt; i++)
+    {
+        lv_obj_t *child = lv_obj_get_child(cont, i);
+        lv_area_t child_a;
+        lv_obj_get_coords(child, &child_a);
+
+        lv_coord_t child_y_center = child_a.y1 + lv_area_get_height(&child_a) / 2;
+
+        lv_coord_t diff_y = child_y_center - cont_y_center;
+        diff_y = LV_ABS(diff_y);
+
+        /*Get the x of diff_y on a circle.*/
+        lv_coord_t x;
+        /*If diff_y is out of the circle use the last point of the circle (the radius)*/
+        if (diff_y >= r)
+        {
+            x = r;
+        }
+        else
+        {
+            /*Use Pythagoras theorem to get x from radius and y*/
+            uint32_t x_sqr = r * r - diff_y * diff_y;
+            lv_sqrt_res_t res;
+            lv_sqrt(x_sqr, &res, 0x8000); /*Use lvgl's built in sqrt root function*/
+            x = r - res.i;
+        }
+
+        /*Translate the item by the calculated X coordinate*/
+        lv_obj_set_style_translate_x(child, x, 0);
+
+        /*Use some opacity with larger translations*/
+        lv_opa_t opa = lv_map(x, 0, r, LV_OPA_TRANSP, LV_OPA_COVER);
+        lv_obj_set_style_opa(child, LV_OPA_COVER - opa, 0);
+    }
+}
 
 static void lamp_btn_event_handler(lv_event_t *e)
 {
@@ -72,9 +121,36 @@ static void sw_event_cb(lv_event_t *e)
     }
 }
 
-void lv_set_scroll_box(lv_obj_t *background_btn, void *image_src)
+static void anim_size_cb(lv_obj_t *var, int32_t v)
 {
-    /* style */
+    lv_obj_set_size(var, v, v);
+}
+
+void Item_Create(
+    lv_obj_t *par,
+    const void *image,
+    const char *infos)
+{
+    static lv_style_prop_t props[] = {
+        LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
+
+    static lv_style_transition_dsc_t transition_dsc_def;
+    lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
+
+    static lv_style_transition_dsc_t transition_dsc_pr;
+    lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
+
+    static lv_style_t style_def;
+    lv_style_init(&style_def);
+    lv_style_set_transition(&style_def, &transition_dsc_def);
+
+    static lv_style_t style_pr;
+    lv_style_init(&style_pr);
+    lv_style_set_transform_width(&style_pr, 10);
+    lv_style_set_transform_height(&style_pr, -10);
+    lv_style_set_text_letter_space(&style_pr, 10);
+    lv_style_set_transition(&style_pr, &transition_dsc_pr);
+
     static lv_style_t style_btn;
     lv_style_init(&style_btn);
     // lv_style_set_bg_opa(&style_btn, 0); //透明
@@ -82,88 +158,95 @@ void lv_set_scroll_box(lv_obj_t *background_btn, void *image_src)
     lv_style_set_border_width(&style_btn, 2);
     lv_style_set_bg_color(&style_btn, lv_color_white());
 
-    lv_obj_set_size(background_btn, APP_ICON_SIZE, APP_ICON_SIZE);
-    lv_obj_add_style(background_btn, &style_btn, LV_PART_MAIN);
+    /*Create txt style*/
+    static lv_style_t style_test;
+    lv_style_init(&style_test);
+    lv_style_set_text_color(&style_test, lv_color_white());
 
-    lv_obj_t *img = lv_img_create(background_btn);
-    lv_img_set_src(img, image_src);
+    /*Create cont*/
+    lv_obj_t *cont = lv_obj_create(par);
+    lv_obj_set_scrollbar_mode(cont, LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_size(cont, lv_pct(100), APP_ICON_SIZE + 5);
+    lv_obj_set_style_bg_opa(cont, 0, 0);
+    lv_obj_set_style_border_width(cont, 0, 0);
+    lv_obj_align(cont, LV_ALIGN_CENTER, 0, 0);
+
+    /*Create button*/
+    lv_obj_t *btn = lv_btn_create(cont);
+    lv_obj_set_size(btn, APP_ICON_SIZE, APP_ICON_SIZE);
+    lv_obj_add_style(btn, &style_btn, LV_PART_MAIN);
+    lv_obj_add_style(btn, &style_pr, LV_STATE_PRESSED);
+    lv_obj_add_style(btn, &style_def, 0);
+    lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
+
+    /*Create lable*/
+    lv_obj_t *text = lv_label_create(cont);
+    lv_obj_set_style_text_font(text, &lv_font_montserrat_18, 0);
+    lv_label_set_text(text, infos);
+    lv_obj_add_style(text, &style_test, LV_PART_MAIN);
+    lv_obj_align_to(text, btn, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
+
+    /*Create image*/
+    lv_obj_t *img = lv_img_create(btn);
+    lv_img_set_src(img, image);
+
     lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
-}
 
-static void anim_x_cb(lv_obj_t *var, int32_t v)
-{
-    lv_obj_set_x(var, v);
-}
+    lv_anim_t a;
+    lv_anim_init(&a);
+    lv_anim_set_var(&a, btn);
+    lv_anim_set_values(&a, APP_ICON_SIZE_START, APP_ICON_SIZE_END);
+    lv_anim_set_time(&a, 800);
 
-static void anim_y_cb(lv_obj_t *var, int32_t v)
-{
-    lv_obj_set_y(var, v);
+    lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
+    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)anim_size_cb);
+    lv_anim_start(&a);
 }
-
-static void anim_size_cb(lv_obj_t *var, int32_t v)
-{
-    lv_obj_set_size(var, v, v);
-}
-static lv_anim_timeline_t *anim_timeline = NULL;
 
 void setup_main_page_menu(lv_obj_t *page)
 {
     lv_obj_set_scrollbar_mode(page, LV_SCROLLBAR_MODE_OFF);
 
-    uint32_t i, n = 1;
-    uint32_t pos;
+    lv_obj_t *cont = lv_obj_create(page);
+    lv_obj_set_size(cont, 240, 240);
+    lv_obj_align(cont, LV_ALIGN_CENTER, 10, 0);
+    lv_obj_set_flex_flow(cont, LV_FLEX_FLOW_COLUMN);
+    lv_obj_add_event_cb(cont, scroll_event_cb, LV_EVENT_SCROLL, NULL);
+    lv_obj_set_style_radius(cont, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_clip_corner(cont, true, 0);
+    lv_obj_set_style_bg_opa(cont, 0, 0);
+    lv_obj_set_style_border_width(cont, 0, 0);
+    lv_obj_set_scroll_dir(cont, LV_DIR_VER); // 滚动方向
+    lv_obj_set_scroll_snap_y(cont, LV_SCROLL_SNAP_CENTER);
+    lv_obj_set_scrollbar_mode(cont, LV_SCROLLBAR_MODE_OFF);
 
-    for (i = 0; i < __Sizeof(AppICON_Grp); i++)
+    for (int i = 0; i < __Sizeof(AppICON_Grp); i++)
     {
-        lv_obj_t *btn = lv_btn_create(page);
-        lv_set_scroll_box(btn, (void *)AppICON_Grp[i].src_img);
-        // lv_obj_align(btn, LV_ALIGN_CENTER, i * 10, 15);
-
-        lv_anim_t a;
-        lv_anim_init(&a);
-        lv_anim_set_var(&a, btn);
-        lv_anim_set_values(&a, APP_ICON_SIZE_START, APP_ICON_SIZE_END);
-        lv_anim_set_time(&a, 1000);
-
-        lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
-        lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)anim_size_cb);
-        lv_anim_start(&a);
-
-        lv_anim_t a2;
-        lv_anim_init(&a2);
-        lv_anim_set_var(&a2, btn);
-        lv_anim_set_values(&a2, 0, i * APP_ICON_SIZE + i * 10); // 40 80+40 160+40
-        lv_anim_set_time(&a2, 1000);
-
-        lv_anim_set_path_cb(&a2, lv_anim_path_overshoot);
-        lv_anim_set_exec_cb(&a2, (lv_anim_exec_xcb_t)anim_y_cb);
-        lv_anim_start(&a2);
-
-        lv_anim_t a3;
-        lv_anim_init(&a3);
-        lv_anim_set_var(&a3, btn);
-
-        pos = (120 - APP_ICON_SIZE / 2) - (i * APP_ICON_SIZE / 2);
-
-        if (i <= __Sizeof(AppICON_Grp) / 2)
-            lv_anim_set_values(&a3, 0, pos); //前一半的情况
-        else
+        if (i != 0)
         {
-            for (int i = __Sizeof(AppICON_Grp) / 2 - 1; i > 0; i--)
-            {
-                pos += (i * APP_ICON_SIZE / 2);
-                lv_anim_set_values(&a3, 0, pos); //后一半的情况
-            }
+            /*Create line style*/
+            static lv_style_t style_line;
+            lv_style_init(&style_line);
+            lv_style_set_line_width(&style_line, 4);
+            lv_style_set_line_color(&style_line, lv_color_hex(0xff0000));
+
+            lv_obj_t *line = lv_line_create(cont);
+            static lv_point_t line_points[] = {{90, 0}, {90, 80}};
+            lv_line_set_points(line, line_points, 2);
+            lv_obj_add_style(line, &style_line, LV_PART_MAIN);
         }
 
-        lv_anim_set_time(&a3, 1000);
-
-        lv_anim_set_path_cb(&a3, lv_anim_path_overshoot);
-        lv_anim_set_exec_cb(&a3, (lv_anim_exec_xcb_t)anim_x_cb);
-        lv_anim_start(&a3);
+        Item_Create(
+            cont,
+            (void *)AppICON_Grp[i].src_img,
+            AppICON_Grp[i].name);
     }
 
-    lv_obj_update_snap(page, LV_ANIM_ON);
+    /*Update the buttons position manually for first*/
+    lv_event_send(cont, LV_EVENT_SCROLL, NULL);
+
+    /*Be sure the fist button is in the middle*/
+    lv_obj_scroll_to_view(lv_obj_get_child(cont, 0), LV_ANIM_OFF);
 }
 
 /**
@@ -174,9 +257,9 @@ void setup_main_page_menu(lv_obj_t *page)
 static void Setup()
 {
     //获取芯片可用内存
-    Serial.printf(" page_MainMenu_start    esp_get_free_heap_size : %d  \n", esp_get_free_heap_size());
+    Serial.printf("esp free heap size : %d  \n", esp_get_free_heap_size());
     //获取从未使用过的最小内存
-    Serial.printf(" page_MainMenu_start    esp_get_minmusicm_free_heap_size : %d  \n", esp_get_minimum_free_heap_size());
+    Serial.printf("esp minm free heap size : %d  \n", esp_get_minimum_free_heap_size());
 
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);

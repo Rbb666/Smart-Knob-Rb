@@ -22,8 +22,9 @@ typedef enum
     PAGE_StartUp,
     PAGE_MainMenu,
     PAGE_Switch,
-    PAGE_Fun,
-    PAGE_Computer,
+    PAGE_Smart,
+    PAGE_Win,
+    PAGE_Music,
 
     /*保留*/
     PAGE_MAX

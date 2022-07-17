@@ -58,6 +58,7 @@ static void Setup()
 {
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
+    lv_obj_fade_in(appWindow, 500, 0);
     StartupView_Create(appWindow);
     lv_anim_timeline_start(anim_timeline);
     timer = lv_timer_create(onTimer, 2000, NULL);

@@ -16,6 +16,7 @@
         "string_view": "cpp",
         "memory": "cpp",
         "random": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "lvgl.h": "c"
     }
 }
