@@ -1,0 +1,283 @@
+make.exe all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make.exe: *** No rule to make target 'all'.  Stop.
+
+# GNU Make 4.2.1
+# Built for x86_64-w64-mingw32
+# Copyright (C) 1988-2016 Free Software Foundation, Inc.
+# License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+# This is free software: you are free to change and redistribute it.
+# There is NO WARRANTY, to the extent permitted by law.
+
+# Make data base, printed on Sat Jul 16 09:16:14 2022
+
+# Variables
+
+# 'override' directive
+GNUMAKEFLAGS := 
+# automatic
+<D = $(patsubst %/,%,$(patsubst %\,%,$(dir $<)))
+# automatic
+?F = $(notdir $?)
+# default
+.SHELLFLAGS := -c
+# makefile
+MAKEFLAGS = pqrR
+# automatic
+?D = $(patsubst %/,%,$(patsubst %\,%,$(dir $?)))
+# environment
+PLATFORMIO_IDE = 2.5.0
+# automatic
+@D = $(patsubst %/,%,$(patsubst %\,%,$(dir $@)))
+# environment
+HOMEDRIVE = C:
+# automatic
+@F = $(notdir $@)
+# automatic
+^D = $(patsubst %/,%,$(patsubst %\,%,$(dir $^)))
+# makefile
+CURDIR := d:/workspace_rb/Smart-Knob-Rb
+# environment
+GLOBAL_AGENT_ENVIRONMENT_VARIABLE_NAMESPACE = 
+# environment
+CLION = D:\softwoare\tools_dept\CLion 2021.2.3\bin;
+# environment
+WINDIR = C:\Windows
+# environment
+VSCODE_NLS_CONFIG = {"locale":"zh-cn","availableLanguages":{"*":"zh-cn"},"_languagePackId":"1d735750dbb1b9066c7513078396ba0f.zh-cn","_translationsConfigFile":"C:\\Users\\rb\\AppData\\Roaming\\Code\\clp\\1d735750dbb1b9066c7513078396ba0f.zh-cn\\tcf.json","_cacheRoot":"C:\\Users\\rb\\AppData\\Roaming\\Code\\clp\\1d735750dbb1b9066c7513078396ba0f.zh-cn","_resolvedLanguagePackCoreLocation":"C:\\Users\\rb\\AppData\\Roaming\\Code\\clp\\1d735750dbb1b9066c7513078396ba0f.zh-cn\\b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a","_corruptedFile":"C:\\Users\\rb\\AppData\\Roaming\\Code\\clp\\1d735750dbb1b9066c7513078396ba0f.zh-cn\\corrupted.info","_languagePackSupport":true}
+# environment
+ONEDRIVE = C:\Users\rb\OneDrive
+# environment
+PATHEXT = .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+# makefile
+MAKEFILE_LIST := 
+# environment
+TMP = C:\Users\rb\AppData\Local\Temp
+# environment
+PROGRAMW6432 = C:\Program Files
+# environment
+PROGRAMDATA = C:\ProgramData
+# environment
+VSCODE_CWD = D:\workspace_rb\Smart-Knob-Rb
+# default
+MAKE_HOST := x86_64-w64-mingw32
+# environment
+NO_PROXY = 127.0.0.1
+# environment
+COMMONPROGRAMW6432 = C:\Program Files\Common Files
+# environment
+ZES_ENABLE_SYSMAN = 1
+# environment
+PROCESSOR_ARCHITECTURE = AMD64
+# environment
+USERPROFILE = C:\Users\rb
+# environment
+ALLUSERSPROFILE = C:\ProgramData
+# environment
+NUMBER_OF_PROCESSORS = 20
+# environment
+ELECTRON_RUN_AS_NODE = 1
+# default
+.FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync
+# automatic
+%F = $(notdir $%)
+# environment
+HTTPS_PROXY = http://127.0.0.1:7890
+# environment
+CHROME_CRASHPAD_PIPE_NAME = \\.\pipe\crashpad_35640_DXBCCQPIFFEFHJYR
+# environment
+COMPUTERNAME = RBB666
+# environment
+PROGRAMFILES = C:\Program Files
+# default
+.LOADED := 
+# environment
+DRIVERDATA = C:\Windows\System32\Drivers\DriverData
+# environment
+ASL.LOG = Destination=file
+# environment
+ORIGINAL_XDG_CURRENT_DESKTOP = undefined
+# environment
+USERNAME = rb
+# environment
+PUBLIC = C:\Users\Public
+# environment
+VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
+# environment
+CY_TOOLS_PATHS = D:/softwoare/tools_dept/ModusToolbox/tools_2.4
+# environment
+VSCODE_CODE_CACHE_PATH = C:\Users\rb\AppData\Roaming\Code\CachedData\b06ae3b2d2dbfe28bca3134cc6be65935cdfea6a
+# environment
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+# environment
+COMMONPROGRAMFILES = C:\Program Files\Common Files
+# environment
+LOGONSERVER = \\RBB666
+# environment
+VSCODE_HANDLES_UNCAUGHT_ERRORS = true
+# environment
+USERDOMAIN = RBB666
+# environment
+MAKELEVEL := 0
+# environment
+PLATFORMIO_PATH = C:\Users\rb\.platformio\python3;D:\softwoare\tools_system\VMWare\bin\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\softwoare\tools_dept\Git\cmd;D:\softwoare\tools_system\TortoiseGit\bin;D:\softwoare\tools_dept\XFTP\;D:\softwoare\tools_work\RT-ThreadStudio\platform\env_released\env\tools\BuildTools\2.12-20190422-1053\bin;D:\softwoare\tools_work\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\5.4.1\bin;D:\softwoare\tools_system\Process Lasso\;D:\softwoare\tools_dept\CLion 2021.2.3\Toolchains\arm-none-eabi-gcc\bin;D:\softwoare\tools_dept\MinGW\bin;C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility;C:\Users\rb\AppData\Local\Programs\Python\Python37\Scripts\;C:\Users\rb\AppData\Local\Programs\Python\Python37\;C:\Users\rb\AppData\Local\Microsoft\WindowsApps;;D:\softwoare\tools_dept\Microsoft VS Code\bin;D:\softwoare\tools_dept\CLion 2021.2.3\bin;;C:\Users\rb\AppData\Local\Pandoc\;D:\softwoare\tools_system\VMWare\bin\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\softwoare\tools_dept\Git\cmd;D:\softwoare\tools_system\TortoiseGit\bin;D:\softwoare\tools_dept\XFTP\;D:\softwoare\tools_work\RT-ThreadStudio\platform\env_released\env\tools\BuildTools\2.12-20190422-1053\bin;D:\softwoare\tools_work\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\5.4.1\bin;D:\softwoare\tools_system\Process Lasso\;D:\softwoare\tools_dept\CLion 2021.2.3\Toolchains\arm-none-eabi-gcc\bin;D:\softwoare\tools_dept\MinGW\bin;C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility;C:\Users\rb\AppData\Local\Programs\Python\Python37\Scripts\;C:\Users\rb\AppData\Local\Programs\Python\Python37\;C:\Users\rb\AppData\Local\Microsoft\WindowsApps;;D:\softwoare\tools_dept\Microsoft VS Code\bin;D:\softwoare\tools_dept\CLion 2021.2.3\bin;;C:\Users\rb\AppData\Local\Pandoc\
+# default
+MAKE = $(MAKE_COMMAND)
+# default
+MAKECMDGOALS := all
+# environment
+PATH = D:\softwoare\tools_system\VMWare\bin\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;D:\softwoare\tools_dept\Git\cmd;D:\softwoare\tools_system\TortoiseGit\bin;D:\softwoare\tools_dept\XFTP\;D:\softwoare\tools_work\RT-ThreadStudio\platform\env_released\env\tools\BuildTools\2.12-20190422-1053\bin;D:\softwoare\tools_work\RT-ThreadStudio\repo\Extract\ToolChain_Support_Packages\ARM\GNU_Tools_for_ARM_Embedded_Processors\5.4.1\bin;D:\softwoare\tools_system\Process Lasso\;D:\softwoare\tools_dept\CLion 2021.2.3\Toolchains\arm-none-eabi-gcc\bin;D:\softwoare\tools_dept\MinGW\bin;C:\Program Files (x86)\STMicroelectronics\STM32 ST-LINK Utility\ST-LINK Utility;C:\Users\rb\AppData\Local\Programs\Python\Python37\Scripts\;C:\Users\rb\AppData\Local\Programs\Python\Python37\;C:\Users\rb\AppData\Local\Microsoft\WindowsApps;;D:\softwoare\tools_dept\Microsoft VS Code\bin;D:\softwoare\tools_dept\CLion 2021.2.3\bin;;C:\Users\rb\AppData\Local\Pandoc\
+# default
+MAKE_VERSION := 4.2.1
+# makefile
+.DEFAULT_GOAL := 
+# environment
+PROGRAMFILES(X86) = C:\Program Files (x86)
+# automatic
+%D = $(patsubst %/,%,$(patsubst %\,%,$(dir $%)))
+# environment
+LOCALAPPDATA = C:\Users\rb\AppData\Local
+# environment
+PSMODULEPATH = C:\Program Files\WindowsPowerShell\Modules;C:\Windows\system32\WindowsPowerShell\v1.0\Modules
+# default
+MAKE_COMMAND := make.exe
+# default
+.VARIABLES := 
+# automatic
+*F = $(notdir $*)
+# environment
+PROCESSOR_IDENTIFIER = Intel64 Family 6 Model 154 Stepping 3, GenuineIntel
+# environment
+OS = Windows_NT
+# environment
+VSCODE_IPC_HOOK = \\.\pipe\d04fd8bca2eddb571ec69ede8b880d5d-1.69.1-main-sock
+# environment
+HOMEPATH = \Users\rb
+# environment
+COMMONPROGRAMFILES(X86) = C:\Program Files (x86)\Common Files
+# environment
+PROMPT = $P$G
+# environment
+MFLAGS = -pqrR
+# automatic
+*D = $(patsubst %/,%,$(patsubst %\,%,$(dir $*)))
+# environment
+SYSTEMROOT = C:\Windows
+# automatic
++D = $(patsubst %/,%,$(patsubst %\,%,$(dir $+)))
+# default
+SHELL := D:/softwoare/tools_work/RT-ThreadStudio/platform/env_released/env/tools/BuildTools/2.12-20190422-1053/bin/sh.exe
+# automatic
++F = $(notdir $+)
+# environment
+HTTP_PROXY = http://127.0.0.1:7890
+# environment
+APPDATA = C:\Users\rb\AppData\Roaming
+# environment
+TEMP = C:\Users\rb\AppData\Local\Temp
+# environment
+COMSPEC = C:\Windows\system32\cmd.exe
+# default
+MAKEFILES := 
+# automatic
+<F = $(notdir $<)
+# environment
+PLATFORMIO_CALLER = vscode
+# environment
+LC_ALL = C
+# automatic
+^F = $(notdir $^)
+# default
+SUFFIXES := 
+# environment
+SYSTEMDRIVE = C:
+# environment
+SESSIONNAME = Console
+# environment
+PROCESSOR_REVISION = 9a03
+# default
+.RECIPEPREFIX := 
+# environment
+LANG = C
+# environment
+PROCESSOR_LEVEL = 6
+# environment
+VSCODE_PID = 35640
+# environment
+USERDOMAIN_ROAMINGPROFILE = RBB666
+# variable set hash-table stats:
+# Load=96/1024=9%, Rehash=0, Collisions=18/113=16%
+
+# Pattern-specific Variable Values
+
+# No pattern-specific variable values.
+
+# Directories
+
+# . (key d:/workspace_rb/Smart-Knob-Rb, mtime 1657435025): 10 files, no impossibilities.
+
+# 10 files, no impossibilities in 1 directories.
+
+# Implicit Rules
+
+# No implicit rules.
+
+# Files
+
+# Not a target:
+all:
+#  Command line target.
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has not been updated.
+
+# Not a target:
+Makefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+makefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+makefile.mak:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+.DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+GNUmakefile:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# files hash-table stats:
+# Load=7/1024=1%, Rehash=0, Collisions=0/16=0%
+# VPATH Search Paths
+
+# No 'vpath' search paths.
+
+# No general ('VPATH' variable) search path.
+
+# strcache buffers: 1 (0) / strings = 17 / storage = 131 B / avg = 7 B
+# current buf: size = 8162 B / used = 131 B / count = 17 / avg = 7 B
+
+# strcache performance: lookups = 19 / hit rate = 10%
+# hash-table stats:
+# Load=17/8192=0%, Rehash=0, Collisions=1/19=5%
+# Finished Make data base on Sat Jul 16 09:16:14 2022
+
+ 

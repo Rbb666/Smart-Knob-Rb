@@ -1,0 +1,21 @@
+{
+    "files.associations": {
+        "array": "c",
+        "deque": "c",
+        "string": "c",
+        "unordered_map": "c",
+        "unordered_set": "c",
+        "vector": "c",
+        "initializer_list": "c",
+        "display.h": "c",
+        "lv_demo_music.h": "c",
+        "lv_demo_stress.h": "c",
+        "lv_demos.h": "c",
+        "arduino.h": "c",
+        "*.tcc": "cpp",
+        "string_view": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "typeinfo": "cpp"
+    }
+}
