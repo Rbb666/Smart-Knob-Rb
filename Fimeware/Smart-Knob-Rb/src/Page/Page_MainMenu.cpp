@@ -27,8 +27,8 @@ typedef struct
     }
 
 #define APP_ICON_SIZE_START 10
-#define APP_ICON_SIZE_END 85
-#define APP_ICON_SIZE 85
+#define APP_ICON_SIZE_END 100
+#define APP_ICON_SIZE 100
 
 static AppICON_TypeDef AppICON_Grp[] = {
     APP_DEF(Switch, LV_COLOR_MAKE(0, 40, 255)),
@@ -149,8 +149,11 @@ void setup_main_page_menu(lv_obj_t *page)
             lv_anim_set_values(&a3, 0, pos); //前一半的情况
         else
         {
-            pos += (i - n * 2) * APP_ICON_SIZE / 2;
-            lv_anim_set_values(&a3, 0, pos); //后一半的情况
+            for (int i = __Sizeof(AppICON_Grp) / 2 - 1; i > 0; i--)
+            {
+                pos += (i * APP_ICON_SIZE / 2);
+                lv_anim_set_values(&a3, 0, pos); //后一半的情况
+            }
         }
 
         lv_anim_set_time(&a3, 1000);
