@@ -17,7 +17,7 @@ static void page_gestute_event_cb(lv_event_t *event)
     if (code == LV_EVENT_GESTURE)
     {
         lv_dir_t dir = lv_indev_get_gesture_dir(lv_indev_get_act());
-        page.EventTransmit(event->current_target, dir);
+        page.EventTransmit(event->target, dir);
     }
 }
 
@@ -30,6 +30,9 @@ void DisplayPage_Init(void)
 {
     PAGE_IMPORT(StartUp);    //开始菜单
     PAGE_IMPORT(MainMenu);   //主菜单
+    PAGE_IMPORT(Switch);     //菜单
+    PAGE_IMPORT(Smart);      //菜单
+    PAGE_IMPORT(Window);     //菜单
     page.Push(PAGE_StartUp); //进入第一个页面
     lv_obj_add_event_cb(lv_scr_act(), page_gestute_event_cb, LV_EVENT_ALL, NULL);
 }
@@ -46,10 +49,10 @@ void Display_Update(void)
 }
 
 /**
-  * @brief  页面阻塞延时，保持lvgl更新
-  * @param  无
-  * @retval 无
-  */
+ * @brief  页面阻塞延时，保持lvgl更新
+ * @param  无
+ * @retval 无
+ */
 void PageDelay(uint32_t ms)
 {
     uint32_t lastTime = lv_tick_get();

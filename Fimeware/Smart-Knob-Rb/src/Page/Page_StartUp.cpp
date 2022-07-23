@@ -47,6 +47,7 @@ void StartupView_Create(lv_obj_t *root)
 
     lv_anim_timeline_add_wrapper(anim_timeline, wrapper);
 
+    lv_anim_timeline_start(anim_timeline);
 }
 
 void onTimer(lv_timer_t *timer)
@@ -58,17 +59,13 @@ static void Setup()
 {
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
-    lv_obj_fade_in(appWindow, 500, 0);
     StartupView_Create(appWindow);
-    lv_anim_timeline_start(anim_timeline);
     timer = lv_timer_create(onTimer, 2000, NULL);
     lv_timer_set_repeat_count(timer, 1);
 }
 
 static void Exit()
 {
-    lv_obj_fade_out(appWindow, 500, 1500);
-
     if (anim_timeline)
     {
         lv_anim_timeline_del(anim_timeline);

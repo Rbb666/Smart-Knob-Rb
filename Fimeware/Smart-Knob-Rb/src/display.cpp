@@ -5,7 +5,7 @@
 #include <Hal/motor.h>
 
 #include "demos/lv_demos.h"
-#include "Page/gui_super_knob.h"
+#include "Page/Page_Anim.h"
 #include "GUI/DisplayPrivate.h"
 
 static const uint16_t screenWidth = 240;

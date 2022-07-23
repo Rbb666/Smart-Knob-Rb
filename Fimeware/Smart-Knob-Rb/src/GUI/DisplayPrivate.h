@@ -23,7 +23,7 @@ typedef enum
     PAGE_MainMenu,
     PAGE_Switch,
     PAGE_Smart,
-    PAGE_Win,
+    PAGE_Window,
     PAGE_Music,
 
     /*保留*/
@@ -73,6 +73,7 @@ void DisplayPage_Init();
 /*LVGL*/
 #include "lvgl.h"
 #include "Utils/lv_ext/lv_obj_ext_func.h"
+// #include "Utils/lv_ext/lv_anim_timeline.h"
 #include "Utils/lv_ext/lv_anim_timeline_wrapper.h"
 
 extern "C"

@@ -17,6 +17,9 @@
         "memory": "cpp",
         "random": "cpp",
         "typeinfo": "cpp",
-        "lvgl.h": "c"
+        "lvgl.h": "c",
+        "lv_chart.h": "c",
+        "fstream": "cpp",
+        "sstream": "cpp"
     }
 }

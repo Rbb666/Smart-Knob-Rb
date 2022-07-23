@@ -1,15 +1,14 @@
 #include "Basic/FileGroup.h"
 #include "GUI/DisplayPrivate.h"
+#include "Page_Anim.h"
 
 PAGE_EXPORT(MainMenu);
-// 全部APP界面
-static lv_obj_t *contApps;
 
 extern "C"
 {
     LV_IMG_DECLARE(IMG_Switch);
     LV_IMG_DECLARE(IMG_Smart);
-    LV_IMG_DECLARE(IMG_Win);
+    LV_IMG_DECLARE(IMG_Window);
     LV_IMG_DECLARE(IMG_Music);
 }
 
@@ -34,9 +33,22 @@ typedef struct
 static AppICON_TypeDef AppICON_Grp[] = {
     APP_DEF(Switch, LV_COLOR_MAKE(0, 40, 255)),
     APP_DEF(Smart, LV_COLOR_MAKE(75, 216, 99)),
-    APP_DEF(Win, LV_COLOR_MAKE(75, 216, 99)),
+    APP_DEF(Window, LV_COLOR_MAKE(75, 216, 99)),
     APP_DEF(Music, LV_COLOR_MAKE(75, 216, 99)),
 };
+
+static lv_style_t style_test;
+static lv_style_t style_btn;
+static lv_style_t style_pr;
+static lv_style_t style_def;
+static lv_style_transition_dsc_t transition_dsc_def;
+static lv_style_transition_dsc_t transition_dsc_pr;
+
+static lv_obj_t *page_cont = NULL;
+static lv_obj_t *scroll_cont[__Sizeof(AppICON_Grp)];
+static lv_obj_t *cont_btn[__Sizeof(AppICON_Grp)];
+static lv_obj_t *btn_text[__Sizeof(AppICON_Grp)];
+static lv_obj_t *btn_img[__Sizeof(AppICON_Grp)];
 
 static void scroll_event_cb(lv_event_t *e)
 {
@@ -85,39 +97,34 @@ static void scroll_event_cb(lv_event_t *e)
     }
 }
 
-static void lamp_btn_event_handler(lv_event_t *e)
+static void button_event_cb(lv_event_t *e)
 {
     lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t *btn = lv_event_get_target(e);
+    AppICON_TypeDef *appIcon = (AppICON_TypeDef *)lv_obj_get_user_data(btn);
 
-    if (code == LV_EVENT_CLICKED)
+    if (code == LV_EVENT_SHORT_CLICKED)
     {
-    }
-    else if (code == LV_EVENT_VALUE_CHANGED)
-    {
-        // LV_LOG_USER("Toggled");
-    }
-}
+        uint8_t pageID = appIcon->pageID;
+        Serial.printf("page id is:(%d)\n", pageID);
 
-static void fan_btn_event_handler(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-
-    if (code == LV_EVENT_CLICKED)
-    {
-    }
-    else if (code == LV_EVENT_VALUE_CHANGED)
-    {
-        // LV_LOG_USER("Toggled");
-    }
-}
-
-static void sw_event_cb(lv_event_t *e)
-{
-    lv_event_code_t code = lv_event_get_code(e);
-    lv_obj_t *sw = lv_event_get_target(e);
-
-    if (code == LV_EVENT_VALUE_CHANGED)
-    {
+        switch (pageID)
+        {
+        case PAGE_Switch:
+            Page->Push(PAGE_Switch);
+            break;
+        case PAGE_Smart:
+            Page->Push(PAGE_Smart);
+            break;
+        case PAGE_Window:
+            // Page->Push(PAGE_Window);
+            break;
+        case PAGE_Music:
+            // Page->Push(PAGE_Music);
+            break;
+        default:
+            break;
+        }
     }
 }
 
@@ -127,98 +134,94 @@ static void anim_size_cb(lv_obj_t *var, int32_t v)
 }
 
 void Item_Create(
+    uint8_t page_num,
     lv_obj_t *par,
+    void *user_data,
     const void *image,
     const char *infos)
 {
     static lv_style_prop_t props[] = {
         LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
 
-    static lv_style_transition_dsc_t transition_dsc_def;
     lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
 
-    static lv_style_transition_dsc_t transition_dsc_pr;
     lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
 
-    static lv_style_t style_def;
     lv_style_init(&style_def);
     lv_style_set_transition(&style_def, &transition_dsc_def);
 
-    static lv_style_t style_pr;
     lv_style_init(&style_pr);
     lv_style_set_transform_width(&style_pr, 10);
     lv_style_set_transform_height(&style_pr, -10);
     lv_style_set_text_letter_space(&style_pr, 10);
     lv_style_set_transition(&style_pr, &transition_dsc_pr);
 
-    static lv_style_t style_btn;
     lv_style_init(&style_btn);
-    // lv_style_set_bg_opa(&style_btn, 0); //透明
     lv_style_set_radius(&style_btn, 20);
     lv_style_set_border_width(&style_btn, 2);
     lv_style_set_bg_color(&style_btn, lv_color_white());
 
     /*Create txt style*/
-    static lv_style_t style_test;
     lv_style_init(&style_test);
     lv_style_set_text_color(&style_test, lv_color_white());
 
     /*Create cont*/
-    lv_obj_t *cont = lv_obj_create(par);
-    lv_obj_set_scrollbar_mode(cont, LV_SCROLLBAR_MODE_OFF);
-    lv_obj_set_size(cont, lv_pct(100), APP_ICON_SIZE + 5);
-    lv_obj_set_style_bg_opa(cont, 0, 0);
-    lv_obj_set_style_border_width(cont, 0, 0);
-    lv_obj_align(cont, LV_ALIGN_CENTER, 0, 0);
+    scroll_cont[page_num] = lv_obj_create(par);
+    lv_obj_set_scrollbar_mode(scroll_cont[page_num], LV_SCROLLBAR_MODE_OFF);
+    lv_obj_set_size(scroll_cont[page_num], lv_pct(100), APP_ICON_SIZE + 5);
+    lv_obj_set_style_bg_opa(scroll_cont[page_num], 0, 0);
+    lv_obj_set_style_border_width(scroll_cont[page_num], 0, 0);
+    lv_obj_align(scroll_cont[page_num], LV_ALIGN_CENTER, 0, 0);
 
     /*Create button*/
-    lv_obj_t *btn = lv_btn_create(cont);
-    lv_obj_set_size(btn, APP_ICON_SIZE, APP_ICON_SIZE);
-    lv_obj_add_style(btn, &style_btn, LV_PART_MAIN);
-    lv_obj_add_style(btn, &style_pr, LV_STATE_PRESSED);
-    lv_obj_add_style(btn, &style_def, 0);
-    lv_obj_align(btn, LV_ALIGN_LEFT_MID, 0, 0);
+    cont_btn[page_num] = lv_btn_create(scroll_cont[page_num]);
+    lv_obj_set_size(cont_btn[page_num], APP_ICON_SIZE, APP_ICON_SIZE);
+    lv_obj_add_style(cont_btn[page_num], &style_btn, LV_PART_MAIN);
+    lv_obj_add_style(cont_btn[page_num], &style_pr, LV_STATE_PRESSED);
+    lv_obj_add_style(cont_btn[page_num], &style_def, 0);
+    lv_obj_add_event_cb(cont_btn[page_num], button_event_cb, LV_EVENT_ALL, 0);
+    lv_obj_set_user_data(cont_btn[page_num], user_data);
+    lv_obj_align(cont_btn[page_num], LV_ALIGN_LEFT_MID, 0, 0);
 
     /*Create lable*/
-    lv_obj_t *text = lv_label_create(cont);
-    lv_obj_set_style_text_font(text, &lv_font_montserrat_18, 0);
-    lv_label_set_text(text, infos);
-    lv_obj_add_style(text, &style_test, LV_PART_MAIN);
-    lv_obj_align_to(text, btn, LV_ALIGN_OUT_RIGHT_MID, 30, 0);
+    btn_text[page_num] = lv_label_create(scroll_cont[page_num]);
+    lv_obj_set_style_text_font(btn_text[page_num], &lv_font_montserrat_18, 0);
+    lv_label_set_text(btn_text[page_num], infos);
+    lv_obj_add_style(btn_text[page_num], &style_test, LV_PART_MAIN);
+    lv_obj_align_to(btn_text[page_num], cont_btn[page_num], LV_ALIGN_OUT_RIGHT_MID, 30, 0);
 
     /*Create image*/
-    lv_obj_t *img = lv_img_create(btn);
-    lv_img_set_src(img, image);
+    btn_img[page_num] = lv_img_create(cont_btn[page_num]);
+    lv_img_set_src(btn_img[page_num], image);
+    lv_obj_align(btn_img[page_num], LV_ALIGN_CENTER, 0, 0);
 
-    lv_obj_align(img, LV_ALIGN_CENTER, 0, 0);
+    lv_anim_t anim_zoom;
+    lv_anim_init(&anim_zoom);
+    lv_anim_set_var(&anim_zoom, cont_btn[page_num]);
+    lv_anim_set_values(&anim_zoom, APP_ICON_SIZE_START, APP_ICON_SIZE_END);
+    lv_anim_set_time(&anim_zoom, 800);
 
-    lv_anim_t a;
-    lv_anim_init(&a);
-    lv_anim_set_var(&a, btn);
-    lv_anim_set_values(&a, APP_ICON_SIZE_START, APP_ICON_SIZE_END);
-    lv_anim_set_time(&a, 800);
-
-    lv_anim_set_path_cb(&a, lv_anim_path_ease_out);
-    lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t)anim_size_cb);
-    lv_anim_start(&a);
+    lv_anim_set_path_cb(&anim_zoom, lv_anim_path_ease_out);
+    lv_anim_set_exec_cb(&anim_zoom, (lv_anim_exec_xcb_t)anim_size_cb);
+    lv_anim_start(&anim_zoom);
 }
 
 void setup_main_page_menu(lv_obj_t *page)
 {
     lv_obj_set_scrollbar_mode(page, LV_SCROLLBAR_MODE_OFF);
 
-    lv_obj_t *cont = lv_obj_create(page);
-    lv_obj_set_size(cont, 240, 240);
-    lv_obj_align(cont, LV_ALIGN_CENTER, 10, 0);
-    lv_obj_set_flex_flow(cont, LV_FLEX_FLOW_COLUMN);
-    lv_obj_add_event_cb(cont, scroll_event_cb, LV_EVENT_SCROLL, NULL);
-    lv_obj_set_style_radius(cont, LV_RADIUS_CIRCLE, 0);
-    lv_obj_set_style_clip_corner(cont, true, 0);
-    lv_obj_set_style_bg_opa(cont, 0, 0);
-    lv_obj_set_style_border_width(cont, 0, 0);
-    lv_obj_set_scroll_dir(cont, LV_DIR_VER); // 滚动方向
-    lv_obj_set_scroll_snap_y(cont, LV_SCROLL_SNAP_CENTER);
-    lv_obj_set_scrollbar_mode(cont, LV_SCROLLBAR_MODE_OFF);
+    page_cont = lv_obj_create(page);
+    lv_obj_set_size(page_cont, 240, 240);
+    lv_obj_align(page_cont, LV_ALIGN_CENTER, 10, 0);
+    lv_obj_set_flex_flow(page_cont, LV_FLEX_FLOW_COLUMN);
+    lv_obj_add_event_cb(page_cont, scroll_event_cb, LV_EVENT_SCROLL, NULL);
+    lv_obj_set_style_radius(page_cont, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_clip_corner(page_cont, true, 0);
+    lv_obj_set_style_bg_opa(page_cont, 0, 0);
+    lv_obj_set_style_border_width(page_cont, 0, 0);
+    lv_obj_set_scroll_dir(page_cont, LV_DIR_VER); // 滚动方向
+    lv_obj_set_scroll_snap_y(page_cont, LV_SCROLL_SNAP_CENTER);
+    lv_obj_set_scrollbar_mode(page_cont, LV_SCROLLBAR_MODE_OFF);
 
     for (int i = 0; i < __Sizeof(AppICON_Grp); i++)
     {
@@ -230,23 +233,28 @@ void setup_main_page_menu(lv_obj_t *page)
             lv_style_set_line_width(&style_line, 4);
             lv_style_set_line_color(&style_line, lv_color_hex(0xff0000));
 
-            lv_obj_t *line = lv_line_create(cont);
+            lv_obj_t *line = lv_line_create(page_cont);
             static lv_point_t line_points[] = {{90, 0}, {90, 80}};
             lv_line_set_points(line, line_points, 2);
             lv_obj_add_style(line, &style_line, LV_PART_MAIN);
         }
 
         Item_Create(
-            cont,
+            i,
+            page_cont,
+            &AppICON_Grp[i],
             (void *)AppICON_Grp[i].src_img,
             AppICON_Grp[i].name);
     }
 
     /*Update the buttons position manually for first*/
-    lv_event_send(cont, LV_EVENT_SCROLL, NULL);
+    lv_event_send(page_cont, LV_EVENT_SCROLL, NULL);
 
     /*Be sure the fist button is in the middle*/
-    lv_obj_scroll_to_view(lv_obj_get_child(cont, 0), LV_ANIM_OFF);
+    lv_obj_scroll_to_view(lv_obj_get_child(page_cont, 0), LV_ANIM_OFF);
+
+    /*动画*/
+    lv_amin_start(appWindow, -120, 0, 1, 240, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**
@@ -256,6 +264,7 @@ void setup_main_page_menu(lv_obj_t *page)
  */
 static void Setup()
 {
+    Serial.printf("Page MainMenu -------->\n");
     //获取芯片可用内存
     Serial.printf("esp free heap size : %d  \n", esp_get_free_heap_size());
     //获取从未使用过的最小内存
@@ -273,7 +282,16 @@ static void Setup()
  */
 static void Exit()
 {
+    lv_amin_start(appWindow,
+                  lv_obj_get_x(appWindow),
+                  -240,
+                  1,
+                  240,
+                  0,
+                  (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
+    PageDelay(LV_ANIM_TIME_DEFAULT);
+    lv_obj_clean(page_cont);
     lv_obj_clean(appWindow);
 }
 
@@ -285,17 +303,9 @@ static void Exit()
  */
 static void Event(void *obj, uint8_t event)
 {
-    // if (obj == lv_scr_act())
-    // {
-    //     if (event == LV_GESTURE_DIR_LEFT || event == LV_GESTURE_DIR_RIGHT)
-    //     {
-    //         Page->Pop();
-    //     }
-    // }
-
     if (event == LV_EVENT_LONG_PRESSED)
     {
-        Serial.printf("page pop!!!\n");
-        Page->Pop();
+        // Serial.printf("page pop!!!\n");
+        // Page->Pop();
     }
 }

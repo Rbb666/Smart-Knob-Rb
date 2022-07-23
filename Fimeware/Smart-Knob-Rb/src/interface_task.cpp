@@ -58,8 +58,8 @@ void InterfaceTask::run()
         lux_avg = lux * LUX_ALPHA + lux_avg * (1 - LUX_ALPHA);
 #endif
 
-        const int32_t lower = 1000;
-        const int32_t upper = 150000;
+        const int32_t lower = 950000;
+        const int32_t upper = 1800000;
         if (scale.wait_ready_timeout(100))
         {
             int32_t reading = scale.read();

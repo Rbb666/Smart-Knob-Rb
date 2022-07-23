@@ -41,7 +41,7 @@ void setup()
       Task_foc, "Task_foc", 4096, NULL, 2, &Task_foc_Handle, ESP32_RUNNING_CORE);
 
   xTaskCreatePinnedToCore(
-      Task_lvgl, "Task_lvgl", 4096, NULL, 3, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
+      Task_lvgl, "Task_lvgl", 5 * 1024, NULL, 3, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
 
   interface_task.begin();
 }
