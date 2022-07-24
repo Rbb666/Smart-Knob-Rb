@@ -40,10 +40,19 @@ static KnobConfig super_knob_configs[] = {
         "Unbounded\nNo detents", // 无限制 不制动
     },
     {
-        32,
+        80,
         0,
-        8.225806452 * PI / 180,
-        2,
+        10 * PI / 180,
+        3,
+        1,
+        1.1,
+        "Coarse values\nStrong detents", // 无限制 强阻尼
+    },
+    {
+        0,
+        0,
+        10 * PI / 180,
+        3,
         1,
         1.1,
         "Coarse values\nStrong detents", // 粗糙的棘轮 强阻尼
@@ -69,13 +78,14 @@ static KnobConfig super_knob_configs[] = {
     {
         2, //可以运动的个数
         0,
-        60 * PI / 180,              // 每一步60度
-        1,                          // 制动强度为1
+        60 * PI / 180, // 每一步60度
+        1,             // 制动强度为1
         1,
-        0.55,                       // Note the snap point is slightly past the midpoint (0.5); compare to normal detents which use a snap point *past* the next value (i.e. > 1)
-        "On/off\nStrong detent",    // 模拟开关  强制动
+        0.55,                    // Note the snap point is slightly past the midpoint (0.5); compare to normal detents which use a snap point *past* the next value (i.e. > 1)
+        "On/off\nStrong detent", // 模拟开关  强制动
     },
 };
 
 int get_motor_position(void);
+void update_motor_config(int status);
 void Task_foc(void *pvParameters);

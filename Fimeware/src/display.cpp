@@ -67,8 +67,6 @@ static void encoder_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
     {
         data->state = LV_INDEV_STATE_REL;
     }
-
-    // page_status_check();
 }
 
 void update_page_status(int page_status)
@@ -85,9 +83,7 @@ void Task_lvgl(void *pvParameters)
     (void)pvParameters;
 
     lv_disp_buf1_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
-    assert(lv_disp_buf1_p != NULL);
-    lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
-    assert(lv_disp_buf2_p != NULL);
+    // lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
 
     Serial.printf("--------------------------------\n");
     Serial.printf("heap get free size(%d)\n", heap_caps_get_free_size(MALLOC_CAP_DMA));
@@ -103,7 +99,7 @@ void Task_lvgl(void *pvParameters)
     ledcAttachPin(PIN_LCD_BACKLIGHT, 0);
     ledcWrite(0, UINT16_MAX);
 
-    lv_disp_draw_buf_init(&draw_buf, lv_disp_buf1_p, lv_disp_buf2_p, COLOR_BUFFER);
+    lv_disp_draw_buf_init(&draw_buf, lv_disp_buf1_p, NULL, COLOR_BUFFER);
     /*Initialize the display*/
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
@@ -126,8 +122,6 @@ void Task_lvgl(void *pvParameters)
     lv_indev_set_group(super_knob_ui.indev_encoder, super_knob_ui.defult_group);
 
     update_page_status(0);
-
-    // lv_demo_music();
 
     /*APP窗口初始化*/
     AppWindow_Create(lv_scr_act());

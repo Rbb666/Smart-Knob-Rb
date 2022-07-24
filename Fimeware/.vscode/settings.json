@@ -20,6 +20,7 @@
         "lvgl.h": "c",
         "lv_chart.h": "c",
         "fstream": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "list": "cpp"
     }
 }

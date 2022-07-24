@@ -2,6 +2,8 @@
 #include "GUI/DisplayPrivate.h"
 #include "Page_Anim.h"
 
+#include <Hal/motor.h>
+
 PAGE_EXPORT(MainMenu);
 
 extern "C"
@@ -115,9 +117,11 @@ static void button_event_cb(lv_event_t *e)
             break;
         case PAGE_Smart:
             Page->Push(PAGE_Smart);
+            update_motor_config(1);
             break;
         case PAGE_Window:
-            // Page->Push(PAGE_Window);
+            Page->Push(PAGE_Window);
+            update_motor_config(2);
             break;
         case PAGE_Music:
             // Page->Push(PAGE_Music);
@@ -125,6 +129,7 @@ static void button_event_cb(lv_event_t *e)
         default:
             break;
         }
+        update_page_status(CHECKOUT_PAGE);
     }
 }
 

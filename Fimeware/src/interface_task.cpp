@@ -117,7 +117,6 @@ void InterfaceTask::run()
         }
         FastLED.show();
 #endif
-
         vTaskDelay(10);
     }
 }
@@ -132,6 +131,8 @@ void InterfaceTask::handleEvent(AceButton *button, uint8_t event_type, uint8_t b
         }
         break;
     case AceButton::kEventReleased:
+        break;
+    case AceButton::kEventLongPressed:
         break;
     }
 }

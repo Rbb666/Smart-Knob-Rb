@@ -2,8 +2,8 @@
 #define __DISPLAYPRIVATE_H
 
 /*Basic*/
+#include "display.h"
 
-// extern SCREEN_CLASS screen;
 void lv_port_disp_init();
 void lv_port_indev_init();
 void lv_port_log_init();
@@ -73,7 +73,6 @@ void DisplayPage_Init();
 /*LVGL*/
 #include "lvgl.h"
 #include "Utils/lv_ext/lv_obj_ext_func.h"
-// #include "Utils/lv_ext/lv_anim_timeline.h"
 #include "Utils/lv_ext/lv_anim_timeline_wrapper.h"
 
 extern "C"

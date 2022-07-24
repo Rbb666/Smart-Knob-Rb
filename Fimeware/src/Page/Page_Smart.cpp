@@ -3,18 +3,21 @@
 #include "Page_Anim.h"
 
 #include <Hal/motor.h>
+#include "Hal/Ble_Keyboard.h"
 
 #define scan_turn_time 100
 
 PAGE_EXPORT(Smart);
 
+Ble_Interface ble;
+
 /*显示容器*/
 static lv_obj_t *contKPaTemp;
 /*返回图片*/
-lv_obj_t *back_img;
+static lv_obj_t *back_img;
 /*当前页面公共的标签样式*/
 static lv_style_t style_label_public;
-/*气压值标签*/
+/*湿度值标签*/
 static lv_obj_t *labelHmi;
 /*温度值标签*/
 static lv_obj_t *labelTemp;
@@ -33,7 +36,6 @@ static void page_scan_chart_timer_event(lv_timer_t *tmr)
     {
         motor_position = get_motor_position();
         lv_chart_set_next_value(rx_quality_chart, rssi0_curve, motor_position);
-        // lv_chart_set_value_by_id(rx_quality_chart, rssi1_curve, repeat_count, Rx5808_Get_Precentage1());
     }
 }
 
@@ -88,7 +90,6 @@ static void labelHmiTemp_Create()
 
     LV_FONT_DECLARE(HandGotn_14);
     LV_FONT_DECLARE(HandGotn_20);
-
     static lv_style_t style_label_public;
     lv_style_set_text_color(&style_label_public, lv_color_white());
     lv_style_set_text_font(&style_label_public, &HandGotn_14);
@@ -204,7 +205,7 @@ static void Exit()
                   lv_obj_get_y(chart_fre_label),
                   200 * 2,
                   1,
-                  200,
+                  300,
                   300,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
@@ -213,15 +214,15 @@ static void Exit()
                   -100 * 2,
                   1,
                   400,
-                  0,
+                  100,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(rx_quality_chart,
                   lv_obj_get_y(rx_quality_chart),
-                  -80 * 2,
+                  80 * 3,
                   1,
                   500,
-                  0,
+                  200,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(back_img,
@@ -229,14 +230,19 @@ static void Exit()
                   -80 * 2,
                   1,
                   1200,
-                  0,
+                  300,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
-    lv_timer_del(scan_chart_timer);
+    if (scan_chart_timer)
+        lv_timer_del(scan_chart_timer);
 
     PageDelay(LV_ANIM_TIME_DEFAULT);
+
     lv_obj_clean(chart_cont);
     lv_obj_clean(appWindow);
+
+    update_motor_config(1);
+    update_page_status(CHECKOUT_PAGE);
 }
 
 /**

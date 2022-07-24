@@ -24,10 +24,10 @@ static const float IDLE_CORRECTION_RATE_ALPHA = 0.0005;
 
 // 先设置一个默认值，等消息队列发送状态过来
 KnobConfig motor_config = {
-    .num_positions = 45,
+    .num_positions = 0,
     .position = 0,
     .position_width_radians = 8.225806452 * _PI / 180,
-    .detent_strength_unit = 2,
+    .detent_strength_unit = 3,
     .endstop_strength_unit = 1,
     .snap_point = 1.1,
 };
