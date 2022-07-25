@@ -28,7 +28,7 @@ typedef struct
         &IMG_##name, #name, PAGE_##name, color, NULL \
     }
 
-#define APP_ICON_SIZE 90
+#define APP_ICON_SIZE 85
 #define APP_ICON_SIZE_START 0
 #define APP_ICON_SIZE_END APP_ICON_SIZE
 
@@ -124,7 +124,7 @@ static void button_event_cb(lv_event_t *e)
             update_motor_config(2);
             break;
         case PAGE_Music:
-            // Page->Push(PAGE_Music);
+            Page->Push(PAGE_Music);
             break;
         default:
             break;
@@ -200,13 +200,13 @@ void Item_Create(
     lv_img_set_src(btn_img[page_num], image);
     lv_obj_align(btn_img[page_num], LV_ALIGN_CENTER, 0, 0);
 
-    lv_anim_t anim_zoom;
+    static lv_anim_t anim_zoom;
     lv_anim_init(&anim_zoom);
     lv_anim_set_var(&anim_zoom, cont_btn[page_num]);
     lv_anim_set_values(&anim_zoom, APP_ICON_SIZE_START, APP_ICON_SIZE_END);
     lv_anim_set_time(&anim_zoom, 800);
 
-    lv_anim_set_path_cb(&anim_zoom, lv_anim_path_ease_out);
+    lv_anim_set_path_cb(&anim_zoom, lv_anim_path_bounce);
     lv_anim_set_exec_cb(&anim_zoom, (lv_anim_exec_xcb_t)anim_size_cb);
     lv_anim_start(&anim_zoom);
 }
@@ -259,7 +259,7 @@ void setup_main_page_menu(lv_obj_t *page)
     lv_obj_scroll_to_view(lv_obj_get_child(page_cont, 0), LV_ANIM_OFF);
 
     /*动画*/
-    lv_amin_start(appWindow, -120, 0, 1, 240, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(page, -120, 0, 1, 240, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**

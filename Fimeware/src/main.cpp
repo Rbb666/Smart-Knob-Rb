@@ -44,6 +44,7 @@ void setup()
       Task_lvgl, "Task_lvgl", 5 * 1024, NULL, 3, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
 
   interface_task.begin();
+
   ble_Interface.begin();
 }
 

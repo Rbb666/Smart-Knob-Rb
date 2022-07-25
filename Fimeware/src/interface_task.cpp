@@ -46,7 +46,13 @@ void InterfaceTask::run()
 
     float press_value_unit = 0;
 
-    // Interface loop:
+    int led_status = LED_NORMAL;
+
+    // 开场灯效
+    Firt_Light();
+
+    led_rcv_Queue = xQueueCreate(10, sizeof(_Led_message *));
+
     while (1)
     {
         button_next.check();
@@ -105,18 +111,31 @@ void InterfaceTask::run()
         uint16_t brightness = UINT16_MAX;
         brightness = (uint16_t)CLAMP(lux_avg * 13000, (float)1280, (float)UINT16_MAX);
 
-#if SK_LEDS
-        for (uint8_t i = 0; i < NUM_LEDS; i++)
+        _Led_message *led_message;
+        if (xQueueReceive(led_rcv_Queue, &(led_message), (TickType_t)0))
         {
-            leds[i].setHSV(200 * press_value_unit, 255, brightness >> 8);
-
-            // Gamma adjustment
-            leds[i].r = dim8_video(leds[i].r);
-            leds[i].g = dim8_video(leds[i].g);
-            leds[i].b = dim8_video(leds[i].b);
+            led_status = led_message->led_status;
         }
+
+        switch (led_status)
+        {
+        case LED_NORMAL:
+            for (uint8_t i = 0; i < NUM_LEDS; i++)
+            {
+                leds[i].setHSV(200 * press_value_unit, 255, brightness >> 8);
+                // Gamma adjustment
+                leds[i].r = dim8_video(leds[i].r);
+                leds[i].g = dim8_video(leds[i].g);
+                leds[i].b = dim8_video(leds[i].b);
+            }
+            break;
+
+        default:
+            break;
+        }
+
         FastLED.show();
-#endif
+
         vTaskDelay(10);
     }
 }
@@ -135,4 +154,28 @@ void InterfaceTask::handleEvent(AceButton *button, uint8_t event_type, uint8_t b
     case AceButton::kEventLongPressed:
         break;
     }
+}
+
+void InterfaceTask::Firt_Light(void)
+{
+    for (int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1)
+    {
+        // Turn our current led on to white, then show the leds
+        leds[whiteLed] = CRGB::White;
+
+        FastLED.show();
+
+        delay(150);
+
+        // Turn our current led back to black for the next loop around
+        leds[whiteLed] = CRGB::Black;
+        FastLED.show();
+    }
+}
+
+void rainbow(uint8_t wait)
+{
+    fill_rainbow(leds, NUM_LEDS, 0, 7);
+    FastLED.show();
+    delay(wait);
 }

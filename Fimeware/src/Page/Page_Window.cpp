@@ -4,8 +4,11 @@
 
 #include <Hal/motor.h>
 #include "Hal/Ble_Keyboard.h"
+#include <FastLED.h>
 
 PAGE_EXPORT(Window);
+
+extern CRGB leds[NUM_LEDS];
 
 static lv_obj_t *lmeterSec;
 static lv_obj_t *labelSec;
@@ -25,6 +28,20 @@ static void back_main_menu_cb(lv_event_t *e)
     {
         Page->Pop();
     }
+}
+
+static void Led_show(int count)
+{
+    int led_num = abs(count) % NUM_LEDS;
+    leds[led_num] = CRGB::SkyBlue;
+    FastLED.show();
+    if (led_num != 0)
+    {
+        leds[--led_num] = CRGB::Black;
+        FastLED.show();
+    }
+    leds[++led_num] = CRGB::Black;
+    FastLED.show();
 }
 
 static void SW_LabelUpdate(lv_timer_t *tmr)
@@ -100,7 +117,7 @@ static void set_lmeterSec_value(lv_meter_indicator_t *indic, int32_t v)
 }
 
 /**
- * @brief  创建秒线表
+ * @brief  创建表盘
  * @param  无
  * @retval 无
  */
@@ -161,7 +178,7 @@ static void LabelTime_Create(void)
     lv_label_set_text(labelSec, "00");
     lv_obj_align(labelSec, LV_ALIGN_CENTER, 0, 0);
 
-    lv_amin_start(labelSec, -200, 0, 1, 500, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(labelSec, -120, 0, 1, 500, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
 }
 
 /**
@@ -193,7 +210,7 @@ static void Exit(void)
 
     lv_amin_start(labelSec,
                   lv_obj_get_x(labelSec),
-                  200 * 2,
+                  120 * 2,
                   1,
                   400,
                   0,
@@ -202,7 +219,7 @@ static void Exit(void)
 
     lv_amin_start(lmeterSec,
                   lv_obj_get_x(lmeterSec),
-                  120 * 2,
+                  80 * 2,
                   1,
                   500,
                   200,
@@ -211,7 +228,7 @@ static void Exit(void)
 
     lv_amin_start(back_img,
                   lv_obj_get_y(back_img),
-                  -80 * 2,
+                  -80,
                   1,
                   800,
                   300,
