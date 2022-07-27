@@ -3,7 +3,7 @@
 #include "Page_Anim.h"
 
 #include <Hal/motor.h>
-#include "Hal/Ble_Keyboard.h"
+#include <Hal/Ble_Keyboard.h>
 #include <FastLED.h>
 
 PAGE_EXPORT(Window);
@@ -18,7 +18,7 @@ static lv_meter_indicator_t *indic3;
 static lv_timer_t *LabelUpdate_timer;
 static lv_obj_t *back_img;
 
-Ble_Interface ble_dev;
+extern Ble_Interface ble_dev;
 
 static void back_main_menu_cb(lv_event_t *e)
 {
@@ -73,9 +73,9 @@ static void SW_LabelUpdate(lv_timer_t *tmr)
         else if (now_num < 0)
         {
             lv_label_set_text_fmt(labelSec, "%d", now_num);
-            lv_meter_set_indicator_end_value(lmeterSec, indic1, 60 + now_num - 2);
-            lv_meter_set_indicator_end_value(lmeterSec, indic2, 60 + now_num);
-            lv_meter_set_indicator_end_value(lmeterSec, indic3, 60 + now_num + 2);
+            lv_meter_set_indicator_end_value(lmeterSec, indic1, 100 + now_num - 2);
+            lv_meter_set_indicator_end_value(lmeterSec, indic2, 100 + now_num);
+            lv_meter_set_indicator_end_value(lmeterSec, indic3, 100 + now_num + 2);
         }
         else
         {
@@ -87,6 +87,7 @@ static void SW_LabelUpdate(lv_timer_t *tmr)
     }
 }
 
+// 返回按钮
 static void Back_Img_Create(lv_obj_t *win)
 {
     LV_IMG_DECLARE(IMG_Back);
@@ -123,30 +124,16 @@ static void set_lmeterSec_value(lv_meter_indicator_t *indic, int32_t v)
  */
 static void LmeterSec_Create(lv_obj_t *win)
 {
-    static lv_style_t style_lmeter;
-
-    lv_style_set_pad_left(&style_lmeter, 10);
-    lv_style_set_bg_color(&style_lmeter, LV_COLOR_MAKE(0xFF, 0x00, 0x00));
-    lv_style_set_bg_grad_color(&style_lmeter, LV_COLOR_MAKE(0xFF, 0x00, 0x00));
-    lv_style_set_border_width(&style_lmeter, 0);
-    lv_style_set_line_color(&style_lmeter, LV_COLOR_MAKE(0xC0, 0xC0, 0xC0));
-    lv_style_set_text_color(&style_lmeter, lv_color_black());
-    // lv_style_set_text_opa(&style_lmeter, 0);
-    lv_style_set_radius(&style_lmeter, 10);
-
     lmeterSec = lv_meter_create(win);
     /*Remove the circle from the middle*/
-    lv_obj_remove_style(lmeterSec, NULL, LV_PART_ITEMS);
-    lv_obj_remove_style(lmeterSec, NULL, LV_PART_INDICATOR);
-    lv_obj_add_style(lmeterSec, &style_lmeter, LV_PART_MAIN);
+    lv_obj_set_style_border_width(lmeterSec, 0,  LV_STATE_DEFAULT);
     lv_obj_set_size(lmeterSec, 170, 170);
     lv_obj_set_opa_scale(lmeterSec, LV_OPA_TRANSP);
     lv_obj_align(lmeterSec, LV_ALIGN_CENTER, 0, 0);
 
     lv_meter_scale_t *scale_min = lv_meter_add_scale(lmeterSec);
     lv_meter_set_scale_ticks(lmeterSec, scale_min, 30, 1, 15, lv_color_white());
-    // lv_meter_set_scale_major_ticks(lmeterSec, scale_min, 1, 2, 15, lv_color_white(), 10);
-    lv_meter_set_scale_range(lmeterSec, scale_min, 0, 60, 360, 180);
+    lv_meter_set_scale_range(lmeterSec, scale_min, 0, 100, 360, 180);
 
     indic1 = lv_meter_add_arc(lmeterSec, scale_min, 15, lv_palette_main(LV_PALETTE_BLUE), 0);
     indic2 = lv_meter_add_arc(lmeterSec, scale_min, 10, lv_palette_main(LV_PALETTE_RED), -15);
@@ -210,7 +197,7 @@ static void Exit(void)
 
     lv_amin_start(labelSec,
                   lv_obj_get_x(labelSec),
-                  120 * 2,
+                  120,
                   1,
                   400,
                   0,
@@ -219,7 +206,7 @@ static void Exit(void)
 
     lv_amin_start(lmeterSec,
                   lv_obj_get_x(lmeterSec),
-                  80 * 2,
+                  80,
                   1,
                   500,
                   200,

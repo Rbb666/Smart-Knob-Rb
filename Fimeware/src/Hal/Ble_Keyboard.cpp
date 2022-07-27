@@ -17,7 +17,7 @@ bool Ble_Interface::check_keyboard_connected(void)
     return bleKeyboard.isConnected();
 }
 
-int Ble_Interface::keyboard_enable_player(void)
+int Ble_Interface::keyboard_player_pause_play(void)
 {
     if (!check_keyboard_connected())
     {
@@ -25,8 +25,18 @@ int Ble_Interface::keyboard_enable_player(void)
         return -1;
     }
 
-    Serial.println("Sending Play/Pause media key...");
+    Serial.println("music pause or play...");
     bleKeyboard.write(KEY_MEDIA_PLAY_PAUSE);
+    return 0;
+}
+
+int Ble_Interface::keyboard_player_prev(void)
+{
+    if (!check_keyboard_connected())
+        return -1;
+
+    Serial.println("music prev...");
+    bleKeyboard.write(KEY_MEDIA_PREVIOUS_TRACK);
     return 0;
 }
 
@@ -35,7 +45,7 @@ int Ble_Interface::keyboard_player_next(void)
     if (!check_keyboard_connected())
         return -1;
 
-    Serial.println("Sending Play/Pause media key...");
+    Serial.println("music next...");
     bleKeyboard.write(KEY_MEDIA_NEXT_TRACK);
     return 0;
 }

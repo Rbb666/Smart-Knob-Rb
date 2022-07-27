@@ -16,10 +16,12 @@ public:
 
     bool check_keyboard_connected(void);
 
-    int keyboard_enable_player(void);
+    int keyboard_player_pause_play(void);
 
     int keyboard_player_next(void);
-    
+
+    int keyboard_player_prev(void);
+
     int keyboard_turn_up_volume(void);
 
     int keyboard_turn_down_volume(void);

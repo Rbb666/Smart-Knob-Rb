@@ -19,7 +19,7 @@ _knob_message LVGL_MSG;
 _knob_message MOTOR_MSG;
 
 InterfaceTask interface_task = InterfaceTask(0);
-Ble_Interface ble_Interface;
+Ble_Interface ble_dev;
 
 void setup()
 {
@@ -45,7 +45,7 @@ void setup()
 
   interface_task.begin();
 
-  ble_Interface.begin();
+  ble_dev.begin();
 }
 
 void loop()

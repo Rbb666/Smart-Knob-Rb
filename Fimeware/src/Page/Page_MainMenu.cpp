@@ -43,8 +43,6 @@ static lv_style_t style_test;
 static lv_style_t style_btn;
 static lv_style_t style_pr;
 static lv_style_t style_def;
-static lv_style_transition_dsc_t transition_dsc_def;
-static lv_style_transition_dsc_t transition_dsc_pr;
 
 static lv_obj_t *page_cont = NULL;
 static lv_obj_t *scroll_cont[__Sizeof(AppICON_Grp)];
@@ -148,8 +146,10 @@ void Item_Create(
     static lv_style_prop_t props[] = {
         LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
 
-    lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
+    static lv_style_transition_dsc_t transition_dsc_def;
+    static lv_style_transition_dsc_t transition_dsc_pr;
 
+    lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
     lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
 
     lv_style_init(&style_def);
@@ -293,10 +293,10 @@ static void Exit()
                   1,
                   240,
                   0,
-                  (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+                  (lv_anim_exec_xcb_t)lv_obj_set_y,
+                  lv_anim_path_bounce);
 
     PageDelay(LV_ANIM_TIME_DEFAULT);
-    lv_obj_clean(page_cont);
     lv_obj_clean(appWindow);
 }
 
