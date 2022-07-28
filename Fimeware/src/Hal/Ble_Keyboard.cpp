@@ -1,5 +1,12 @@
 #include "Ble_Keyboard.h"
 
+#include <Arduino.h>
+#include <sstream>
+#include <NimBLEDevice.h>
+#include <NimBLEServer.h>
+#include <NimBLEUtils.h>
+#include <NimBLEHIDDevice.h>
+
 BleKeyboard bleKeyboard;
 
 Ble_Interface::Ble_Interface() {}

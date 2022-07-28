@@ -202,32 +202,28 @@ static void Setup()
 static void Exit()
 {
     lv_amin_start(chart_fre_label,
-                  lv_obj_get_y(chart_fre_label),
-                  200 * 2,
+                  lv_obj_get_y(chart_fre_label), 200,
                   1,
                   300,
-                  300,
+                  0,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(contKPaTemp,
-                  lv_obj_get_y(contKPaTemp),
-                  -100 * 2,
+                  lv_obj_get_y(contKPaTemp), -100,
                   1,
-                  400,
+                  300,
                   100,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(rx_quality_chart,
-                  lv_obj_get_y(rx_quality_chart),
-                  80 * 3,
+                  lv_obj_get_y(rx_quality_chart), 60,
                   1,
                   500,
                   200,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(back_img,
-                  lv_obj_get_y(back_img),
-                  -80 * 2,
+                  lv_obj_get_y(back_img), -80,
                   1,
                   1200,
                   300,
@@ -238,7 +234,6 @@ static void Exit()
 
     PageDelay(LV_ANIM_TIME_DEFAULT);
 
-    lv_obj_clean(chart_cont);
     lv_obj_clean(appWindow);
 
     update_motor_config(1);

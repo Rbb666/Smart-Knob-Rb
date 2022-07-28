@@ -83,11 +83,7 @@ void Task_lvgl(void *pvParameters)
     (void)pvParameters;
 
     lv_disp_buf1_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
-    lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
-
-    Serial.printf("--------------------------------\n");
-    Serial.printf("heap get free size(%d)\n", heap_caps_get_free_size(MALLOC_CAP_DMA));
-    Serial.printf("--------------------------------\n");
+    // lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
 
     lv_init();
 
@@ -99,7 +95,7 @@ void Task_lvgl(void *pvParameters)
     ledcAttachPin(PIN_LCD_BACKLIGHT, 0);
     ledcWrite(0, UINT16_MAX);
 
-    lv_disp_draw_buf_init(&draw_buf, lv_disp_buf1_p, lv_disp_buf2_p, COLOR_BUFFER);
+    lv_disp_draw_buf_init(&draw_buf, lv_disp_buf1_p, NULL, COLOR_BUFFER);
     /*Initialize the display*/
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);

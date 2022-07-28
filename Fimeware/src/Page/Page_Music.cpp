@@ -26,13 +26,14 @@ static void Music_btn_create(lv_obj_t *win);
 
 extern Ble_Interface ble_dev;
 
+static const uint16_t rnd_array[30] = {994, 285, 553, 11, 792, 707, 966, 641, 852, 827, 44, 352, 146, 581, 490, 80, 729, 58, 695, 940, 724, 561, 124, 653, 27, 292, 557, 506, 382, 199};
+
 static void onTimer(lv_timer_t *timer)
 {
     if (timer == timer_float)
     {
         lv_amin_start(scroll_cont, lv_obj_get_y(scroll_cont),
                       140, 1, 300, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-        // lv_obj_del(scroll_cont);
     }
 }
 
@@ -216,7 +217,7 @@ static void Music_meter_create(lv_obj_t *win)
     /*Remove the circle from the middle*/
     lv_obj_remove_style(lmeter, NULL, LV_PART_ITEMS);
     lv_obj_remove_style(lmeter, NULL, LV_PART_INDICATOR);
-    lv_obj_set_style_border_width(lmeter, 0,  LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(lmeter, 0, LV_STATE_DEFAULT);
     lv_obj_set_size(lmeter, 170, 170);
     lv_obj_set_opa_scale(lmeter, LV_OPA_TRANSP);
     lv_obj_align(lmeter, LV_ALIGN_CENTER, 0, 0);
@@ -268,6 +269,38 @@ static void Exit()
                   200,
                   0,
                   (lv_anim_exec_xcb_t)set_value,
+                  lv_anim_path_bounce);
+
+    lv_amin_start(pause_btn,
+                  lv_obj_get_y(pause_btn), -40,
+                  0,
+                  300,
+                  100,
+                  (lv_anim_exec_xcb_t)lv_obj_set_y,
+                  lv_anim_path_bounce);
+
+    lv_amin_start(play_btn,
+                  lv_obj_get_y(play_btn), 40,
+                  0,
+                  400,
+                  200,
+                  (lv_anim_exec_xcb_t)lv_obj_set_y,
+                  lv_anim_path_bounce);
+
+    lv_amin_start(next_btn,
+                  lv_obj_get_x(next_btn), 40,
+                  0,
+                  500,
+                  300,
+                  (lv_anim_exec_xcb_t)lv_obj_set_x,
+                  lv_anim_path_bounce);
+
+    lv_amin_start(prev_btn,
+                  lv_obj_get_x(prev_btn), -40,
+                  0,
+                  500,
+                  400,
+                  (lv_anim_exec_xcb_t)lv_obj_set_x,
                   lv_anim_path_bounce);
 
     PageDelay(LV_ANIM_TIME_DEFAULT);

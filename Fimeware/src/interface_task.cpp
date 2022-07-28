@@ -158,15 +158,12 @@ void InterfaceTask::handleEvent(AceButton *button, uint8_t event_type, uint8_t b
 
 void InterfaceTask::Firt_Light(void)
 {
-    for (int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed = whiteLed + 1)
+    for (int whiteLed = 0; whiteLed < NUM_LEDS; whiteLed++)
     {
         // Turn our current led on to white, then show the leds
         leds[whiteLed] = CRGB::White;
-
         FastLED.show();
-
         delay(150);
-
         // Turn our current led back to black for the next loop around
         leds[whiteLed] = CRGB::Black;
         FastLED.show();

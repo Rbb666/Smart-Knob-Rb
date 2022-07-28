@@ -19,13 +19,13 @@ typedef struct
     const void *src_img;
     const char *name;
     const uint8_t pageID;
-    const lv_color_t bg_color;
+    const char *info;
     lv_obj_t *obj;
 } AppICON_TypeDef;
 
-#define APP_DEF(name, color)                         \
-    {                                                \
-        &IMG_##name, #name, PAGE_##name, color, NULL \
+#define APP_DEF(name, info)                         \
+    {                                               \
+        &IMG_##name, #name, PAGE_##name, info, NULL \
     }
 
 #define APP_ICON_SIZE 85
@@ -33,10 +33,10 @@ typedef struct
 #define APP_ICON_SIZE_END APP_ICON_SIZE
 
 static AppICON_TypeDef AppICON_Grp[] = {
-    APP_DEF(Switch, LV_COLOR_MAKE(0, 40, 255)),
-    APP_DEF(Smart, LV_COLOR_MAKE(75, 216, 99)),
-    APP_DEF(Window, LV_COLOR_MAKE(75, 216, 99)),
-    APP_DEF(Music, LV_COLOR_MAKE(75, 216, 99)),
+    APP_DEF(Switch, "ctrl led"),
+    APP_DEF(Smart, "monitor state"),
+    APP_DEF(Window, "ble keyboard"),
+    APP_DEF(Music, "music player"),
 };
 
 static lv_style_t style_test;
@@ -48,6 +48,7 @@ static lv_obj_t *page_cont = NULL;
 static lv_obj_t *scroll_cont[__Sizeof(AppICON_Grp)];
 static lv_obj_t *cont_btn[__Sizeof(AppICON_Grp)];
 static lv_obj_t *btn_text[__Sizeof(AppICON_Grp)];
+static lv_obj_t *page_info[__Sizeof(AppICON_Grp)];
 static lv_obj_t *btn_img[__Sizeof(AppICON_Grp)];
 
 static void scroll_event_cb(lv_event_t *e)
@@ -141,7 +142,8 @@ void Item_Create(
     lv_obj_t *par,
     void *user_data,
     const void *image,
-    const char *infos)
+    const char *infos,
+    const char *info_text)
 {
     static lv_style_prop_t props[] = {
         LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
@@ -194,6 +196,12 @@ void Item_Create(
     lv_label_set_text(btn_text[page_num], infos);
     lv_obj_add_style(btn_text[page_num], &style_test, LV_PART_MAIN);
     lv_obj_align_to(btn_text[page_num], cont_btn[page_num], LV_ALIGN_OUT_RIGHT_MID, 30, 0);
+
+    page_info[page_num] = lv_label_create(scroll_cont[page_num]);
+    lv_obj_set_style_text_font(page_info[page_num], &lv_font_montserrat_12, 0);
+    lv_label_set_text(page_info[page_num], info_text);
+    lv_obj_add_style(page_info[page_num], &style_test, LV_PART_MAIN);
+    lv_obj_align_to(page_info[page_num], btn_text[page_num], LV_ALIGN_BOTTOM_LEFT, 2, 15);
 
     /*Create image*/
     btn_img[page_num] = lv_img_create(cont_btn[page_num]);
@@ -249,7 +257,8 @@ void setup_main_page_menu(lv_obj_t *page)
             page_cont,
             &AppICON_Grp[i],
             (void *)AppICON_Grp[i].src_img,
-            AppICON_Grp[i].name);
+            AppICON_Grp[i].name,
+            AppICON_Grp[i].info);
     }
 
     /*Update the buttons position manually for first*/
@@ -260,6 +269,11 @@ void setup_main_page_menu(lv_obj_t *page)
 
     /*动画*/
     lv_amin_start(page, -120, 0, 1, 240, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+}
+
+void logMemory()
+{
+    Serial.printf("Used PSRAM: %d\n", ESP.getPsramSize() - ESP.getFreePsram());
 }
 
 /**

@@ -40,10 +40,10 @@ static KnobConfig super_knob_configs[] = {
         "Unbounded\nNo detents", // 无限制 不制动
     },
     {
-        80,
+        0,
         0,
         10 * PI / 180,
-        3,
+        4,
         1,
         1.1,
         "Coarse values\nStrong detents", // 无限制 强阻尼
@@ -52,7 +52,7 @@ static KnobConfig super_knob_configs[] = {
         0,
         0,
         10 * PI / 180,
-        3,
+        4,
         1,
         1.1,
         "Coarse values\nStrong detents", // 粗糙的棘轮 强阻尼

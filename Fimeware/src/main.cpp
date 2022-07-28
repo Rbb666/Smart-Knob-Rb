@@ -4,8 +4,8 @@
 #include "interface_task.h"
 #include "Hal/Ble_Keyboard.h"
 
-#define LVGL_RUNNING_CORE 0
-#define ESP32_RUNNING_CORE 1
+#define LVGL_RUNNING_CORE 1
+#define ESP32_RUNNING_CORE 0
 
 TaskHandle_t Task_foc_Handle;  // foc task
 TaskHandle_t Task_lvgl_Handle; // lvgl task
@@ -25,6 +25,11 @@ void setup()
 {
   // put your setup code here, to run once:
   Serial.begin(115200);
+
+  Serial.printf("Total heap: %d\n", ESP.getHeapSize());
+  Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
+  Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
+  Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
   // Serial.printf("    _________                      __             ____  __.            ___.      \n");
   // Serial.printf("  /   _____/ _____ _____ ________/  |_          |    |/ _| ____   _____|_ |__    \n");
