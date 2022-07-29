@@ -15,7 +15,7 @@ HX711 scale;
 
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
 
-InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Motor", 2048, 1, task_core) {}
+InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Motor", 2048, 2, task_core) {}
 
 InterfaceTask::~InterfaceTask() {}
 

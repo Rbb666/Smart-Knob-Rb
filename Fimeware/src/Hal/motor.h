@@ -33,7 +33,7 @@ static KnobConfig super_knob_configs[] = {
     {
         0,
         0,
-        10 * PI / 180,
+        8.225806452 * PI / 180,
         0,
         1,
         1.1,
@@ -42,7 +42,7 @@ static KnobConfig super_knob_configs[] = {
     {
         0,
         0,
-        10 * PI / 180,
+        8.225806452 * PI / 180,
         4,
         1,
         1.1,
@@ -51,7 +51,7 @@ static KnobConfig super_knob_configs[] = {
     {
         0,
         0,
-        10 * PI / 180,
+        8.225806452 * PI / 180,
         4,
         1,
         1.1,

@@ -142,7 +142,7 @@ static void Music_btn_create(lv_obj_t *win)
     lv_obj_add_style(pause_btn, &style_def, 0);
     lv_obj_add_event_cb(pause_btn, button_callback, LV_EVENT_ALL, 0);
     Pause_Img_Create();
-    lv_amin_start(pause_btn, -40, 42, 1, 400, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(pause_btn, -40, 42, 1, 200, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     play_btn = lv_btn_create(win);
     lv_obj_set_size(play_btn, 30, 30);
@@ -150,7 +150,7 @@ static void Music_btn_create(lv_obj_t *win)
     lv_obj_add_style(play_btn, &style_def, 0);
     lv_obj_add_event_cb(play_btn, button_callback, LV_EVENT_ALL, 0);
     Play_Img_Create();
-    lv_amin_start(play_btn, 40, -42, 1, 600, 400, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(play_btn, 40, -42, 1, 400, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     next_btn = lv_btn_create(win);
     lv_obj_set_size(next_btn, 30, 30);
@@ -158,7 +158,7 @@ static void Music_btn_create(lv_obj_t *win)
     lv_obj_add_style(next_btn, &style_def, 0);
     lv_obj_add_event_cb(next_btn, button_callback, LV_EVENT_ALL, 0);
     Next_Img_Create();
-    lv_amin_start(next_btn, 40, -42, 1, 800, 600, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(next_btn, 40, -42, 1, 600, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
 
     prev_btn = lv_btn_create(win);
     lv_obj_set_size(prev_btn, 30, 30);
@@ -166,7 +166,7 @@ static void Music_btn_create(lv_obj_t *win)
     lv_obj_add_style(prev_btn, &style_def, 0);
     lv_obj_add_event_cb(prev_btn, button_callback, LV_EVENT_ALL, 0);
     Prev_Img_Create();
-    lv_amin_start(prev_btn, -40, 42, 1, 1000, 800, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(prev_btn, -40, 42, 1, 800, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
 
     exit_btn = lv_btn_create(win);
     lv_obj_set_size(exit_btn, 40, 40);
@@ -287,21 +287,22 @@ static void Exit()
                   (lv_anim_exec_xcb_t)lv_obj_set_y,
                   lv_anim_path_bounce);
 
-    lv_amin_start(next_btn,
-                  lv_obj_get_x(next_btn), 40,
-                  0,
-                  500,
-                  300,
-                  (lv_anim_exec_xcb_t)lv_obj_set_x,
-                  lv_anim_path_bounce);
-
     lv_amin_start(prev_btn,
                   lv_obj_get_x(prev_btn), -40,
                   0,
                   500,
-                  400,
+                  200,
                   (lv_anim_exec_xcb_t)lv_obj_set_x,
                   lv_anim_path_bounce);
+
+    lv_amin_start(next_btn,
+                  lv_obj_get_x(next_btn), 40,
+                  0,
+                  500,
+                  200,
+                  (lv_anim_exec_xcb_t)lv_obj_set_x,
+                  lv_anim_path_bounce);
+
 
     PageDelay(LV_ANIM_TIME_DEFAULT);
 

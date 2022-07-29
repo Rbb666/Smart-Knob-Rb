@@ -26,7 +26,7 @@ static const float IDLE_CORRECTION_RATE_ALPHA = 0.0005;
 KnobConfig motor_config = {
     .num_positions = 0,
     .position = 0,
-    .position_width_radians = 10 * _PI / 180,
+    .position_width_radians = 8.225806452 * _PI / 180,
     .detent_strength_unit = 4,
     .endstop_strength_unit = 1,
     .snap_point = 1.1,
@@ -248,6 +248,6 @@ void Task_foc(void *pvParameters)
         }
 
         // Serial.println(motor_config.position);
-        vTaskDelay(1);
+        vTaskDelay(2);
     }
 }
