@@ -15,7 +15,7 @@ HX711 scale;
 
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
 
-InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Motor", 2048, 2, task_core) {}
+InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Motor", 2048, 3, task_core) {}
 
 InterfaceTask::~InterfaceTask() {}
 
@@ -46,12 +46,10 @@ void InterfaceTask::run()
 
     float press_value_unit = 0;
 
-    int led_status = LED_NORMAL;
-
     // 开场灯效
     Firt_Light();
 
-    led_rcv_Queue = xQueueCreate(10, sizeof(_Led_message *));
+    led_status = LED_NORMAL;
 
     while (1)
     {
@@ -111,15 +109,10 @@ void InterfaceTask::run()
         uint16_t brightness = UINT16_MAX;
         brightness = (uint16_t)CLAMP(lux_avg * 13000, (float)1280, (float)UINT16_MAX);
 
-        _Led_message *led_message;
-        if (xQueueReceive(led_rcv_Queue, &(led_message), (TickType_t)0))
-        {
-            led_status = led_message->led_status;
-        }
-
         switch (led_status)
         {
         case LED_NORMAL:
+        {
             for (uint8_t i = 0; i < NUM_LEDS; i++)
             {
                 leds[i].setHSV(200 * press_value_unit, 255, brightness >> 8);
@@ -129,14 +122,14 @@ void InterfaceTask::run()
                 leds[i].b = dim8_video(leds[i].b);
             }
             break;
-
+        }
         default:
             break;
         }
 
         FastLED.show();
 
-        vTaskDelay(10);
+        vTaskDelay(50);
     }
 }
 
@@ -166,7 +159,7 @@ void InterfaceTask::Firt_Light(void)
         delay(150);
         // Turn our current led back to black for the next loop around
         leds[whiteLed] = CRGB::Black;
-        FastLED.show();
+        // FastLED.show();
     }
 }
 

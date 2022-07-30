@@ -8,12 +8,6 @@ class InterfaceTask : public Task<InterfaceTask>, public ace_button::IEventHandl
 {
     friend class Task<InterfaceTask>;
 
-    struct _Led_message
-    {
-        int led_status;
-        int led_time;
-    };
-
     typedef enum
     {
         LED_NORMAL,
@@ -28,17 +22,19 @@ public:
 
     ~InterfaceTask();
 
-    QueueHandle_t led_rcv_Queue;
-
     void handleEvent(ace_button::AceButton *button, uint8_t event_type, uint8_t button_state) override;
 
     void Firt_Light(void);
+
+    int led_status;
 
 protected:
     void run();
 
 private:
     int current_config_ = 0;
+
+    QueueHandle_t led_rcv_Queue;
 
     // void changeConfig(bool next);
 };

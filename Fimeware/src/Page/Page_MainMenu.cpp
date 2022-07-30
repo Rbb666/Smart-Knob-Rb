@@ -191,8 +191,9 @@ void Item_Create(
     lv_obj_align(cont_btn[page_num], LV_ALIGN_LEFT_MID, 0, 0);
 
     /*Create lable*/
+    LV_FONT_DECLARE(HandGotn_18);
     btn_text[page_num] = lv_label_create(scroll_cont[page_num]);
-    lv_obj_set_style_text_font(btn_text[page_num], &lv_font_montserrat_18, 0);
+    lv_obj_set_style_text_font(btn_text[page_num], &HandGotn_18, 0);
     lv_label_set_text(btn_text[page_num], infos);
     lv_obj_add_style(btn_text[page_num], &style_test, LV_PART_MAIN);
     lv_obj_align_to(btn_text[page_num], cont_btn[page_num], LV_ALIGN_OUT_RIGHT_MID, 30, 0);
