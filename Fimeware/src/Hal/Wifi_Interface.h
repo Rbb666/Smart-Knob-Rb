@@ -15,8 +15,10 @@ class Wifi_Task : public Task<Wifi_Task>
 
     enum WIFI_BASIC_STATE
     {
-        WIFI_IDLE,
-        WIFI_READY
+        WIFI_AP_IDLE = 1,
+        WIFI_AP_READY,
+        WIFI_STA_IDLE,
+        WIFI_STA_READY,
     };
 
     enum WIFI_CONN_STATE
@@ -28,7 +30,7 @@ class Wifi_Task : public Task<Wifi_Task>
     enum APP_MESSAGE_TYPE
     {
         APP_MESSAGE_IDLE = 0,
-        APP_MESSAGE_WIFI_CONN,    // 开启连接
+        APP_MESSAGE_WIFI_STA,     // 开启连接
         APP_MESSAGE_WIFI_AP,      // 开启 AP 事件
         APP_MESSAGE_WIFI_ALIVE,   // wifi 开关的心跳维持
         APP_MESSAGE_WIFI_DISCONN, // 连接断开
@@ -40,9 +42,15 @@ class Wifi_Task : public Task<Wifi_Task>
         APP_MESSAGE_NONE
     };
 
-    struct wifi_message
+    enum WIFI_TASK_STATE
     {
-        uint8_t wifi_state_type;
+        TASK_IDLE,
+        TASK_AP_REQUEST,
+        TASK_AP_CONNECTED,
+        TASK_STA_REQUEST,
+        TASK_STA_CONNECTED,
+        TASK_DISCONNECT,
+        TASK_TRASH
     };
 
 public:
@@ -50,8 +58,7 @@ public:
 
     ~Wifi_Task();
 
-    void start(void);
-    void update_wifi_status(uint8_t wifi_state);
+    void FSM_Task(void);
 
     void search_wifi(void);
     boolean start_conn_wifi(const char *ssid, const char *password);
@@ -59,6 +66,8 @@ public:
     boolean open_ap(const char *ap_ssid, const char *ap_password = NULL);
     boolean close_wifi(void);
 
+    void read_config(SysUtilConfig *cfg);
+    void write_config(SysUtilConfig *cfg);
     void http_get_wether(void);
 
 protected:
@@ -71,13 +80,13 @@ private:
     const char *AP_SSID = "Smart-Knob"; // 热点名
     const char *HOST_NAME = "eps32";    // 主机名
 
+    WIFI_TASK_STATE task_state;
+
     unsigned long wifi_conn_millis;
-    boolean wifi_status;              // wifi状态 true开启 false关闭
+    WIFI_BASIC_STATE wifi_status;     // wifi状态
     unsigned long m_preWifiReqMillis; // 保存上一回请求的时间戳
     SysUtilConfig sys_cfg;            // 持久化保存参数
 
-    wifi_message WIFI_MSG;
-    QueueHandle_t wifi_rcv_Queue;
-
-    boolean wifi_event(uint8_t type);
+    void wifi_state_config(void);
+    boolean wifi_event(APP_MESSAGE_TYPE type);
 };

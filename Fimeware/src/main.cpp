@@ -22,12 +22,11 @@ _knob_message LVGL_MSG;
 _knob_message MOTOR_MSG;
 
 Ble_Interface ble_dev;
-Wifi_Task wifi_task = Wifi_Task(LVGL_RUNNING_CORE);
+Wifi_Task wifi_task = Wifi_Task(ESP32_RUNNING_CORE);
 InterfaceTask interface_task = InterfaceTask(ESP32_RUNNING_CORE);
 
 void setup()
 {
-  // put your setup code here, to run once:
   Serial.begin(115200);
 
   // Serial.printf("    _________                      __             ____  __.            ___.      \n");
@@ -41,10 +40,10 @@ void setup()
   Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
   Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
 
-  if (!SPIFFS.begin(true))
+  delay(500);
+  while (!SPIFFS.begin())
   {
-    Serial.println("SPIFFS Mount Failed");
-    assert(0);
+    Serial.print("...");
   }
 
   xBinarySemaphore = xSemaphoreCreateBinary();
@@ -55,15 +54,13 @@ void setup()
       Task_foc, "Task_foc", 2 * 1024, NULL, 2, &Task_foc_Handle, ESP32_RUNNING_CORE);
 
   xTaskCreatePinnedToCore(
-      Task_lvgl, "Task_lvgl", 5 * 1024, NULL, 3, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
+      Task_lvgl, "Task_lvgl", 5 * 1024, NULL, 2, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
 
   wifi_task.begin();
 
   interface_task.begin();
 
   ble_dev.begin();
-
-  wifi_task.start();
 }
 
 void loop() { yield(); }

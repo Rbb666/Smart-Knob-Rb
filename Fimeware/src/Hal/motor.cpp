@@ -97,8 +97,8 @@ void Task_foc(void *pvParameters)
     // 传感器与电机连接
     motor.linkSensor(&encoder);
 
-    // float zero_electric_offset = 3.66;
-    float zero_electric_offset = 7.34;
+    float zero_electric_offset = 3.66;
+    // float zero_electric_offset = 7.34;
     // 控制环 PID控制器
     Direction foc_direction = Direction::CW;
     motor.PID_velocity.P = 4;

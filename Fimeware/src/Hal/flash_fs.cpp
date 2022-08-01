@@ -11,6 +11,8 @@
 
 #define FORMAT_LITTLEFS_IF_FAILED true
 
+portMUX_TYPE mmux = portMUX_INITIALIZER_UNLOCKED;
+
 FlashFS::FlashFS()
 {
 }
