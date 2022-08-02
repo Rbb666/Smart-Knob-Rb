@@ -7,13 +7,13 @@ IPAddress gateway(192, 168, 4, 2);  // Set your network Gateway usually your Rou
 IPAddress subnet(255, 255, 255, 0); // Set your network sub-network mask here
 IPAddress dns(192, 168, 4, 1);      // Set your network DNS usually your Router base address
 
-Wifi_Task::Wifi_Task(const uint8_t task_core) : Task("Wifi", 3 * 1024, 1, task_core)
-{
-}
+WebServer server(80);
+
+Wifi_Task::Wifi_Task(const uint8_t task_core) : Task("Wifi", 3 * 1024, 1, task_core) {}
 
 Wifi_Task::~Wifi_Task(void) {}
 
-WebServer server(80);
+static void wifi_timeout_callback(TimerHandle_t pxTimer);
 
 void Wifi_Task::run(void)
 {
@@ -21,8 +21,15 @@ void Wifi_Task::run(void)
     read_config(&sys_cfg);
     wifi_state_config();
 
-    Serial.println("Starting Wifi work!");
+    // 创建wifi超时定时器-1min
+    wifi_timeout_tmr = xTimerCreate("wifi_Timer",
+                                    (1000 * 60),
+                                    pdTRUE,
+                                    (void *)0,
+                                    wifi_timeout_callback);
+
     wifi_conn_millis = 0;
+    Serial.println("Starting Wifi work!");
 
     for (;;)
     {
@@ -68,12 +75,6 @@ void Wifi_Task::wifi_state_config(void)
         wifi_status = WIFI_STA_IDLE;
         task_state = TASK_STA_REQUEST;
     }
-    else if (sys_cfg.ssid_1 != "")
-    {
-    }
-    else if (sys_cfg.ssid_2 != "")
-    {
-    }
     else
     {
         wifi_status = WIFI_AP_IDLE;
@@ -99,6 +100,13 @@ void Wifi_Task::write_config(SysUtilConfig *cfg)
     Serial.printf("Write config to SPIFS...\n");
 }
 
+static void wifi_timeout_callback(TimerHandle_t pxTimer)
+{
+    Serial.println("Close WebServer Service!!");
+    server.close();
+    xTimerStop(pxTimer, 0);
+}
+
 // wifi 有限状态机
 void Wifi_Task::FSM_Task(void)
 {
@@ -112,6 +120,7 @@ void Wifi_Task::FSM_Task(void)
     case TASK_AP_REQUEST:
     {
         wifi_status = WIFI_AP_IDLE;
+
         boolean wifi_state = wifi_event(APP_MESSAGE_WIFI_AP);
         if (wifi_state)
             task_state = TASK_AP_CONNECTED;
@@ -135,6 +144,7 @@ void Wifi_Task::FSM_Task(void)
 
                 // 切换到STA模式尝试连接
                 task_state = TASK_STA_REQUEST;
+                connect_mode = AP_TO_CONNECT_MODE;
                 Serial.printf("Ready to connect[%s]\n", name); });
 
         server.begin();
@@ -144,6 +154,7 @@ void Wifi_Task::FSM_Task(void)
     case TASK_STA_REQUEST:
     {
         wifi_status = WIFI_STA_IDLE; // 设置wifi为idel模式
+
         boolean wifi_state = wifi_event(APP_MESSAGE_WIFI_STA);
         if (wifi_state)
             task_state = TASK_STA_CONNECTED;
@@ -164,9 +175,15 @@ void Wifi_Task::FSM_Task(void)
                 Serial.printf("[STA REC] wifi name:%s pass:%s\n", name, password); });
 
         server.begin();
-        // 保存配置信息
-        write_config(&sys_cfg);
-        task_state = TASK_IDLE;
+
+        // AP 配网成功后保存参数
+        if (connect_mode == AP_TO_CONNECT_MODE)
+            task_state = TASK_NET_CONNECTED;
+        else
+            task_state = TASK_IDLE;
+
+        // 开启超时定时器
+        xTimerStart(wifi_timeout_tmr, 0);
     }
     break;
     case TASK_DISCONNECT:
@@ -186,6 +203,14 @@ void Wifi_Task::FSM_Task(void)
             task_state = TASK_TRASH;
             recon_count = 0;
         }
+    }
+    break;
+    // AP 配网成功模式
+    case TASK_NET_CONNECTED:
+    {
+        // 保存配置信息
+        write_config(&sys_cfg);
+        task_state = TASK_IDLE;
     }
     break;
     case TASK_TRASH:

@@ -50,7 +50,15 @@ class Wifi_Task : public Task<Wifi_Task>
         TASK_STA_REQUEST,
         TASK_STA_CONNECTED,
         TASK_DISCONNECT,
+        TASK_NET_CONNECTED,
         TASK_TRASH
+    };
+
+    enum CONNECT_MODE
+    {
+        NAN_MODE,
+        AP_TO_CONNECT_MODE,
+        STA_TO_CONNECT_MODE
     };
 
 public:
@@ -74,18 +82,18 @@ protected:
     void run();
 
 private:
-    const char *ssid = "501";
-    const char *password = "Benxiaohai123";
-
     const char *AP_SSID = "Smart-Knob"; // 热点名
     const char *HOST_NAME = "eps32";    // 主机名
 
-    WIFI_TASK_STATE task_state;
-
     unsigned long wifi_conn_millis;
-    WIFI_BASIC_STATE wifi_status;     // wifi状态
     unsigned long m_preWifiReqMillis; // 保存上一回请求的时间戳
-    SysUtilConfig sys_cfg;            // 持久化保存参数
+
+    TimerHandle_t wifi_timeout_tmr; // wifi 超时定时器
+
+    WIFI_TASK_STATE task_state;           // 任务状态
+    WIFI_BASIC_STATE wifi_status;         // wifi状态
+    SysUtilConfig sys_cfg;                // 持久化保存参数
+    CONNECT_MODE connect_mode = NAN_MODE; // AP->连接/STA->连接
 
     void wifi_state_config(void);
     boolean wifi_event(APP_MESSAGE_TYPE type);
