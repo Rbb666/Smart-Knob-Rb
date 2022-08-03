@@ -26,8 +26,6 @@ static void Music_btn_create(lv_obj_t *win);
 
 extern Ble_Interface ble_dev;
 
-static const uint16_t rnd_array[30] = {994, 285, 553, 11, 792, 707, 966, 641, 852, 827, 44, 352, 146, 581, 490, 80, 729, 58, 695, 940, 724, 561, 124, 653, 27, 292, 557, 506, 382, 199};
-
 static void onTimer(lv_timer_t *timer)
 {
     if (timer == timer_float)
@@ -169,7 +167,7 @@ static void Music_btn_create(lv_obj_t *win)
     lv_amin_start(prev_btn, -40, 42, 1, 800, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
 
     exit_btn = lv_btn_create(win);
-    lv_obj_set_size(exit_btn, 40, 40);
+    lv_obj_set_size(exit_btn, 45, 45);
     lv_obj_align(exit_btn, LV_ALIGN_CENTER, 0, 0);
     lv_obj_add_style(exit_btn, &style_def, 0);
     lv_obj_set_style_radius(exit_btn, 35, LV_STATE_DEFAULT);
@@ -245,14 +243,16 @@ static void Setup()
 
     Music_view_create(appWindow);
 
-    // timer_float = lv_timer_create(onTimer, 4300, NULL);
-    // lv_timer_set_repeat_count(timer_float, 1);
+    Gif_create(appWindow);
 
-    Music_meter_create(appWindow);
-    Music_btn_create(appWindow);
+    timer_float = lv_timer_create(onTimer, 4500, NULL);
+    lv_timer_set_repeat_count(timer_float, 1);
 
-    // timer_display = lv_timer_create(onTimer_display, 5100, NULL);
-    // lv_timer_set_repeat_count(timer_display, 1);
+    // Music_meter_create(appWindow);
+    // Music_btn_create(appWindow);
+
+    timer_display = lv_timer_create(onTimer_display, 5000, NULL);
+    lv_timer_set_repeat_count(timer_display, 1);
 }
 
 /**
@@ -262,9 +262,16 @@ static void Setup()
  */
 static void Exit()
 {
-    lv_amin_start(indic,
+    lv_amin_start(exit_btn,
+                  lv_obj_get_x(exit_btn), 120,
+                  0,
                   100,
                   0,
+                  (lv_anim_exec_xcb_t)lv_obj_set_x,
+                  lv_anim_path_bounce);
+
+    lv_amin_start(indic,
+                  100, 0,
                   1,
                   200,
                   0,
@@ -302,7 +309,6 @@ static void Exit()
                   200,
                   (lv_anim_exec_xcb_t)lv_obj_set_x,
                   lv_anim_path_bounce);
-
 
     PageDelay(LV_ANIM_TIME_DEFAULT);
 

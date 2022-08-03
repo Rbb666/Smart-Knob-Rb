@@ -28,13 +28,14 @@ static void page_gestute_event_cb(lv_event_t *event)
  */
 void DisplayPage_Init(void)
 {
-    PAGE_IMPORT(StartUp);    //开始菜单
-    PAGE_IMPORT(MainMenu);   //主菜单
-    PAGE_IMPORT(Switch);     //界面
-    PAGE_IMPORT(Smart);      //界面
-    PAGE_IMPORT(Window);     //界面
-    PAGE_IMPORT(Music);      //音乐界面
-    page.Push(PAGE_StartUp); //进入第一个页面
+    PAGE_IMPORT(StartUp);    // 开始菜单
+    PAGE_IMPORT(MainMenu);   // 主菜单
+    PAGE_IMPORT(Switch);     // 控制界面
+    PAGE_IMPORT(Smart);      // 监控界面
+    PAGE_IMPORT(Window);     // win界面
+    PAGE_IMPORT(Music);      // 音乐界面
+    PAGE_IMPORT(OTA);        // OTA界面
+    page.Push(PAGE_StartUp); // 进入第一个页面
     lv_obj_add_event_cb(lv_scr_act(), page_gestute_event_cb, LV_EVENT_ALL, NULL);
 }
 

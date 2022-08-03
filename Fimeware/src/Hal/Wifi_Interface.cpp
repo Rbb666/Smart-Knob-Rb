@@ -2,6 +2,8 @@
 #include "Page_html.h"
 #include "HAL/flash_fs.h"
 
+#include <ElegantOTA.h>
+
 IPAddress local_ip(192, 168, 4, 2); // Set your server's fixed IP address here
 IPAddress gateway(192, 168, 4, 2);  // Set your network Gateway usually your Router base address
 IPAddress subnet(255, 255, 255, 0); // Set your network sub-network mask here
@@ -148,6 +150,7 @@ void Wifi_Task::FSM_Task(void)
                 Serial.printf("Ready to connect[%s]\n", name); });
 
         server.begin();
+        ElegantOTA.begin(&server);
         task_state = TASK_IDLE;
     }
     break;
@@ -175,6 +178,7 @@ void Wifi_Task::FSM_Task(void)
                 Serial.printf("[STA REC] wifi name:%s pass:%s\n", name, password); });
 
         server.begin();
+        ElegantOTA.begin(&server);
 
         // AP 配网成功后保存参数
         if (connect_mode == AP_TO_CONNECT_MODE)

@@ -86,14 +86,13 @@ private:
     const char *HOST_NAME = "eps32";    // 主机名
 
     unsigned long wifi_conn_millis;
-    unsigned long m_preWifiReqMillis; // 保存上一回请求的时间戳
-
-    TimerHandle_t wifi_timeout_tmr; // wifi 超时定时器
+    unsigned long m_preWifiReqMillis; // 上一次请求的时间戳
 
     WIFI_TASK_STATE task_state;           // 任务状态
     WIFI_BASIC_STATE wifi_status;         // wifi状态
     SysUtilConfig sys_cfg;                // 持久化保存参数
     CONNECT_MODE connect_mode = NAN_MODE; // AP->连接/STA->连接
+    TimerHandle_t wifi_timeout_tmr;       // wifi 超时定时器
 
     void wifi_state_config(void);
     boolean wifi_event(APP_MESSAGE_TYPE type);

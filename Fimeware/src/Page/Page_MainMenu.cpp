@@ -12,6 +12,7 @@ extern "C"
     LV_IMG_DECLARE(IMG_Smart);
     LV_IMG_DECLARE(IMG_Window);
     LV_IMG_DECLARE(IMG_Music);
+    LV_IMG_DECLARE(IMG_OTA);
 }
 
 typedef struct
@@ -37,6 +38,7 @@ static AppICON_TypeDef AppICON_Grp[] = {
     APP_DEF(Smart, "monitor state"),
     APP_DEF(Window, "ble keyboard"),
     APP_DEF(Music, "music player"),
+    APP_DEF(OTA, "update esp32"),
 };
 
 static lv_style_t style_test;

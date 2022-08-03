@@ -25,6 +25,7 @@ typedef enum
     PAGE_Smart,
     PAGE_Window,
     PAGE_Music,
+    PAGE_OTA,
 
     /*保留*/
     PAGE_MAX
