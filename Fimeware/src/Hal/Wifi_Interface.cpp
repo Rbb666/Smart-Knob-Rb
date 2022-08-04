@@ -194,10 +194,11 @@ void Wifi_Task::FSM_Task(void)
     {
         static uint8_t recon_count = 0;
         recon_count++;
-        if (recon_count < 50)
+        if (recon_count < 15)
         {
             Serial.printf("wifi connect fail, ready to reconnect[%d]...\n\n", recon_count);
             vTaskDelay(500);
+            // 重连成功
             if (end_conn_wifi())
                 task_state = TASK_STA_CONNECTED;
         }
