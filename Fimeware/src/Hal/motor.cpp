@@ -72,6 +72,11 @@ int get_motor_position(void)
     return motor_config.position;
 }
 
+int get_motor_position_unit(void)
+{
+    return motor_config.sub_position_unit;
+}
+
 void Task_foc(void *pvParameters)
 {
     (void)pvParameters;
@@ -97,8 +102,8 @@ void Task_foc(void *pvParameters)
     // 传感器与电机连接
     motor.linkSensor(&encoder);
 
-    float zero_electric_offset = 3.66;
-    // float zero_electric_offset = 7.34;
+    // float zero_electric_offset = 3.66;
+    float zero_electric_offset = 7.34;
     // 控制环 PID控制器
     Direction foc_direction = Direction::CW;
     motor.PID_velocity.P = 4;
@@ -132,6 +137,8 @@ void Task_foc(void *pvParameters)
     uint32_t last_idle_start = 0;
     // 怠速检查速度
     float idle_check_velocity_ewma = 0;
+
+    uint32_t last_publish = 0;
 
     for (;;)
     {
@@ -245,6 +252,12 @@ void Task_foc(void *pvParameters)
             torque = -torque;
 #endif
             motor.move(torque);
+        }
+
+        if (millis() - last_publish > 10)
+        {
+            motor_config.sub_position_unit = -angle_to_detent_center / motor_config.position_width_radians,       
+            last_publish = millis();
         }
 
         // Serial.println(motor_config.position);

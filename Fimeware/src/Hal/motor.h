@@ -17,6 +17,8 @@ struct KnobConfig
     float snap_point;
     //描述符
     char descriptor[50];
+
+    float sub_position_unit;
 };
 extern KnobConfig motor_config;
 
@@ -79,7 +81,7 @@ static KnobConfig super_knob_configs[] = {
         2, //可以运动的个数
         0,
         60 * PI / 180, // 每一步60度
-        1,             // 制动强度为1
+        8,             // 制动强度为1
         1,
         0.55,                    // Note the snap point is slightly past the midpoint (0.5); compare to normal detents which use a snap point *past* the next value (i.e. > 1)
         "On/off\nStrong detent", // 模拟开关  强制动
@@ -87,5 +89,6 @@ static KnobConfig super_knob_configs[] = {
 };
 
 int get_motor_position(void);
+int get_motor_position_unit(void);
 void update_motor_config(int status);
 void Task_foc(void *pvParameters);
