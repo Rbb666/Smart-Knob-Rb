@@ -115,7 +115,7 @@ static void button_event_cb(lv_event_t *e)
         {
         case PAGE_Switch:
             Page->Push(PAGE_Switch);
-            update_motor_config(5);
+            update_motor_config(1);
             break;
         case PAGE_Smart:
             Page->Push(PAGE_Smart);
