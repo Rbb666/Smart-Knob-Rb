@@ -171,8 +171,8 @@ static void Page_scan_chart_create(lv_obj_t *win)
     scan_chart_timer = lv_timer_create(page_scan_chart_timer_event, scan_turn_time, NULL);
 
     lv_amin_start(chart_fre_label, 200, 10, 1, 300, 300, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(contKPaTemp, -100, -45, 1, 400, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(rx_quality_chart, -80, -15, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(contKPaTemp, -70, -45, 1, 400, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(rx_quality_chart, -60, -15, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
     lv_amin_start(back_img, -80, -10, 1, 1200, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
@@ -202,14 +202,14 @@ static void Setup()
 static void Exit()
 {
     lv_amin_start(chart_fre_label,
-                  lv_obj_get_y(chart_fre_label), 200,
+                  lv_obj_get_y(chart_fre_label), 120,
                   1,
                   300,
                   0,
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(contKPaTemp,
-                  lv_obj_get_y(contKPaTemp), -100,
+                  lv_obj_get_y(contKPaTemp), -70,
                   1,
                   300,
                   100,
