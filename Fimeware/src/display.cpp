@@ -7,6 +7,7 @@
 #include "demos/lv_demos.h"
 #include "Page/Page_Anim.h"
 #include "GUI/DisplayPrivate.h"
+#include "./Hal/BSP.h"
 
 static const uint16_t screenWidth = 240;
 static const uint16_t screenHeight = 240;
@@ -28,11 +29,8 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
-    tft.startWrite();
     tft.setSwapBytes(true);
     tft.pushImageDMA(area->x1, area->y1, w, h, (uint16_t *)&color_p->full);
-    tft.dmaWait();
-    tft.endWrite();
 
     lv_disp_flush_ready(disp);
 }
@@ -49,13 +47,11 @@ static void encoder_read(lv_indev_drv_t *indev_drv, lv_indev_data_t *data)
     {
         data->enc_diff++;
         old_num = get_motor_position();
-        // update_ws2812_status(WS2812_ROLL, 10);
     }
     else if (now_num < old_num)
     {
         data->enc_diff--;
         old_num = get_motor_position();
-        // update_ws2812_status(WS2812_ROLL, 10);
     }
 
     if (xSemaphoreTake(xBinarySemaphore, (TickType_t)0) == pdTRUE)
@@ -83,19 +79,18 @@ void Task_lvgl(void *pvParameters)
     (void)pvParameters;
 
     lv_disp_buf1_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
-    // lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
 
     lv_init();
 
     tft.begin();
     tft.initDMA();
     tft.setRotation(0);
+    tft.startWrite();
 
-    ledcSetup(0, 1000, 16);
-    ledcAttachPin(PIN_LCD_BACKLIGHT, 0);
-    ledcWrite(0, UINT16_MAX);
+    Backlight_Init();
 
-    lv_disp_draw_buf_init(&draw_buf, lv_disp_buf1_p, NULL, COLOR_BUFFER);
+    lv_disp_draw_buf_init(&draw_buf, lv_disp_buf1_p, lv_disp_buf2_p, COLOR_BUFFER);
     /*Initialize the display*/
     static lv_disp_drv_t disp_drv;
     lv_disp_drv_init(&disp_drv);
@@ -124,7 +119,8 @@ void Task_lvgl(void *pvParameters)
 
     DisplayPage_Init();
 
-    Serial.printf("Screen init success!!\n");
+    /*背光渐亮*/
+    Backlight_SetGradual(500, 4000);
 
     for (;;)
     {

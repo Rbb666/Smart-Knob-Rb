@@ -261,6 +261,6 @@ void Task_foc(void *pvParameters)
         }
 
         // Serial.println(motor_config.position);
-        vTaskDelay(2);
+        vTaskDelay(1);
     }
 }
