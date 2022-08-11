@@ -128,6 +128,9 @@ static void button_event_cb(lv_event_t *e)
         case PAGE_Music:
             Page->Push(PAGE_Music);
             break;
+        case PAGE_OTA:
+            Page->Push(PAGE_OTA);
+            break;
         default:
             break;
         }
@@ -140,13 +143,7 @@ static void anim_size_cb(lv_obj_t *var, int32_t v)
     lv_obj_set_size(var, v, v);
 }
 
-void Item_Create(
-    uint8_t page_num,
-    lv_obj_t *par,
-    void *user_data,
-    const void *image,
-    const char *infos,
-    const char *info_text)
+static void button_style_init(void)
 {
     static lv_style_prop_t props[] = {
         LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
@@ -168,13 +165,22 @@ void Item_Create(
 
     lv_style_init(&style_btn);
     lv_style_set_radius(&style_btn, 20);
-    lv_style_set_border_width(&style_btn, 2);
+    lv_style_set_border_width(&style_btn, 0);
     lv_style_set_bg_color(&style_btn, lv_color_white());
 
     /*Create txt style*/
     lv_style_init(&style_test);
     lv_style_set_text_color(&style_test, lv_color_white());
+}
 
+void Item_Create(
+    uint8_t page_num,
+    lv_obj_t *par,
+    void *user_data,
+    const void *image,
+    const char *infos,
+    const char *info_text)
+{
     /*Create cont*/
     scroll_cont[page_num] = lv_obj_create(par);
     lv_obj_set_scrollbar_mode(scroll_cont[page_num], LV_SCROLLBAR_MODE_OFF);
@@ -295,6 +301,7 @@ static void Setup()
 
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
+    button_style_init();
     setup_main_page_menu(appWindow);
 }
 
