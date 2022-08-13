@@ -126,7 +126,7 @@ static void LmeterSec_Create(lv_obj_t *win)
 {
     lmeterSec = lv_meter_create(win);
     /*Remove the circle from the middle*/
-    lv_obj_set_style_border_width(lmeterSec, 0,  LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(lmeterSec, 0, LV_STATE_DEFAULT);
     lv_obj_set_size(lmeterSec, 170, 170);
     lv_obj_set_opa_scale(lmeterSec, LV_OPA_TRANSP);
     lv_obj_align(lmeterSec, LV_ALIGN_CENTER, 0, 0);
@@ -153,15 +153,9 @@ static void LabelTime_Create(void)
 
     labelSec = lv_label_create(lmeterSec);
 
-    static lv_style_t style_label1;
-
-    lv_style_set_text_font(&style_label1, &HandGotn_35);
-    lv_style_set_text_color(&style_label1, lv_color_white());
-    lv_style_set_bg_grad_color(&style_label1, LV_COLOR_MAKE(0xFF, 0x00, 0x00)); // 渐变色
-    lv_obj_add_style(labelSec, &style_label1, LV_PART_MAIN);
-
     lv_label_set_recolor(labelSec, true);
-    // lv_label_set_text(labelSec, "0#FF0000 0#");
+    lv_obj_set_style_text_color(labelSec, lv_color_white(), 0);
+    lv_obj_set_style_text_font(labelSec, &HandGotn_35, 0);
     lv_label_set_text(labelSec, "00");
     lv_obj_align(labelSec, LV_ALIGN_CENTER, 0, 0);
 

@@ -88,24 +88,16 @@ static void labelHmiTemp_Create()
     lv_img_set_src(imgT, &IMG_Temperature);
     lv_obj_align(imgT, LV_ALIGN_LEFT_MID, 8, 12);
 
-    LV_FONT_DECLARE(HandGotn_14);
     LV_FONT_DECLARE(HandGotn_20);
-    static lv_style_t style_label_public;
-    lv_style_set_text_color(&style_label_public, lv_color_white());
-    lv_style_set_text_font(&style_label_public, &HandGotn_14);
-    lv_style_set_text_font(&style_label_public, &HandGotn_20);
-    lv_style_set_bg_grad_color(&style_label_public, lv_color_black()); // 渐变色
-
-    static lv_style_t style2_label;
-    style2_label = style_label_public;
-
     labelHmi = lv_label_create(contKPaTemp);
-    lv_obj_add_style(labelHmi, &style_label_public, LV_PART_MAIN);
+    lv_obj_set_style_text_color(labelHmi, lv_color_white(), 0);
+    lv_obj_set_style_text_font(labelHmi, &HandGotn_20, 0);
     lv_label_set_text(labelHmi, "00.0%");
     lv_obj_align_to(labelHmi, imgP, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
 
     labelTemp = lv_label_create(contKPaTemp);
-    lv_obj_add_style(labelTemp, &style2_label, LV_PART_MAIN);
+    lv_obj_set_style_text_color(labelTemp, lv_color_white(), 0);
+    lv_obj_set_style_text_font(labelTemp, &HandGotn_20, 0);
     lv_label_set_text(labelTemp, "00.0C");
     lv_obj_align_to(labelTemp, imgT, LV_ALIGN_OUT_RIGHT_MID, 5, 0);
 }
@@ -123,7 +115,8 @@ static void ContKPaTemp_Create(lv_obj_t *win)
     lv_obj_set_opa_scale(contKPaTemp, LV_OPA_TRANSP);
     lv_obj_set_scrollbar_mode(contKPaTemp, LV_SCROLLBAR_MODE_OFF);
 
-    static lv_style_t style_cont;
+    lv_style_t style_cont;
+    lv_style_init(&style_cont);
     lv_style_set_border_opa(&style_cont, LV_OPA_COVER);
     lv_style_set_border_width(&style_cont, 2);
     lv_style_set_border_color(&style_cont, lv_palette_main(LV_PALETTE_RED));

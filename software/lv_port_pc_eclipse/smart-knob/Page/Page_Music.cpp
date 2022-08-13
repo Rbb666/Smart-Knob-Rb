@@ -24,8 +24,8 @@ static void Music_btn_create(lv_obj_t *win);
 
 static void onTimer(lv_timer_t *timer) {
     if (timer == timer_float) {
-        lv_amin_start(scroll_cont, lv_obj_get_y(scroll_cont),
-                      140, 1, 300, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+        lv_amin_start(scroll_cont, lv_obj_get_y(scroll_cont), 140,
+                      1, 300, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
     }
 }
 
@@ -112,7 +112,7 @@ static void Music_btn_create(lv_obj_t *win) {
     lv_obj_add_style(pause_btn, &style_def, 0);
     lv_obj_add_event_cb(pause_btn, button_callback, LV_EVENT_ALL, 0);
     Pause_Img_Create();
-    lv_amin_start(pause_btn, -40, 42, 1, 200, 200, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(pause_btn, -30, 42, 1, 200, 200, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     play_btn = lv_btn_create(win);
     lv_obj_set_size(play_btn, 30, 30);
@@ -120,7 +120,7 @@ static void Music_btn_create(lv_obj_t *win) {
     lv_obj_add_style(play_btn, &style_def, 0);
     lv_obj_add_event_cb(play_btn, button_callback, LV_EVENT_ALL, 0);
     Play_Img_Create();
-    lv_amin_start(play_btn, 40, -42, 1, 400, 200, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(play_btn, 30, -42, 1, 400, 200, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     next_btn = lv_btn_create(win);
     lv_obj_set_size(next_btn, 30, 30);
@@ -128,7 +128,7 @@ static void Music_btn_create(lv_obj_t *win) {
     lv_obj_add_style(next_btn, &style_def, 0);
     lv_obj_add_event_cb(next_btn, button_callback, LV_EVENT_ALL, 0);
     Next_Img_Create();
-    lv_amin_start(next_btn, 40, -42, 1, 600, 200, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(next_btn, 30, -42, 1, 600, 200, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     prev_btn = lv_btn_create(win);
     lv_obj_set_size(prev_btn, 30, 30);
@@ -136,7 +136,7 @@ static void Music_btn_create(lv_obj_t *win) {
     lv_obj_add_style(prev_btn, &style_def, 0);
     lv_obj_add_event_cb(prev_btn, button_callback, LV_EVENT_ALL, 0);
     Prev_Img_Create();
-    lv_amin_start(prev_btn, -40, 42, 1, 800, 200, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(prev_btn, -30, 42, 1, 800, 200, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     exit_btn = lv_btn_create(win);
     lv_obj_set_size(exit_btn, 45, 45);
@@ -153,6 +153,7 @@ static void Music_view_create(lv_obj_t *win) {
 
     img_bg = lv_img_create(win);
     lv_img_set_src(img_bg, &IMG_Water_BG);
+    lv_obj_set_style_radius(img_bg, LV_RADIUS_CIRCLE, LV_STATE_DEFAULT);
     lv_obj_align(img_bg, LV_ALIGN_CENTER, 0, 0);
 }
 
@@ -170,7 +171,7 @@ static void Gif_create(lv_obj_t *win) {
     lv_gif_set_src(gif_img, &music_gif);
     lv_obj_align(gif_img, LV_ALIGN_CENTER, 0, 0);
 
-    lv_amin_start(scroll_cont, 140, -10, 1, 500, 100, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(scroll_cont, 120, -10, 1, 500, 100, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
 static void set_value(lv_meter_indicator_t *indic, int32_t v) {

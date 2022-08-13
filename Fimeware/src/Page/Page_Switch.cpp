@@ -91,29 +91,20 @@ static void ContTime_Create(lv_obj_t *win)
     lv_obj_set_opa_scale(contTemp, LV_OPA_TRANSP);
     lv_obj_set_scrollbar_mode(contTemp, LV_SCROLLBAR_MODE_OFF);
 
-    static lv_style_t style_cont;
-    lv_style_set_border_opa(&style_cont, LV_OPA_COVER);
-    lv_style_set_border_width(&style_cont, 2);
-    lv_style_set_border_color(&style_cont, lv_color_white());
-    lv_style_set_radius(&style_cont, 10);
-    lv_obj_add_style(contTemp, &style_cont, LV_PART_MAIN);
-
+    lv_obj_set_style_border_opa(contTemp, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_width(contTemp, 2, 0);
+    lv_obj_set_style_border_color(contTemp, lv_color_white(), 0);
+    lv_obj_set_style_radius(contTemp, 10, 0);
     lv_amin_start(contTemp, -135, 10, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 static void labelTime_Create(void)
 {
     LV_FONT_DECLARE(HandGotn_20);
-    static lv_style_t style_label_public;
-    lv_style_set_text_color(&style_label_public, lv_color_white());
-    lv_style_set_text_font(&style_label_public, &HandGotn_20);
-    lv_style_set_bg_grad_color(&style_label_public, lv_color_black()); // 渐变色
-
-    static lv_style_t style_label;
-    style_label = style_label_public;
 
     labelTime = lv_label_create(contTemp);
-    lv_obj_add_style(labelTime, &style_label, LV_PART_MAIN);
+    lv_obj_set_style_text_color(labelTime, lv_color_white(), 0);
+    lv_obj_set_style_text_font(labelTime, &HandGotn_20, 0);
     lv_label_set_text(labelTime, "Time-12:59");
     lv_obj_align(labelTime, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
 }

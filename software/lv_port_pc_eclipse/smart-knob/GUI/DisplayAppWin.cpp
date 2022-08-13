@@ -13,12 +13,12 @@ void AppWindow_Create(lv_obj_t *par) {
     lv_style_set_radius(&style, 0);
     lv_style_set_border_width(&style, 0);
     // lv_style_set_bg_grad_color(&style, lv_color_black());
+    lv_style_set_radius(&style, LV_RADIUS_CIRCLE);
     lv_style_set_bg_color(&style, lv_color_black());
 
     for (int i = 0; i < PAGE_MAX; i++) {
         lv_obj_t *obj = lv_obj_create(par);
         lv_obj_add_style(obj, &style, LV_PART_MAIN);
-        // lv_obj_set_style_radius(obj, LV_RADIUS_CIRCLE, 0);
         lv_obj_set_size(obj, lv_obj_get_width(par), lv_obj_get_height(par));
         lv_obj_align(obj, LV_ALIGN_CENTER, 0, 0);
 
