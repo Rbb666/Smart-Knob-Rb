@@ -38,11 +38,6 @@ static AppICON_TypeDef AppICON_Grp[] = {
         APP_DEF(OTA, "update esp32"),
 };
 
-static lv_style_t style_test;
-static lv_style_t style_btn;
-static lv_style_t style_pr;
-static lv_style_t style_def;
-
 static lv_obj_t *page_cont = NULL;
 static lv_obj_t *scroll_cont[__Sizeof(AppICON_Grp)];
 static lv_obj_t *cont_btn[__Sizeof(AppICON_Grp)];
@@ -126,42 +121,31 @@ static void anim_size_cb(lv_obj_t *var, int32_t v) {
     lv_obj_set_size(var, v, v);
 }
 
-static void button_style_init(void) {
-    static lv_style_prop_t props[] = {
-            LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
-
+void button_style_create(lv_obj_t *obj) {
     static lv_style_transition_dsc_t transition_dsc_def;
     static lv_style_transition_dsc_t transition_dsc_pr;
+
+    static lv_style_prop_t props[] = {
+            LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
 
     lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
     lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
 
-    lv_style_init(&style_def);
-    lv_style_set_transition(&style_def, &transition_dsc_def);
-
-    lv_style_init(&style_pr);
-    lv_style_set_transform_width(&style_pr, 10);
-    lv_style_set_transform_height(&style_pr, -10);
-    lv_style_set_text_letter_space(&style_pr, 10);
-    lv_style_set_transition(&style_pr, &transition_dsc_pr);
-
-    lv_style_init(&style_btn);
-    lv_style_set_radius(&style_btn, 20);
-    lv_style_set_border_width(&style_btn, 0);
-    lv_style_set_bg_color(&style_btn, lv_color_white());
-
-    /*Create txt style*/
-    lv_style_init(&style_test);
-    lv_style_set_text_color(&style_test, lv_color_white());
+    lv_obj_set_style_transform_width(obj, 10, LV_STATE_PRESSED);
+    lv_obj_set_style_transform_height(obj, -10, LV_STATE_PRESSED);
+    lv_obj_set_style_text_letter_space(obj, 10, LV_STATE_PRESSED);
+    lv_obj_set_style_transition(obj, &transition_dsc_pr, LV_STATE_PRESSED);
+    lv_obj_set_style_transition(obj, &transition_dsc_def, LV_STATE_DEFAULT);
 }
 
-void Item_Create(
+static void Item_Create(
         uint8_t page_num,
         lv_obj_t *par,
         void *user_data,
         const void *image,
         const char *infos,
         const char *info_text) {
+
     /*Create cont*/
     scroll_cont[page_num] = lv_obj_create(par);
     lv_obj_set_scrollbar_mode(scroll_cont[page_num], LV_SCROLLBAR_MODE_OFF);
@@ -173,9 +157,10 @@ void Item_Create(
     /*Create button*/
     cont_btn[page_num] = lv_btn_create(scroll_cont[page_num]);
     lv_obj_set_size(cont_btn[page_num], APP_ICON_SIZE, APP_ICON_SIZE);
-    lv_obj_add_style(cont_btn[page_num], &style_btn, LV_PART_MAIN);
-    lv_obj_add_style(cont_btn[page_num], &style_pr, LV_STATE_PRESSED);
-    lv_obj_add_style(cont_btn[page_num], &style_def, 0);
+    lv_obj_set_style_radius(cont_btn[page_num], 15, LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(cont_btn[page_num], 0, LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(cont_btn[page_num], lv_color_white(), LV_STATE_DEFAULT);
+    button_style_create(cont_btn[page_num]);
     lv_obj_add_event_cb(cont_btn[page_num], button_event_cb, LV_EVENT_ALL, 0);
     lv_obj_set_user_data(cont_btn[page_num], user_data);
     lv_obj_align(cont_btn[page_num], LV_ALIGN_LEFT_MID, 0, 0);
@@ -185,13 +170,13 @@ void Item_Create(
     btn_text[page_num] = lv_label_create(scroll_cont[page_num]);
     lv_obj_set_style_text_font(btn_text[page_num], &HandGotn_18, 0);
     lv_label_set_text(btn_text[page_num], infos);
-    lv_obj_add_style(btn_text[page_num], &style_test, LV_PART_MAIN);
+    lv_obj_set_style_text_color(btn_text[page_num], lv_color_white(), LV_STATE_DEFAULT);
     lv_obj_align_to(btn_text[page_num], cont_btn[page_num], LV_ALIGN_OUT_RIGHT_MID, 30, 0);
 
     page_info[page_num] = lv_label_create(scroll_cont[page_num]);
     lv_obj_set_style_text_font(page_info[page_num], &lv_font_montserrat_12, 0);
     lv_label_set_text(page_info[page_num], info_text);
-    lv_obj_add_style(page_info[page_num], &style_test, LV_PART_MAIN);
+    lv_obj_set_style_text_color(page_info[page_num], lv_color_white(), LV_STATE_DEFAULT);
     lv_obj_align_to(page_info[page_num], btn_text[page_num], LV_ALIGN_BOTTOM_LEFT, 2, 15);
 
     /*Create image*/
@@ -228,17 +213,13 @@ void setup_main_page_menu(lv_obj_t *page) {
 
     for (int i = 0; i < __Sizeof(AppICON_Grp); i++) {
         if (i != 0) {
-            /*Create line style*/
-            static lv_style_t style_line;
-            lv_style_init(&style_line);
-            lv_style_set_line_width(&style_line, 4);
-            lv_style_set_line_color(&style_line, lv_color_hex(0xff0000));
-
             lv_obj_t *line = lv_line_create(page_cont);
             static lv_point_t line_points[] = {{90, 0},
                                                {90, 80}};
+
+            lv_obj_set_style_line_width(line, 4, LV_STATE_DEFAULT);
+            lv_obj_set_style_line_color(line, lv_color_hex(0xff0000), LV_STATE_DEFAULT);
             lv_line_set_points(line, line_points, 2);
-            lv_obj_add_style(line, &style_line, LV_PART_MAIN);
         }
 
         Item_Create(
@@ -266,9 +247,12 @@ void setup_main_page_menu(lv_obj_t *page) {
  * @retval 无
  */
 static void Setup() {
+    static lv_mem_monitor_t mem_monitor;
+    std::cout << "free_size:" << mem_monitor.free_size << std::endl;
+    lv_mem_monitor(&mem_monitor);
+
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
-    button_style_init();
     setup_main_page_menu(appWindow);
 }
 
@@ -287,7 +271,6 @@ static void Exit() {
                   (lv_anim_exec_xcb_t) lv_obj_set_y,
                   lv_anim_path_bounce);
 
-    PageDelay(LV_ANIM_TIME_DEFAULT);
     lv_obj_clean(appWindow);
 }
 

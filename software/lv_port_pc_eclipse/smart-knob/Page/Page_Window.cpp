@@ -171,7 +171,6 @@ static void Exit(void) {
                   (lv_anim_exec_xcb_t) lv_obj_set_y,
                   lv_anim_path_bounce);
 
-    PageDelay(LV_ANIM_TIME_DEFAULT);
     lv_obj_clean(appWindow);
 }
 

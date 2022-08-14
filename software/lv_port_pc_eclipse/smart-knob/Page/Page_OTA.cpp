@@ -18,13 +18,8 @@ const char *wifi_ssid[5] = {
         "501@5G"
 };
 
-static lv_style_t style_btn;
-static lv_style_t style_pr;
-static lv_style_t style_fd;
-static lv_style_t style_def;
-
-static lv_obj_t *img_disconn;
 static lv_obj_t *line;
+static lv_obj_t *img_disconn;
 static lv_obj_t *wifi_info_cont;
 static lv_obj_t *wifi_scan_cont;
 static lv_obj_t *wifi_img_cont;
@@ -64,6 +59,13 @@ static void button_event_cb(lv_event_t *e) {
         } else if (btn == wifi_conn_button) {
             wifi_scan_list(appWindow);
             add_wifi_scan_list();
+        } else if (btn == wifi_ap_ota_btn) {
+
+        } else if (btn == wifi_sta_ota_btn) {
+
+        } else if (btn == wifi_exit_button) {
+            std::cout << "exit ota page" << std::endl;
+            page.Pop();
         }
     }
 }
@@ -81,85 +83,79 @@ static void disconnect_icon_create(lv_obj_t *win) {
 
 static void wifi_function_list(lv_obj_t *win) {
     lv_obj_set_scrollbar_mode(win, LV_SCROLLBAR_MODE_OFF);
-    /*Create line style*/
-    static lv_style_t style_line;
-    lv_style_init(&style_line);
-    lv_style_set_line_width(&style_line, 2);
-    lv_style_set_line_color(&style_line, lv_color_hex(0xff0000));
+    /*Create line*/
     line = lv_line_create(win);
     static lv_point_t line_points[] = {{115, 0},
                                        {115, 135}};
     lv_line_set_points(line, line_points, 2);
-    lv_obj_add_style(line, &style_line, LV_PART_MAIN);
+    lv_obj_set_style_line_width(line, 2, LV_STATE_DEFAULT);
+    lv_obj_set_style_line_color(line, lv_color_hex(0xff0000), LV_STATE_DEFAULT);
 
     /*Create connect button*/
     wifi_conn_button = lv_btn_create(win);
     lv_obj_set_size(wifi_conn_button, 70, 25);
 
+    extern void button_style_create(lv_obj_t *obj);
+    button_style_create(wifi_conn_button);
     lv_obj_set_style_bg_color(wifi_conn_button, lv_color_make(51, 51, 51), LV_STATE_DEFAULT);
-    lv_obj_add_style(wifi_conn_button, &style_pr, LV_STATE_PRESSED);
-    lv_obj_add_style(wifi_conn_button, &style_def, 0);
 
     lv_obj_add_event_cb(wifi_conn_button, button_event_cb, LV_EVENT_ALL, 0);
     lv_obj_align(wifi_conn_button, LV_ALIGN_TOP_RIGHT, -15, 42);
 
     LV_FONT_DECLARE(HandGotn_14);
     lv_obj_t *label_conn_btn = lv_label_create(wifi_conn_button);
+    lv_obj_align(label_conn_btn, LV_ALIGN_CENTER, 0, 2);
     lv_obj_set_style_text_color(label_conn_btn, lv_color_white(), 0);
     lv_obj_set_style_text_font(label_conn_btn, &HandGotn_14, 0);
     lv_label_set_text(label_conn_btn, "Wi-Fi");
-    lv_obj_center(label_conn_btn);
 
     /*Create ota button*/
     wifi_ap_ota_btn = lv_btn_create(win);
     lv_obj_set_size(wifi_ap_ota_btn, 70, 25);
 
+    button_style_create(wifi_ap_ota_btn);
     lv_obj_set_style_bg_color(wifi_ap_ota_btn, lv_color_make(51, 51, 51), LV_STATE_DEFAULT);
-    lv_obj_add_style(wifi_ap_ota_btn, &style_pr, LV_STATE_PRESSED);
-    lv_obj_add_style(wifi_ap_ota_btn, &style_def, 0);
 
     lv_obj_add_event_cb(wifi_ap_ota_btn, button_event_cb, LV_EVENT_ALL, 0);
     lv_obj_align(wifi_ap_ota_btn, LV_ALIGN_TOP_RIGHT, -15, 77);
 
     lv_obj_t *label_ap_ota_btn = lv_label_create(wifi_ap_ota_btn);
+    lv_obj_align(label_ap_ota_btn, LV_ALIGN_CENTER, 0, 2);
     lv_obj_set_style_text_color(label_ap_ota_btn, lv_color_white(), 0);
     lv_obj_set_style_text_font(label_ap_ota_btn, &HandGotn_14, 0);
     lv_label_set_text(label_ap_ota_btn, "AP-OTA");
-    lv_obj_center(label_ap_ota_btn);
 
     /*Create ota button*/
     wifi_sta_ota_btn = lv_btn_create(win);
     lv_obj_set_size(wifi_sta_ota_btn, 70, 25);
 
+    button_style_create(wifi_sta_ota_btn);
     lv_obj_set_style_bg_color(wifi_sta_ota_btn, lv_color_make(51, 51, 51), LV_STATE_DEFAULT);
-    lv_obj_add_style(wifi_sta_ota_btn, &style_pr, LV_STATE_PRESSED);
-    lv_obj_add_style(wifi_sta_ota_btn, &style_def, 0);
 
     lv_obj_add_event_cb(wifi_sta_ota_btn, button_event_cb, LV_EVENT_ALL, 0);
     lv_obj_align(wifi_sta_ota_btn, LV_ALIGN_TOP_RIGHT, -15, 112);
 
     lv_obj_t *label_sta_ota_btn = lv_label_create(wifi_sta_ota_btn);
+    lv_obj_align(label_sta_ota_btn, LV_ALIGN_CENTER, 0, 2);
     lv_obj_set_style_text_color(label_sta_ota_btn, lv_color_white(), 0);
     lv_obj_set_style_text_font(label_sta_ota_btn, &HandGotn_14, 0);
     lv_label_set_text(label_sta_ota_btn, "STA-OTA");
-    lv_obj_center(label_sta_ota_btn);
 
     /*Create exit button*/
     wifi_exit_button = lv_btn_create(win);
     lv_obj_set_size(wifi_exit_button, 70, 25);
 
+    button_style_create(wifi_exit_button);
     lv_obj_set_style_bg_color(wifi_exit_button, lv_color_make(51, 51, 51), LV_STATE_DEFAULT);
-    lv_obj_add_style(wifi_exit_button, &style_pr, LV_STATE_PRESSED);
-    lv_obj_add_style(wifi_exit_button, &style_def, 0);
 
     lv_obj_add_event_cb(wifi_exit_button, button_event_cb, LV_EVENT_ALL, 0);
     lv_obj_align(wifi_exit_button, LV_ALIGN_TOP_RIGHT, -15, 147);
 
     lv_obj_t *label_exit_btn = lv_label_create(wifi_exit_button);
+    lv_obj_align(label_exit_btn, LV_ALIGN_CENTER, 0, 2);
     lv_obj_set_style_text_color(label_exit_btn, lv_color_white(), 0);
     lv_obj_set_style_text_font(label_exit_btn, &HandGotn_14, 0);
     lv_label_set_text(label_exit_btn, "EXIT");
-    lv_obj_center(label_exit_btn);
 
     lv_amin_start(wifi_button, lv_obj_get_x(wifi_button), 65,
                   1, 200, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
@@ -168,16 +164,16 @@ static void wifi_function_list(lv_obj_t *win) {
                   1, 300, 100, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(wifi_conn_button, 70, -15,
-                  1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
-
-    lv_amin_start(wifi_ap_ota_btn, 70, -15,
                   1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
+    lv_amin_start(wifi_ap_ota_btn, 70, -15,
+                  1, 700, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+
     lv_amin_start(wifi_sta_ota_btn, -134, -15,
-                  1, 600, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+                  1, 900, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     lv_amin_start(wifi_exit_button, -134, -15,
-                  1, 700, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+                  1, 1100, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
 }
 
@@ -218,35 +214,6 @@ static void add_wifi_scan_list(void) {
     lv_timer_set_repeat_count(conn_wifi_timer, 1);
 }
 
-static void button_style_init(void) {
-    static lv_style_prop_t props[] = {
-            LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
-
-    static lv_style_transition_dsc_t transition_dsc_def;
-    static lv_style_transition_dsc_t transition_dsc_pr;
-
-    lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
-    lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
-
-    lv_style_init(&style_def);
-    lv_style_set_transition(&style_def, &transition_dsc_def);
-
-    lv_style_init(&style_pr);
-    lv_style_set_transform_width(&style_pr, 10);
-    lv_style_set_transform_height(&style_pr, -10);
-    lv_style_set_text_letter_space(&style_pr, 10);
-    lv_style_set_transition(&style_pr, &transition_dsc_pr);
-
-    lv_style_init(&style_fd);
-    lv_style_set_border_color(&style_fd, lv_color_make(127, 127, 127));
-
-    lv_style_init(&style_btn);
-    lv_style_set_radius(&style_btn, 8);
-    lv_style_set_border_width(&style_btn, 2);
-    lv_style_set_border_color(&style_btn, lv_color_make(127, 127, 127));
-    lv_style_set_bg_color(&style_btn, lv_color_white());
-}
-
 static void wifi_ui_create(lv_obj_t *win) {
     wifi_img_cont = lv_obj_create(win);
     lv_obj_set_scrollbar_mode(wifi_img_cont, LV_SCROLLBAR_MODE_OFF);
@@ -270,11 +237,11 @@ static void wifi_ui_create(lv_obj_t *win) {
 static void wifi_btn_create(lv_obj_t *win) {
     wifi_button = lv_btn_create(win);
     lv_obj_set_size(wifi_button, 65, 35);
-
-    lv_obj_add_style(wifi_button, &style_btn, LV_PART_MAIN);
-    lv_obj_add_style(wifi_button, &style_pr, LV_STATE_PRESSED);
-
-    lv_obj_add_style(wifi_button, &style_def, 0);
+    extern void button_style_create(lv_obj_t *obj);
+    button_style_create(wifi_button);
+    lv_obj_set_style_radius(wifi_button, 8, LV_STATE_DEFAULT);
+    lv_obj_set_style_border_width(wifi_button, 2, LV_STATE_DEFAULT);
+    lv_obj_set_style_border_color(wifi_button, lv_color_make(127, 127, 127), LV_STATE_DEFAULT);
     lv_obj_add_event_cb(wifi_button, button_event_cb, LV_EVENT_ALL, 0);
     lv_obj_align(wifi_button, LV_ALIGN_CENTER, 40, 0);
 
@@ -354,7 +321,6 @@ static void Setup() {
     lv_obj_move_foreground(appWindow);
 
     disconnect_icon_create(appWindow);
-    button_style_init();
     wifi_ui_create(appWindow);
     wifi_btn_create(appWindow);
     wifi_ip_label_create(appWindow);
@@ -368,6 +334,10 @@ static void Setup() {
  * @retval 无
  */
 static void Exit() {
+    if (anim_timeline) {
+        lv_anim_timeline_del(anim_timeline);
+        anim_timeline = nullptr;
+    }
     lv_obj_clean(appWindow);
 }
 

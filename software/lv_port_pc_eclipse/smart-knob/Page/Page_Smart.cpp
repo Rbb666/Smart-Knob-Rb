@@ -207,8 +207,6 @@ static void Exit() {
     if (scan_chart_timer)
         lv_timer_del(scan_chart_timer);
 
-    PageDelay(LV_ANIM_TIME_DEFAULT);
-
     lv_obj_clean(appWindow);
 }
 
