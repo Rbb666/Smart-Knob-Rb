@@ -8,6 +8,7 @@ extern "C"
 {
 LV_IMG_DECLARE(IMG_Bedroom) ;
 LV_IMG_DECLARE(IMG_Livingrm) ;
+LV_IMG_DECLARE(IMG_Swback) ;
 }
 
 typedef struct {
@@ -25,10 +26,9 @@ typedef struct {
 static Panel_TypeDef Panel_Grp[] = {
         PANEL_DEF(Bedroom, "Bed room"),
         PANEL_DEF(Livingrm, "living room"),
+        PANEL_DEF(Swback, "Exit"),
 };
 
-static lv_style_t btn_style;
-static lv_style_t style_pr;
 static lv_obj_t *contTemp;
 static lv_obj_t *labelTime;
 static lv_obj_t *panel;
@@ -53,18 +53,26 @@ static void button_callback(lv_event_t *e) {
     if (code == LV_EVENT_PRESSED) {
         static bool btn_flg = false;
 
-        if (btn == button[0] && btn_flg == false) {
+        if (btn == button[0] && !btn_flg) {
             lv_obj_set_style_bg_color(button[0], lv_palette_main(LV_PALETTE_GREY), 0);
             btn_flg = !btn_flg;
-        } else if (btn == button[0] && btn_flg == true) {
+        } else if (btn == button[0] && btn_flg) {
             lv_obj_set_style_bg_color(button[0], lv_color_white(), 0);
             btn_flg = !btn_flg;
         }
-        if (btn == button[1] && btn_flg == false) {
+        if (btn == button[1] && !btn_flg) {
             lv_obj_set_style_bg_color(button[1], lv_palette_main(LV_PALETTE_GREY), 0);
             btn_flg = !btn_flg;
-        } else if (btn == button[1] && btn_flg == true) {
+        } else if (btn == button[1] && btn_flg) {
             lv_obj_set_style_bg_color(button[1], lv_color_white(), 0);
+            btn_flg = !btn_flg;
+        }
+        if (btn == button[2] && !btn_flg) {
+            lv_obj_set_style_bg_color(button[2], lv_palette_main(LV_PALETTE_GREY), 0);
+            btn_flg = !btn_flg;
+            Page->Pop();
+        } else if (btn == button[2] && btn_flg) {
+            lv_obj_set_style_bg_color(button[2], lv_color_white(), 0);
             btn_flg = !btn_flg;
         }
     }
@@ -92,47 +100,6 @@ static void labelTime_Create(void) {
     lv_obj_set_style_text_font(labelTime, &HandGotn_20, 0);
     lv_label_set_text(labelTime, "Time-12:59");
     lv_obj_align(labelTime, LV_ALIGN_OUT_RIGHT_MID, 0, 0);
-}
-
-static void btn_style_create(void) {
-    lv_style_init(&btn_style);
-
-    lv_style_set_radius(&btn_style, LV_RADIUS_CIRCLE);
-    lv_style_set_bg_opa(&btn_style, LV_OPA_70);
-    lv_style_set_bg_color(&btn_style, lv_color_white());
-    lv_style_set_border_color(&btn_style, lv_color_make(251, 153, 28));
-    lv_style_set_border_width(&btn_style, 1);
-    // lv_style_set_bg_grad_color(&btn_style, lv_palette_darken(LV_PALETTE_GREY, 2));
-    // lv_style_set_bg_grad_dir(&btn_style, LV_GRAD_DIR_VER);
-
-    lv_style_set_shadow_width(&btn_style, 5);
-    lv_style_set_shadow_color(&btn_style, lv_palette_main(LV_PALETTE_GREY));
-    lv_style_set_shadow_ofs_y(&btn_style, 5);
-
-    lv_style_set_outline_opa(&btn_style, LV_OPA_COVER);
-    lv_style_set_outline_color(&btn_style, lv_color_make(251, 153, 28));
-
-    lv_style_set_text_color(&btn_style, lv_color_white());
-    lv_style_set_pad_all(&btn_style, 10);
-
-    /*Init the pressed btn_style*/
-    lv_style_init(&style_pr);
-
-    /*Ad a large outline when pressed*/
-    lv_style_set_outline_width(&style_pr, 10);
-    lv_style_set_outline_opa(&style_pr, LV_OPA_TRANSP);
-
-    lv_style_set_translate_y(&style_pr, 2);
-    lv_style_set_shadow_ofs_y(&style_pr, 2);
-    lv_style_set_bg_color(&style_pr, lv_palette_darken(LV_PALETTE_GREY, 2));
-    lv_style_set_bg_grad_color(&style_pr, lv_palette_darken(LV_PALETTE_GREY, 4));
-
-    /*Add a transition to the the outline*/
-    static lv_style_transition_dsc_t trans;
-    static lv_style_prop_t props[] = {LV_STYLE_OUTLINE_WIDTH, LV_STYLE_OUTLINE_OPA, LV_STYLE_PROP_INV};
-    lv_style_transition_dsc_init(&trans, props, lv_anim_path_linear, 500, 0, NULL);
-
-    lv_style_set_transition(&style_pr, &trans);
 }
 
 static void anim_size_cb(_lv_obj_t *var, int32_t v) {
@@ -172,8 +139,8 @@ static void button_create(lv_obj_t *parent, uint8_t panel_num) {
     lv_obj_set_size(button[panel_num], 20, 20);
 
     lv_obj_remove_style_all(button[panel_num]);
-    lv_obj_add_style(button[panel_num], &btn_style, 0);
-    lv_obj_add_style(button[panel_num], &style_pr, LV_STATE_PRESSED);
+    extern void button_style_create(lv_obj_t *obj);
+    button_style_create(button[panel_num]);
     lv_obj_set_style_radius(button[panel_num], LV_RADIUS_CIRCLE, LV_STATE_DEFAULT);
     lv_obj_add_flag(button[panel_num], LV_OBJ_FLAG_CHECKABLE);
     lv_obj_align(button[panel_num], LV_ALIGN_CENTER, 0, 0);
@@ -233,7 +200,6 @@ static void Setup() {
     lv_obj_move_foreground(appWindow);
     ContTime_Create(appWindow);
     labelTime_Create();
-    btn_style_create();
     sw_meter_create(appWindow);
 
     // timer = lv_timer_create(onTimer, 100, NULL);
@@ -251,6 +217,7 @@ static void Exit() {
     lv_amin_start(panel, lv_obj_get_y(panel), 170,
                   1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
+    PageDelay(500);
     lv_obj_clean(appWindow);
 }
 

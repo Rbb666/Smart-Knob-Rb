@@ -26,6 +26,8 @@ static void onTimer(lv_timer_t *timer) {
     if (timer == timer_float) {
         lv_amin_start(scroll_cont, lv_obj_get_y(scroll_cont), 140,
                       1, 300, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+        lv_obj_del_delayed(scroll_cont, 200);
+        scroll_cont = nullptr;
     }
 }
 
@@ -136,10 +138,7 @@ static void Music_btn_create(lv_obj_t *win) {
     exit_btn = lv_btn_create(win);
     lv_obj_set_size(exit_btn, 45, 45);
     lv_obj_align(exit_btn, LV_ALIGN_CENTER, 0, 0);
-    button_style_create(exit_btn);
-    lv_obj_set_style_bg_color(exit_btn, lv_color_white(), LV_STATE_DEFAULT);
-
-    lv_obj_set_style_radius(exit_btn, 35, LV_STATE_DEFAULT);
+    lv_obj_set_style_opa(exit_btn, LV_OPA_TRANSP, 0);
     lv_obj_add_event_cb(exit_btn, button_callback, LV_EVENT_ALL, 0);
 }
 
@@ -150,7 +149,6 @@ static void Music_view_create(lv_obj_t *win) {
 
     img_bg = lv_img_create(win);
     lv_img_set_src(img_bg, &IMG_Water_BG);
-    lv_obj_set_style_radius(img_bg, LV_RADIUS_CIRCLE, LV_STATE_DEFAULT);
     lv_obj_align(img_bg, LV_ALIGN_CENTER, 0, 0);
 }
 
@@ -226,27 +224,27 @@ static void Setup() {
  * @retval 无
  */
 static void Exit() {
-    lv_amin_start(exit_btn,
-                  lv_obj_get_x(exit_btn), 120,
-                  0,
-                  100,
-                  0,
-                  (lv_anim_exec_xcb_t) lv_obj_set_x,
-                  lv_anim_path_bounce);
-
     lv_amin_start(indic,
                   100, 0,
                   1,
-                  200,
+                  400,
                   0,
                   (lv_anim_exec_xcb_t) set_value,
+                  lv_anim_path_bounce);
+
+    lv_amin_start(exit_btn,
+                  lv_obj_get_x(exit_btn), 120,
+                  0,
+                  200,
+                  0,
+                  (lv_anim_exec_xcb_t) lv_obj_set_x,
                   lv_anim_path_bounce);
 
     lv_amin_start(pause_btn,
                   lv_obj_get_y(pause_btn), -40,
                   0,
                   300,
-                  100,
+                  0,
                   (lv_anim_exec_xcb_t) lv_obj_set_y,
                   lv_anim_path_bounce);
 
@@ -254,7 +252,7 @@ static void Exit() {
                   lv_obj_get_y(play_btn), 40,
                   0,
                   400,
-                  200,
+                  0,
                   (lv_anim_exec_xcb_t) lv_obj_set_y,
                   lv_anim_path_bounce);
 
@@ -262,19 +260,19 @@ static void Exit() {
                   lv_obj_get_x(prev_btn), -40,
                   0,
                   500,
-                  200,
+                  0,
                   (lv_anim_exec_xcb_t) lv_obj_set_x,
                   lv_anim_path_bounce);
 
     lv_amin_start(next_btn,
                   lv_obj_get_x(next_btn), 40,
                   0,
-                  500,
-                  200,
+                  600,
+                  0,
                   (lv_anim_exec_xcb_t) lv_obj_set_x,
                   lv_anim_path_bounce);
 
-    PageDelay(LV_ANIM_TIME_DEFAULT);
+    PageDelay(600);
 
     lv_obj_clean(appWindow);
 }

@@ -72,8 +72,8 @@ static void Setup() {
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
     StartupView_Create(appWindow);
-    timer1 = lv_timer_create(onTimer, 2000, NULL);
-    timer2 = lv_timer_create(onTimer, 2500, NULL);
+    timer1 = lv_timer_create(onTimer, 1500, NULL);
+    timer2 = lv_timer_create(onTimer, 2000, NULL);
     lv_timer_set_repeat_count(timer1, 1);
     lv_timer_set_repeat_count(timer2, 1);
 }
@@ -83,6 +83,7 @@ static void Exit() {
         lv_anim_timeline_del(anim_timeline);
         anim_timeline = nullptr;
     }
+    PageDelay(LV_ANIM_TIME_DEFAULT);
     lv_obj_clean(appWindow);
 }
 

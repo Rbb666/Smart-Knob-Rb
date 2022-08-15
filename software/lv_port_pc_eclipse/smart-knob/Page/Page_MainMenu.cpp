@@ -248,12 +248,13 @@ void setup_main_page_menu(lv_obj_t *page) {
  */
 static void Setup() {
     static lv_mem_monitor_t mem_monitor;
-    std::cout << "free_size:" << mem_monitor.free_size << std::endl;
-    lv_mem_monitor(&mem_monitor);
 
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
     setup_main_page_menu(appWindow);
+
+    std::cout << "free_size:" << mem_monitor.free_size << std::endl;
+    lv_mem_monitor(&mem_monitor);
 }
 
 /**

@@ -10,8 +10,6 @@ PAGE_EXPORT(Smart);
 static lv_obj_t *contKPaTemp;
 /*返回图片*/
 static lv_obj_t *back_img;
-/*当前页面公共的标签样式*/
-static lv_style_t style_label_public;
 /*湿度值标签*/
 static lv_obj_t *labelHmi;
 /*温度值标签*/
@@ -42,15 +40,11 @@ static void back_main_menu_cb(lv_event_t *e) {
 static void Back_Img_Create(lv_obj_t *win) {
     LV_IMG_DECLARE(IMG_Back);
 
-    static lv_style_t style_btn;
-    lv_style_init(&style_btn);
-    lv_style_set_opa(&style_btn, LV_OPA_TRANSP);
-
     /*Create button*/
     lv_obj_t *btn = lv_btn_create(win);
     lv_obj_set_size(btn, 28, 28);
     lv_obj_align(btn, LV_ALIGN_TOP_MID, 0, 0);
-    lv_obj_add_style(btn, &style_btn, LV_PART_MAIN);
+    lv_obj_set_style_opa(btn, LV_OPA_TRANSP, 0);
 
     /*Create image*/
     back_img = lv_img_create(win);
@@ -149,10 +143,17 @@ static void Page_scan_chart_create(lv_obj_t *win) {
 
     scan_chart_timer = lv_timer_create(page_scan_chart_timer_event, scan_turn_time, NULL);
 
-    lv_amin_start(chart_fre_label, lv_obj_get_width(chart_fre_label), 10, 1, 300, 300, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(contKPaTemp, -70, -45, 1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(rx_quality_chart, -60, -15, 1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(back_img, -28, -10, 1, 1200, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(chart_fre_label, lv_obj_get_width(chart_fre_label), 10, 1, 300, 300,
+                  (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(contKPaTemp, -70, -45,
+                  1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(rx_quality_chart, -60, -15,
+                  1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(back_img, -28, -10,
+                  1, 1200, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**
@@ -184,7 +185,7 @@ static void Exit() {
                   (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(contKPaTemp,
-                  lv_obj_get_y(contKPaTemp), -70,
+                  lv_obj_get_y(contKPaTemp), -160,
                   1,
                   300,
                   100,
@@ -194,19 +195,20 @@ static void Exit() {
                   lv_obj_get_y(rx_quality_chart), 60,
                   1,
                   500,
-                  200,
+                  100,
                   (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(back_img,
                   lv_obj_get_y(back_img), -28,
                   1,
-                  1200,
-                  300,
+                  800,
+                  100,
                   (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     if (scan_chart_timer)
         lv_timer_del(scan_chart_timer);
 
+    PageDelay(400);
     lv_obj_clean(appWindow);
 }
 

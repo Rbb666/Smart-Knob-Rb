@@ -10,9 +10,8 @@ lv_obj_t *AppWindow_GetObj(uint8_t pageID) {
 void AppWindow_Create(lv_obj_t *par) {
     static lv_style_t style;
     lv_style_init(&style);
-    lv_style_set_radius(&style, 0);
-    lv_style_set_border_width(&style, 0);
-    // lv_style_set_bg_grad_color(&style, lv_color_black());
+    lv_style_set_border_width(&style, 1);
+    lv_style_set_border_color(&style, lv_color_black());
     lv_style_set_radius(&style, LV_RADIUS_CIRCLE);
     lv_style_set_bg_color(&style, lv_color_black());
 
