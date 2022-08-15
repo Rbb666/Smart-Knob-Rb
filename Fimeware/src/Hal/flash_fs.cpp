@@ -72,9 +72,13 @@ void FlashFS::listDir(const char *dirname, uint8_t levels)
 uint16_t FlashFS::readFile(const char *path, uint8_t *info)
 {
     Serial.printf("Reading file: %s\r\n", path);
+    uint16_t ret_len = 0;
+    bool exist = SPIFFS.exists(path);
+
+    if (!exist)
+        return ret_len;
 
     File file = SPIFFS.open(path);
-    uint16_t ret_len = 0;
     if (!file || file.isDirectory())
     {
         Serial.println("- failed to open file for reading");

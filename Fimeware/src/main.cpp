@@ -35,11 +35,6 @@ void setup()
   // Serial.printf("  /        \  Y Y  \/ __ \|  | \/|  |   /_____/ |    |  \|   |  (  <_> ) \_\  \  \n");
   // Serial.printf(" /_________/__|_|  (____  /__|   |__|           |____|__ \___|__/\____/|_____/   \n");
 
-  Serial.printf("Total heap: %d\n", ESP.getHeapSize());
-  Serial.printf("Free heap: %d\n", ESP.getFreeHeap());
-  Serial.printf("Total PSRAM: %d\n", ESP.getPsramSize());
-  Serial.printf("Free PSRAM: %d\n", ESP.getFreePsram());
-
   delay(500);
   while (!SPIFFS.begin())
   {

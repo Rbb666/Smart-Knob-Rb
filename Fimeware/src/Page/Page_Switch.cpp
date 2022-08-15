@@ -95,7 +95,7 @@ static void ContTime_Create(lv_obj_t *win)
     lv_obj_set_style_border_width(contTemp, 2, 0);
     lv_obj_set_style_border_color(contTemp, lv_color_white(), 0);
     lv_obj_set_style_radius(contTemp, 10, 0);
-    lv_amin_start(contTemp, -135, 10, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(contTemp, -50, 10, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 static void labelTime_Create(void)
@@ -241,7 +241,7 @@ static void sw_meter_create(lv_obj_t *win)
 
     lv_obj_update_snap(panel, LV_ANIM_ON);
 
-    lv_amin_start(panel, 170, -5, 1, 400, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(panel, 135, -5, 1, 400, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**
@@ -274,6 +274,7 @@ static void Exit()
     lv_amin_start(panel, lv_obj_get_y(panel), 170,
                   1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
+    PageDelay(LV_ANIM_TIME_DEFAULT);
     lv_obj_clean(appWindow);
     update_motor_config(1);
     update_page_status(CHECKOUT_PAGE);

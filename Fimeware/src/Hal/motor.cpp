@@ -260,7 +260,6 @@ void Task_foc(void *pvParameters)
             last_publish = millis();
         }
 
-        // Serial.println(motor_config.position);
         vTaskDelay(1);
     }
 }

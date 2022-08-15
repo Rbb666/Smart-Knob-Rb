@@ -22,6 +22,7 @@ static lv_timer_t *timer_float = NULL;
 static lv_timer_t *timer_display = NULL;
 
 static void Music_meter_create(lv_obj_t *win);
+
 static void Music_btn_create(lv_obj_t *win);
 
 extern Ble_Interface ble_dev;
@@ -30,8 +31,8 @@ static void onTimer(lv_timer_t *timer)
 {
     if (timer == timer_float)
     {
-        lv_amin_start(scroll_cont, lv_obj_get_y(scroll_cont),
-                      140, 1, 300, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+        lv_amin_start(scroll_cont, lv_obj_get_y(scroll_cont), 140,
+                      1, 300, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
     }
 }
 
@@ -120,56 +121,54 @@ static void Next_Img_Create(void)
 
 static void Music_btn_create(lv_obj_t *win)
 {
-    static lv_style_prop_t props[] = {
-        LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
-
-    static lv_style_transition_dsc_t transition_dsc_def;
-    static lv_style_transition_dsc_t transition_dsc_pr;
-
-    lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
-    lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
-
-    static lv_style_t style_def;
-    lv_style_init(&style_def);
-    lv_style_set_bg_opa(&style_def, LV_OPA_TRANSP);
-    lv_style_set_transition(&style_def, &transition_dsc_def);
-
     pause_btn = lv_btn_create(win);
     lv_obj_set_size(pause_btn, 30, 30);
     lv_obj_align(pause_btn, LV_ALIGN_TOP_MID, 0, 0);
-    lv_obj_add_style(pause_btn, &style_def, 0);
+    extern void button_style_create(lv_obj_t * obj);
+    button_style_create(pause_btn);
+    lv_obj_set_style_bg_color(pause_btn, lv_color_white(), LV_STATE_DEFAULT);
+
     lv_obj_add_event_cb(pause_btn, button_callback, LV_EVENT_ALL, 0);
     Pause_Img_Create();
-    lv_amin_start(pause_btn, -40, 42, 1, 200, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(pause_btn, -30, 42, 1, 200, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     play_btn = lv_btn_create(win);
     lv_obj_set_size(play_btn, 30, 30);
     lv_obj_align(play_btn, LV_ALIGN_BOTTOM_MID, 0, 0);
-    lv_obj_add_style(play_btn, &style_def, 0);
+    button_style_create(play_btn);
+    lv_obj_set_style_bg_color(play_btn, lv_color_white(), LV_STATE_DEFAULT);
+
     lv_obj_add_event_cb(play_btn, button_callback, LV_EVENT_ALL, 0);
     Play_Img_Create();
-    lv_amin_start(play_btn, 40, -42, 1, 400, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(play_btn, 30, -42, 1, 400, 200, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     next_btn = lv_btn_create(win);
     lv_obj_set_size(next_btn, 30, 30);
     lv_obj_align(next_btn, LV_ALIGN_RIGHT_MID, 0, 0);
-    lv_obj_add_style(next_btn, &style_def, 0);
+    button_style_create(next_btn);
+    lv_obj_set_style_bg_color(next_btn, lv_color_white(), LV_STATE_DEFAULT);
+
     lv_obj_add_event_cb(next_btn, button_callback, LV_EVENT_ALL, 0);
     Next_Img_Create();
-    lv_amin_start(next_btn, 40, -42, 1, 600, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(next_btn, 30, -42, 1, 600, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
 
     prev_btn = lv_btn_create(win);
     lv_obj_set_size(prev_btn, 30, 30);
     lv_obj_align(prev_btn, LV_ALIGN_LEFT_MID, 0, 0);
-    lv_obj_add_style(prev_btn, &style_def, 0);
+    button_style_create(prev_btn);
+    lv_obj_set_style_bg_color(prev_btn, lv_color_white(), LV_STATE_DEFAULT);
+
     lv_obj_add_event_cb(prev_btn, button_callback, LV_EVENT_ALL, 0);
     Prev_Img_Create();
-    lv_amin_start(prev_btn, -40, 42, 1, 800, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(prev_btn, -30, 42, 1, 800, 200, (lv_anim_exec_xcb_t)lv_obj_set_x, lv_anim_path_bounce);
 
     exit_btn = lv_btn_create(win);
     lv_obj_set_size(exit_btn, 45, 45);
     lv_obj_align(exit_btn, LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_style(exit_btn, &style_def, 0);
+    button_style_create(exit_btn);
+    button_style_create(exit_btn);
+    lv_obj_set_style_bg_opa(exit_btn, 0, LV_STATE_DEFAULT);
+
     lv_obj_set_style_radius(exit_btn, 35, LV_STATE_DEFAULT);
     lv_obj_add_event_cb(exit_btn, button_callback, LV_EVENT_ALL, 0);
 }
@@ -182,6 +181,7 @@ static void Music_view_create(lv_obj_t *win)
 
     img_bg = lv_img_create(win);
     lv_img_set_src(img_bg, &IMG_Water_BG);
+    lv_obj_set_style_radius(img_bg, LV_RADIUS_CIRCLE, LV_STATE_DEFAULT);
     lv_obj_align(img_bg, LV_ALIGN_CENTER, 0, 0);
 }
 
@@ -200,7 +200,7 @@ static void Gif_create(lv_obj_t *win)
     lv_gif_set_src(gif_img, &music_gif);
     lv_obj_align(gif_img, LV_ALIGN_CENTER, 0, 0);
 
-    lv_amin_start(scroll_cont, 140, -10, 1, 500, 100, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(scroll_cont, 120, -10, 1, 500, 100, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 static void set_value(lv_meter_indicator_t *indic, int32_t v)

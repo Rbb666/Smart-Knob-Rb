@@ -95,14 +95,10 @@ static void ContKPaTemp_Create(lv_obj_t *win) {
     lv_obj_align(contKPaTemp, LV_ALIGN_CENTER, 0, -30);
     lv_obj_set_opa_scale(contKPaTemp, LV_OPA_TRANSP);
     lv_obj_set_scrollbar_mode(contKPaTemp, LV_SCROLLBAR_MODE_OFF);
-
-    lv_style_t style_cont;
-    lv_style_init(&style_cont);
-    lv_style_set_border_opa(&style_cont, LV_OPA_COVER);
-    lv_style_set_border_width(&style_cont, 2);
-    lv_style_set_border_color(&style_cont, lv_palette_main(LV_PALETTE_RED));
-    lv_style_set_radius(&style_cont, 10);
-    lv_obj_add_style(contKPaTemp, &style_cont, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(contKPaTemp, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_color(contKPaTemp, lv_palette_main(LV_PALETTE_RED), 0);
+    lv_obj_set_style_border_width(contKPaTemp, 2, 0);
+    lv_obj_set_style_radius(contKPaTemp, 10, 0);
 }
 
 static void Page_scan_chart_create(lv_obj_t *win) {

@@ -53,15 +53,11 @@ static void Back_Img_Create(lv_obj_t *win)
 {
     LV_IMG_DECLARE(IMG_Back);
 
-    static lv_style_t style_btn;
-    lv_style_init(&style_btn);
-    lv_style_set_opa(&style_btn, LV_OPA_TRANSP);
-
     /*Create button*/
     lv_obj_t *btn = lv_btn_create(win);
     lv_obj_set_size(btn, 28, 28);
     lv_obj_align(btn, LV_ALIGN_TOP_MID, 0, 0);
-    lv_obj_add_style(btn, &style_btn, LV_PART_MAIN);
+    lv_obj_set_style_opa(btn, LV_OPA_TRANSP, 0);
 
     /*Create image*/
     back_img = lv_img_create(win);
@@ -114,14 +110,10 @@ static void ContKPaTemp_Create(lv_obj_t *win)
     lv_obj_align(contKPaTemp, LV_ALIGN_CENTER, 0, -30);
     lv_obj_set_opa_scale(contKPaTemp, LV_OPA_TRANSP);
     lv_obj_set_scrollbar_mode(contKPaTemp, LV_SCROLLBAR_MODE_OFF);
-
-    lv_style_t style_cont;
-    lv_style_init(&style_cont);
-    lv_style_set_border_opa(&style_cont, LV_OPA_COVER);
-    lv_style_set_border_width(&style_cont, 2);
-    lv_style_set_border_color(&style_cont, lv_palette_main(LV_PALETTE_RED));
-    lv_style_set_radius(&style_cont, 10);
-    lv_obj_add_style(contKPaTemp, &style_cont, LV_PART_MAIN);
+    lv_obj_set_style_border_opa(contKPaTemp, LV_OPA_COVER, 0);
+    lv_obj_set_style_border_color(contKPaTemp, lv_palette_main(LV_PALETTE_RED), 0);
+    lv_obj_set_style_border_width(contKPaTemp, 2, 0);
+    lv_obj_set_style_radius(contKPaTemp, 10, 0);
 }
 
 static void Page_scan_chart_create(lv_obj_t *win)
@@ -163,10 +155,10 @@ static void Page_scan_chart_create(lv_obj_t *win)
 
     scan_chart_timer = lv_timer_create(page_scan_chart_timer_event, scan_turn_time, NULL);
 
-    lv_amin_start(chart_fre_label, 200, 10, 1, 300, 300, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(chart_fre_label, lv_obj_get_width(chart_fre_label), 10, 1, 300, 300, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
     lv_amin_start(contKPaTemp, -70, -45, 1, 400, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
     lv_amin_start(rx_quality_chart, -60, -15, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(back_img, -80, -10, 1, 1200, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(back_img, -28, -10, 1, 1200, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**
@@ -195,7 +187,7 @@ static void Setup()
 static void Exit()
 {
     lv_amin_start(chart_fre_label,
-                  lv_obj_get_y(chart_fre_label), 120,
+                  lv_obj_get_y(chart_fre_label), lv_obj_get_width(chart_fre_label),
                   1,
                   300,
                   0,
@@ -216,7 +208,7 @@ static void Exit()
                   (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(back_img,
-                  lv_obj_get_y(back_img), -80,
+                  lv_obj_get_y(back_img), -28,
                   1,
                   1200,
                   300,

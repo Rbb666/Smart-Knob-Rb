@@ -11,7 +11,7 @@ IPAddress dns(192, 168, 4, 1);      // Set your network DNS usually your Router 
 
 WebServer server(80);
 
-Wifi_Task::Wifi_Task(const uint8_t task_core) : Task("Wifi", 3 * 1024, 1, task_core) {}
+Wifi_Task::Wifi_Task(const uint8_t task_core) : Task("Wifi", 4 * 1024, 1, task_core) {}
 
 Wifi_Task::~Wifi_Task(void) {}
 
@@ -31,9 +31,8 @@ void Wifi_Task::run(void)
                                     wifi_timeout_callback);
 
     wifi_conn_millis = 0;
-    Serial.println("Starting Wifi work!");
 
-    for (;;)
+    while (1)
     {
         FSM_Task();
         vTaskDelay(100);
@@ -117,17 +116,20 @@ void Wifi_Task::FSM_Task(void)
     case TASK_IDLE:
     {
         server.handleClient();
+        break;
     }
-    break;
     case TASK_AP_REQUEST:
     {
         wifi_status = WIFI_AP_IDLE;
 
         boolean wifi_state = wifi_event(APP_MESSAGE_WIFI_AP);
         if (wifi_state)
+        {
             task_state = TASK_AP_CONNECTED;
+            Serial.println("[task-state]:TASK_AP_CONNECTED");
+        }
+        break;
     }
-    break;
     case TASK_AP_CONNECTED:
     {
         Serial.println("Start AP WebServer");
@@ -152,8 +154,9 @@ void Wifi_Task::FSM_Task(void)
         server.begin();
         ElegantOTA.begin(&server);
         task_state = TASK_IDLE;
+        Serial.println("[task-state]:TASK_IDLE");
+        break;
     }
-    break;
     case TASK_STA_REQUEST:
     {
         wifi_status = WIFI_STA_IDLE; // 设置wifi为idel模式
@@ -163,8 +166,8 @@ void Wifi_Task::FSM_Task(void)
             task_state = TASK_STA_CONNECTED;
         else
             task_state = TASK_DISCONNECT;
+        break;
     }
-    break;
     case TASK_STA_CONNECTED:
     {
         Serial.println("Start STA WebServer");
@@ -188,13 +191,14 @@ void Wifi_Task::FSM_Task(void)
 
         // 开启超时定时器
         xTimerStart(wifi_timeout_tmr, 0);
+        Serial.println("[task-state]:TASK_IDLE");
+        break;
     }
-    break;
     case TASK_DISCONNECT:
     {
         static uint8_t recon_count = 0;
         recon_count++;
-        if (recon_count < 15)
+        if (recon_count < 25)
         {
             Serial.printf("wifi connect fail, ready to reconnect[%d]...\n\n", recon_count);
             vTaskDelay(500);
@@ -208,16 +212,16 @@ void Wifi_Task::FSM_Task(void)
             task_state = TASK_TRASH;
             recon_count = 0;
         }
+        break;
     }
-    break;
     // AP 配网成功模式
     case TASK_NET_CONNECTED:
     {
         // 保存配置信息
         write_config(&sys_cfg);
         task_state = TASK_IDLE;
+        break;
     }
-    break;
     case TASK_TRASH:
         break;
     default:
@@ -279,7 +283,7 @@ boolean Wifi_Task::end_conn_wifi(void)
 {
     if (WL_CONNECTED != WiFi.status())
     {
-        if (doDelayMillisTime(5000, &wifi_conn_millis))
+        if (doDelayMillisTime(10000, &wifi_conn_millis))
         {
             Serial.println(F("\nWiFi connect error.\n"));
         }
@@ -356,20 +360,27 @@ boolean Wifi_Task::wifi_event(APP_MESSAGE_TYPE type)
             // 在STA模式下 并且还没连接上wifi
             return false;
         }
+        break;
     }
-    break;
     case APP_MESSAGE_WIFI_AP:
     {
         boolean ap_state;
         if (wifi_status == WIFI_AP_IDLE)
         {
             ap_state = open_ap(AP_SSID);
-            wifi_status = WIFI_AP_READY;
+            if (ap_state)
+            {
+                wifi_status = WIFI_AP_READY;
+            }
+            else
+            {
+                Serial.println("AP-Mode-Error");
+            }
         }
 
         m_preWifiReqMillis = millis();
+        break;
     }
-    break;
     case APP_MESSAGE_WIFI_ALIVE:
     {
         // wifi 心跳
@@ -382,8 +393,8 @@ boolean Wifi_Task::wifi_event(APP_MESSAGE_TYPE type)
     {
         close_wifi();
         wifi_status = WIFI_STA_IDLE;
+        break;
     }
-    break;
     default:
         break;
     }

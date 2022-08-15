@@ -112,8 +112,6 @@ void Task_lvgl(void *pvParameters)
     lv_group_set_default(super_knob_ui.defult_group);
     lv_indev_set_group(super_knob_ui.indev_encoder, super_knob_ui.defult_group);
 
-    update_page_status(0);
-
     /*APP窗口初始化*/
     AppWindow_Create(lv_scr_act());
 
@@ -121,6 +119,8 @@ void Task_lvgl(void *pvParameters)
 
     /*背光渐亮*/
     Backlight_SetGradual(500, 5000);
+
+    update_page_status(0);
 
     for (;;)
     {
