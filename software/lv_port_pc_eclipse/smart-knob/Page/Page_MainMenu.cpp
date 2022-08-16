@@ -38,7 +38,7 @@ static AppICON_TypeDef AppICON_Grp[] = {
         APP_DEF(OTA, "update esp32"),
 };
 
-static lv_obj_t *page_cont = NULL;
+static lv_obj_t *page_cont;
 static lv_obj_t *scroll_cont[__Sizeof(AppICON_Grp)];
 static lv_obj_t *cont_btn[__Sizeof(AppICON_Grp)];
 static lv_obj_t *btn_text[__Sizeof(AppICON_Grp)];

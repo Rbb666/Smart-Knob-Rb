@@ -69,7 +69,8 @@ static void Back_Img_Create(lv_obj_t *win) {
 
     lv_obj_add_event_cb(btn, back_main_menu_cb, LV_EVENT_ALL, 0);
 
-    lv_amin_start(back_img, -80, -10, 1, 1200, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(back_img, -80, -10,
+                  1, 1200, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
 static void set_lmeterSec_value(lv_meter_indicator_t *indic, int32_t v) {
@@ -97,7 +98,8 @@ static void LmeterSec_Create(lv_obj_t *win) {
     indic2 = lv_meter_add_arc(lmeterSec, scale_min, 10, lv_palette_main(LV_PALETTE_RED), -15);
     indic3 = lv_meter_add_arc(lmeterSec, scale_min, 5, lv_palette_main(LV_PALETTE_GREEN), -25);
 
-    lv_amin_start(lmeterSec, -80, 0, 1, 300, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(lmeterSec, -80, 0,
+                  1, 300, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**
@@ -132,7 +134,7 @@ static void Setup(void) {
     LabelTime_Create();
     Back_Img_Create(appWindow);
 
-    LabelUpdate_timer = lv_timer_create(SW_LabelUpdate, 100, NULL);
+    LabelUpdate_timer = lv_timer_create(SW_LabelUpdate, 100, nullptr);
 }
 
 /**

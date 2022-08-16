@@ -144,7 +144,7 @@ static void button_create(lv_obj_t *parent, uint8_t panel_num) {
     lv_obj_set_style_radius(button[panel_num], LV_RADIUS_CIRCLE, LV_STATE_DEFAULT);
     lv_obj_add_flag(button[panel_num], LV_OBJ_FLAG_CHECKABLE);
     lv_obj_align(button[panel_num], LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_event_cb(button[panel_num], button_callback, LV_EVENT_ALL, NULL);
+    lv_obj_add_event_cb(button[panel_num], button_callback, LV_EVENT_ALL, nullptr);
 
     LV_IMG_DECLARE(IMG_SW);
     /*Create image*/
@@ -187,7 +187,8 @@ static void sw_meter_create(lv_obj_t *win) {
 
     lv_obj_update_snap(panel, LV_ANIM_ON);
 
-    lv_amin_start(panel, 135, -5, 1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(panel, 135, -5,
+                  1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**

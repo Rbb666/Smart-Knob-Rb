@@ -32,8 +32,8 @@ void DisplayPage_Init(void) {
     PAGE_IMPORT(Window);     // win界面
     PAGE_IMPORT(Music);      // 音乐界面
     PAGE_IMPORT(OTA);        // OTA界面
-    page.Push(PAGE_StartUp); // 进入第一个页面
-    lv_obj_add_event_cb(lv_scr_act(), page_gestute_event_cb, LV_EVENT_ALL, NULL);
+    page.Push(PAGE_StartUp); // 进入第一个页面S
+    lv_obj_add_event_cb(lv_scr_act(), page_gestute_event_cb, LV_EVENT_ALL, nullptr);
 }
 
 /**

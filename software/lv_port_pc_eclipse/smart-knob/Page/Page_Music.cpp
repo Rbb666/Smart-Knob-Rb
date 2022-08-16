@@ -14,9 +14,10 @@ static lv_obj_t *next_btn;
 static lv_obj_t *play_btn;
 static lv_obj_t *pause_btn;
 static lv_obj_t *exit_btn;
-static lv_meter_indicator_t *indic = NULL;
-static lv_timer_t *timer_float = NULL;
-static lv_timer_t *timer_display = NULL;
+
+static lv_meter_indicator_t *indic;
+static lv_timer_t *timer_float;
+static lv_timer_t *timer_display;
 
 static void Music_meter_create(lv_obj_t *win);
 
@@ -147,6 +148,7 @@ static void Music_btn_create(lv_obj_t *win) {
 }
 
 static void Music_view_create(lv_obj_t *win) {
+    lv_obj_set_style_bg_opa(win, LV_OPA_COVER, LV_STATE_DEFAULT);
     LV_IMG_DECLARE(IMG_Water_BG);
     // lv_obj_set_style_bg_color(win, lv_color_make(76, 15, 10), LV_STATE_DEFAULT);
     lv_obj_set_scrollbar_mode(win, LV_SCROLLBAR_MODE_OFF);
@@ -182,8 +184,8 @@ static void set_value(lv_meter_indicator_t *indic, int32_t v) {
 static void Music_meter_create(lv_obj_t *win) {
     lmeter = lv_meter_create(win);
     /*Remove the circle from the middle*/
-    lv_obj_remove_style(lmeter, NULL, LV_PART_ITEMS);
-    lv_obj_remove_style(lmeter, NULL, LV_PART_INDICATOR);
+    lv_obj_remove_style(lmeter, nullptr, LV_PART_ITEMS);
+    lv_obj_remove_style(lmeter, nullptr, LV_PART_INDICATOR);
     lv_obj_set_style_border_width(lmeter, 0, LV_STATE_DEFAULT);
     lv_obj_set_size(lmeter, 170, 170);
     lv_obj_set_opa_scale(lmeter, LV_OPA_TRANSP);

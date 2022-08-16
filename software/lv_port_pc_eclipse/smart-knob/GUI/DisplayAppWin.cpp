@@ -2,8 +2,7 @@
 
 static lv_obj_t *appWindow_Grp[PAGE_MAX];
 
-lv_obj_t *AppWindow_GetObj(uint8_t pageID)
-{
+lv_obj_t *AppWindow_GetObj(uint8_t pageID) {
     return (pageID < PAGE_MAX) ? appWindow_Grp[pageID] : NULL;
 }
 
