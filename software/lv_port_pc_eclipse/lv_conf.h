@@ -250,7 +250,7 @@
 
 /*1: Show the used memory and the memory fragmentation
  * Requires LV_MEM_CUSTOM = 0*/
-#define LV_USE_MEM_MONITOR 0
+#define LV_USE_MEM_MONITOR 1
 #if LV_USE_MEM_MONITOR
     #define LV_USE_MEM_MONITOR_POS LV_ALIGN_BOTTOM_LEFT
 #endif
@@ -684,7 +684,7 @@
 #define LV_USE_DEMO_STRESS      0
 
 /*Music player demo*/
-#define LV_USE_DEMO_MUSIC       0
+#define LV_USE_DEMO_MUSIC       1
 #if LV_USE_DEMO_MUSIC
 # define LV_DEMO_MUSIC_SQUARE       0
 # define LV_DEMO_MUSIC_LANDSCAPE    0
