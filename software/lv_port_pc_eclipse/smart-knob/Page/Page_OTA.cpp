@@ -36,7 +36,7 @@ static lv_anim_timeline_t *anim_timeline;
 
 static void wifi_function_btn_add(lv_obj_t *pObj);
 
-static void wifi_function_btn_remove(lv_obj_t *pObj);
+static void wifi_function_btn_remove(void);
 
 static void wifi_function_list(lv_obj_t *win);
 
@@ -75,12 +75,19 @@ static void button_event_cb(lv_event_t *e) {
             lv_obj_del(wifi_button);
             wifi_button = nullptr;
         } else if (btn == wifi_conn_button) {
+            /*先移除功能按键*/
+            wifi_function_btn_remove();
             wifi_scan_list(appWindow);
             add_wifi_scan_list();
         } else if (btn == wifi_ap_ota_btn) {
-
+            /*先移除功能按键*/
+            wifi_function_btn_remove();
+            show_info_connect_wifi(appWindow, "\nPlease connect\n"
+                                              "#000000 @rbb# and enter \n"
+                                              "  #000000 192.168.121.103#");
         } else if (btn == wifi_sta_ota_btn) {
-            lv_obj_clear_state(wifi_ap_ota_btn, LV_STATE_DISABLED); // 解除禁止状态
+//            lv_obj_clear_state(wifi_ap_ota_btn, LV_STATE_DISABLED); // 解除禁止状态
+
         } else if (btn == wifi_exit_button) {
             page.Pop();
         } else if (btn == back_btn) {
@@ -134,7 +141,7 @@ static void wifi_function_btn_add(lv_obj_t *win) {
     /*Create ota button*/
     wifi_ap_ota_btn = lv_btn_create(win);
     lv_obj_set_size(wifi_ap_ota_btn, 70, 25);
-    lv_obj_add_state(wifi_ap_ota_btn, LV_STATE_DISABLED); // 禁用点击
+//    lv_obj_add_state(wifi_ap_ota_btn, LV_STATE_DISABLED); // 禁用点击
 
     button_style_create(wifi_ap_ota_btn);
     lv_obj_set_style_bg_color(wifi_ap_ota_btn, lv_color_make(51, 51, 51), LV_STATE_DEFAULT);
@@ -283,8 +290,6 @@ static void wifi_scan_list(lv_obj_t *win) {
  * @retval 无
  */
 static void add_wifi_scan_list(void) {
-    /*先移除功能按键*/
-    wifi_function_btn_remove();
 
     for (int i = 0, duration = 100, ops_y = 0; i < 5; i++, duration += 100, ops_y += 30) {
         lv_obj_t *wifiname_list_btn = lv_list_add_btn(wifi_scan_cont, nullptr, wifi_ssid[i]);
