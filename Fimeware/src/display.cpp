@@ -29,8 +29,10 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
     uint32_t w = (area->x2 - area->x1 + 1);
     uint32_t h = (area->y2 - area->y1 + 1);
 
+    // tft.startWrite();
     tft.setSwapBytes(true);
     tft.pushImageDMA(area->x1, area->y1, w, h, (uint16_t *)&color_p->full);
+    // tft.endWrite();
 
     lv_disp_flush_ready(disp);
 }
@@ -78,8 +80,8 @@ void Task_lvgl(void *pvParameters)
 {
     (void)pvParameters;
 
-    lv_disp_buf1_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
-    lv_disp_buf2_p = heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    lv_disp_buf1_p = (lv_color_t *)heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
+    lv_disp_buf2_p = (lv_color_t *)heap_caps_malloc(COLOR_BUFFER * sizeof(lv_color_t), MALLOC_CAP_DMA);
 
     lv_init();
 

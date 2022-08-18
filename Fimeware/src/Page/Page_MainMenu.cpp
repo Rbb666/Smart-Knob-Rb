@@ -276,10 +276,6 @@ static void Setup()
     //获取从未使用过的最小内存
     Serial.printf("esp minm free heap size : %d  \n", esp_get_minimum_free_heap_size());
 
-    static lv_mem_monitor_t mem_monitor;
-    Serial.printf("free_size:%d\n", mem_monitor.free_size);
-    lv_mem_monitor(&mem_monitor);
-
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
     setup_main_page_menu(appWindow);

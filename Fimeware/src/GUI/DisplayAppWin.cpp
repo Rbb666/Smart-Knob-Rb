@@ -20,7 +20,6 @@ void AppWindow_Create(lv_obj_t *par)
     {
         lv_obj_t *obj = lv_obj_create(par);
         lv_obj_add_style(obj, &style, LV_PART_MAIN);
-        // lv_obj_set_style_radius(obj, LV_RADIUS_CIRCLE, 0);
         lv_obj_set_size(obj, lv_obj_get_width(par), lv_obj_get_height(par));
         lv_obj_align(obj, LV_ALIGN_CENTER, 0, 0);
 

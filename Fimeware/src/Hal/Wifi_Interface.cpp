@@ -11,7 +11,7 @@ IPAddress dns(192, 168, 4, 1);      // Set your network DNS usually your Router 
 
 WebServer server(80);
 
-Wifi_Task::Wifi_Task(const uint8_t task_core) : Task("Wifi", 4 * 1024, 1, task_core) {}
+Wifi_Task::Wifi_Task(const uint8_t task_core) : Task("Wifi", 3 * 1024, 1, task_core) {}
 
 Wifi_Task::~Wifi_Task(void) {}
 

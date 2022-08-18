@@ -40,7 +40,6 @@ MT6701Sensor::MT6701Sensor()
 
 void MT6701Sensor::init()
 {
-
   pinMode(PIN_MT_CSN, OUTPUT);
   digitalWrite(PIN_MT_CSN, HIGH);
 

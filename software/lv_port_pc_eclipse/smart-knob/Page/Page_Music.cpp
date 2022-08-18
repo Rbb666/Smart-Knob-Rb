@@ -36,7 +36,6 @@ static lv_timer_t *timer_display;
 static lv_obj_t *main_cont;
 static lv_obj_t *spectrum_obj;
 static lv_obj_t *music_img_obj;
-static lv_obj_t *slider_obj;
 static uint32_t spectrum_i = 0;
 static uint32_t spectrum_i_pause = 0;
 static uint32_t bar_ofs = 0;
@@ -52,7 +51,7 @@ static uint32_t spectrum_len;
 static const uint16_t rnd_array[30] = {994, 285, 553, 11, 792, 707, 966, 641, 852, 827, 44, 352, 146, 581, 490, 80, 729,
                                        58, 695, 940, 724, 561, 124, 653, 27, 292, 557, 506, 382, 199};
 
-lv_timer_t *spect_timer;
+static lv_timer_t *spect_timer;
 
 static lv_obj_t *Music_meter_create(lv_obj_t *win);
 
@@ -448,7 +447,6 @@ static void Music_view_create(lv_obj_t *win) {
     lv_obj_t *cont = create_cont(win);
     lv_obj_set_style_bg_opa(cont, LV_OPA_0, 0);
     spectrum_obj = create_spectrum_obj(cont);
-//    lv_obj_set_style_bg_opa(spectrum_obj, LV_OPA_0, 0);
 
     start_anim = true;
 
@@ -487,8 +485,8 @@ static void Gif_create(lv_obj_t *win) {
                   1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
-static void set_value(lv_meter_indicator_t *indic, int32_t v) {
-    lv_meter_set_indicator_end_value(lmeter, indic, v);
+static void set_value(void *indic, int32_t v) {
+    lv_meter_set_indicator_end_value(lmeter, (lv_meter_indicator_t *) indic, v);
 }
 
 // 播放器表盘
@@ -510,8 +508,7 @@ static lv_obj_t *Music_meter_create(lv_obj_t *win) {
 
     /*Create an animation to set the value*/
     lv_amin_start(indic, 0, 100,
-                  1, 500, 0,
-                  (lv_anim_exec_xcb_t) set_value, lv_anim_path_bounce);
+                  1, 500, 0, (lv_anim_exec_xcb_t) set_value, lv_anim_path_bounce);
     return lmeter;
 }
 
@@ -544,8 +541,6 @@ static void Setup() {
  * @retval 无
  */
 static void Exit() {
-    if (spect_timer)
-        lv_timer_del(spect_timer);
 
     _lv_music_pause();
 
@@ -596,6 +591,9 @@ static void Exit() {
                   0,
                   (lv_anim_exec_xcb_t) lv_obj_set_x,
                   lv_anim_path_bounce);
+
+    if (spect_timer)
+        lv_timer_del(spect_timer);
 
     PageDelay(600);
     lv_obj_clean(appWindow);
