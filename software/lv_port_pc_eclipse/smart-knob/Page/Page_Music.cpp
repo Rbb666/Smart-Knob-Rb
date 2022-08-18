@@ -11,13 +11,8 @@ PAGE_EXPORT(Music);
 #define BAR_COLOR1          lv_color_hex(0xe9dbfc)
 #define BAR_COLOR2          lv_color_hex(0x6f8af6)
 #define BAR_COLOR3          lv_color_hex(0xffffff)
-#if LV_DEMO_MUSIC_LARGE
-# define BAR_COLOR1_STOP     160
-# define BAR_COLOR2_STOP     200
-#else
-# define BAR_COLOR1_STOP     80
-# define BAR_COLOR2_STOP     100
-#endif
+#define BAR_COLOR1_STOP     80
+#define BAR_COLOR2_STOP     100
 #define BAR_COLOR3_STOP     (2 * LV_HOR_RES / 3)
 #define BAR_CNT             20
 #define DEG_STEP            (180/BAR_CNT)
@@ -40,7 +35,7 @@ static lv_timer_t *timer_display;
 
 static lv_obj_t *main_cont;
 static lv_obj_t *spectrum_obj;
-static lv_obj_t *album_img_obj;
+static lv_obj_t *music_img_obj;
 static lv_obj_t *slider_obj;
 static uint32_t spectrum_i = 0;
 static uint32_t spectrum_i_pause = 0;
@@ -63,7 +58,7 @@ static lv_obj_t *Music_meter_create(lv_obj_t *win);
 
 static void Music_btn_create(lv_obj_t *win);
 
-void _lv_demo_music_resume(void);
+void _lv_music_resume(void);
 
 static void onTimer(lv_timer_t *timer) {
     if (timer == timer_float) {
@@ -73,7 +68,7 @@ static void onTimer(lv_timer_t *timer) {
         scroll_cont = nullptr;
     }
     if (timer == spect_timer) {
-        _lv_demo_music_resume();
+        _lv_music_resume();
     }
 }
 
@@ -258,7 +253,7 @@ static void spectrum_draw_event_cb(lv_event_t *e) {
 
         lv_coord_t min_a = 5;
         lv_coord_t r_in = 77;
-        r_in = (r_in * lv_obj_get_style_transform_zoom(album_img_obj, 0)) >> 8;
+        r_in = (r_in * lv_obj_get_style_transform_zoom(music_img_obj, 0)) >> 8;
 
         for (i = 0; i < BAR_CNT; i++) r[i] = r_in + min_a;
 
@@ -354,7 +349,7 @@ static void spectrum_draw_event_cb(lv_event_t *e) {
  * @param  parent
  * @retval 无
  */
-static lv_obj_t *album_img_create(lv_obj_t *parent) {
+static lv_obj_t *music_img_create(lv_obj_t *parent) {
     spectrum = spectrum_11;
     spectrum_len = sizeof(spectrum_11) / sizeof(spectrum_11[0]);
 
@@ -375,7 +370,7 @@ static lv_obj_t *create_spectrum_obj(lv_obj_t *parent) {
     lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_event_cb(obj, spectrum_draw_event_cb, LV_EVENT_ALL, NULL);
     lv_obj_refresh_ext_draw_size(obj);
-    album_img_obj = album_img_create(obj);
+    music_img_obj = music_img_create(obj);
     return obj;
 }
 
@@ -411,10 +406,10 @@ static void spectrum_anim_cb(void *a, int32_t v) {
     }
     if (spectrum[spectrum_i][0] < 4) bar_rot += dir;
 
-    lv_obj_set_style_transform_zoom(album_img_obj, LV_IMG_ZOOM_NONE + spectrum[spectrum_i][0], 0);
+    lv_obj_set_style_transform_zoom(music_img_obj, LV_IMG_ZOOM_NONE + spectrum[spectrum_i][0], 0);
 }
 
-void _lv_demo_music_resume(void) {
+void _lv_music_resume(void) {
     playing = true;
     spectrum_i = spectrum_i_pause;
     lv_anim_t a;
@@ -431,6 +426,14 @@ static void stop_start_anim(lv_timer_t *t) {
     LV_UNUSED(t);
     start_anim = false;
     lv_obj_refresh_ext_draw_size(spectrum_obj);
+}
+
+static void _lv_music_pause(void) {
+    playing = false;
+    spectrum_i_pause = spectrum_i;
+    spectrum_i = 0;
+    lv_anim_del(spectrum_obj, spectrum_anim_cb);
+    lv_obj_invalidate(spectrum_obj);
 }
 
 static void Music_view_create(lv_obj_t *win) {
@@ -457,17 +460,13 @@ static void Music_view_create(lv_obj_t *win) {
     lv_anim_init(&a);
     lv_anim_set_path_cb(&a, lv_anim_path_bounce);
 
-    uint32_t i;
     lv_anim_set_exec_cb(&a, (lv_anim_exec_xcb_t) start_anim_cb);
-    for (i = 0; i < BAR_CNT; i++) {
-        lv_anim_set_values(&a, LV_HOR_RES, 5);
-        lv_anim_set_delay(&a, INTRO_TIME - 200 + rnd_array[i] % 200);
-        lv_anim_set_time(&a, 2500 + rnd_array[i] % 500);
-        lv_anim_set_var(&a, &start_anim_values[i]);
-        lv_anim_start(&a);
-    }
-
-    _lv_demo_music_resume();
+    lv_anim_set_values(&a, LV_HOR_RES, 5);
+    lv_anim_set_var(&a, &start_anim_values);
+    lv_anim_set_delay(&a, 0);
+    lv_anim_set_time(&a, 0);
+    lv_anim_start(&a);
+    _lv_music_resume();
 }
 
 static void Gif_create(lv_obj_t *win) {
@@ -548,6 +547,8 @@ static void Exit() {
     if (spect_timer)
         lv_timer_del(spect_timer);
 
+    _lv_music_pause();
+
     lv_amin_start(indic,
                   100, 0,
                   1,
@@ -597,7 +598,6 @@ static void Exit() {
                   lv_anim_path_bounce);
 
     PageDelay(600);
-
     lv_obj_clean(appWindow);
 }
 

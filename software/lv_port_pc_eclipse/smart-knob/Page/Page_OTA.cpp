@@ -44,14 +44,19 @@ static void wifi_scan_list(lv_obj_t *win);
 
 static void add_wifi_scan_list(void);
 
-static void show_info_connect_wifi(lv_obj_t *win);
+static void show_info_connect_wifi(lv_obj_t *win, char *info);
 
 static void close_info_connect_wifi(void);
 
 static void onTimer(lv_timer_t *timer) {
     // 自动弹出 -- 连接信息
     if (timer == conn_wifi_timer) {
-        show_info_connect_wifi(appWindow);
+        show_info_connect_wifi(appWindow, "\nPlease connect\n"
+                                          "#000000 @rbb# and enter \n"
+                                          "  #000000 192.168.121.103#");
+        // 删除扫描列表
+        lv_obj_del(contTemp);
+        contTemp = nullptr;
     }
 }
 
@@ -102,7 +107,7 @@ static void disconnect_icon_create(lv_obj_t *win) {
 }
 
 /**
- * @brief  添加功能按钮
+ * @brief  创建功能按钮
  * @param  win
  * @retval 无
  */
@@ -195,28 +200,28 @@ static void wifi_function_btn_add(lv_obj_t *win) {
  */
 static void wifi_function_btn_remove(void) {
 
-    lv_amin_start(wifi_conn_button, lv_obj_get_x(wifi_conn_button), 140,
+    lv_amin_start(wifi_conn_button, lv_obj_get_x(wifi_conn_button), -280,
                   1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
-    lv_amin_start(wifi_ap_ota_btn, lv_obj_get_x(wifi_ap_ota_btn), 140,
+    lv_amin_start(wifi_ap_ota_btn, lv_obj_get_x(wifi_ap_ota_btn), -280,
+                  1, 600, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+
+    lv_amin_start(wifi_sta_ota_btn, lv_obj_get_x(wifi_sta_ota_btn), -280,
                   1, 700, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
-    lv_amin_start(wifi_sta_ota_btn, lv_obj_get_x(wifi_sta_ota_btn), 140,
-                  1, 900, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
-
-    lv_amin_start(wifi_exit_button, lv_obj_get_x(wifi_exit_button), 140,
-                  1, 1100, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+    lv_amin_start(wifi_exit_button, lv_obj_get_x(wifi_exit_button), -280,
+                  1, 800, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     lv_obj_del_delayed(wifi_conn_button, 500);
     wifi_conn_button = nullptr;
 
-    lv_obj_del_delayed(wifi_ap_ota_btn, 700);
+    lv_obj_del_delayed(wifi_ap_ota_btn, 600);
     wifi_ap_ota_btn = nullptr;
 
-    lv_obj_del_delayed(wifi_sta_ota_btn, 900);
+    lv_obj_del_delayed(wifi_sta_ota_btn, 700);
     wifi_sta_ota_btn = nullptr;
 
-    lv_obj_del_delayed(wifi_exit_button, 1100);
+    lv_obj_del_delayed(wifi_exit_button, 800);
     wifi_exit_button = nullptr;
 }
 
@@ -368,7 +373,7 @@ static void wifi_ip_label_create(lv_obj_t *win) {
  * @param  win
  * @retval 无
  */
-static void show_info_connect_wifi(lv_obj_t *win) {
+static void show_info_connect_wifi(lv_obj_t *win, char *info) {
     wifi_info_cont = lv_obj_create(win);
     lv_obj_set_scrollbar_mode(wifi_info_cont, LV_SCROLLBAR_MODE_OFF);
     lv_obj_set_size(wifi_info_cont, 195, 140);
@@ -398,9 +403,7 @@ static void show_info_connect_wifi(lv_obj_t *win) {
     lv_obj_set_style_text_color(info_label, lv_color_make(85, 85, 85), LV_STATE_DEFAULT);
     lv_label_set_recolor(info_label, true);
     lv_label_set_long_mode(info_label, LV_LABEL_LONG_SCROLL_CIRCULAR);
-    lv_label_set_text(info_label, "\nPlease connect\n"
-                                  "#000000 @rbb# and enter \n"
-                                  "  #000000 192.168.121.103#");
+    lv_label_set_text(info_label, info);
 
     anim_timeline = lv_anim_timeline_create();
 #define ANIM_DEF(start_time, obj, attr, start, end) \
@@ -414,10 +417,6 @@ static void show_info_connect_wifi(lv_obj_t *win) {
     lv_anim_timeline_add_wrapper(anim_timeline, wrapper);
 
     lv_anim_timeline_start(anim_timeline);
-
-    // 删除扫描列表
-    lv_obj_del(contTemp);
-    contTemp = nullptr;
 }
 
 /**
@@ -473,7 +472,19 @@ static void Exit() {
         lv_anim_timeline_del(anim_timeline);
         anim_timeline = nullptr;
     }
-    PageDelay(LV_ANIM_TIME_DEFAULT);
+
+    wifi_function_btn_remove();
+
+    lv_amin_start(line, lv_obj_get_y(line), 250,
+                  1, 800, 100, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(img_disconn, lv_obj_get_y(img_disconn), -40,
+                  1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(wifi_img_cont, lv_obj_get_x(wifi_img_cont), 240,
+                  1, 600, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+
+    PageDelay(800);
     lv_obj_clean(appWindow);
 }
 

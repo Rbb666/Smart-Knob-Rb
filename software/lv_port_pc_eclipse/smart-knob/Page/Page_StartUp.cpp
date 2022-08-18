@@ -3,12 +3,12 @@
 
 PAGE_EXPORT(StartUp);
 
-static lv_obj_t *ui_cont = NULL;
-static lv_obj_t *ui_labelLogo = NULL;
-static lv_anim_timeline_t *anim_timeline = NULL;
+static lv_obj_t *ui_cont;
+static lv_obj_t *ui_labelLogo;
+static lv_anim_timeline_t *anim_timeline;
 
-static lv_timer_t *timer1 = NULL;
-static lv_timer_t *timer2 = NULL;
+static lv_timer_t *timer1;
+static lv_timer_t *timer2;
 
 #define COLOR_RED lv_color_hex(0xff0000)
 
@@ -72,8 +72,8 @@ static void Setup() {
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
     StartupView_Create(appWindow);
-    timer1 = lv_timer_create(onTimer, 1500, NULL);
-    timer2 = lv_timer_create(onTimer, 2000, NULL);
+    timer1 = lv_timer_create(onTimer, 1500, nullptr);
+    timer2 = lv_timer_create(onTimer, 2000, nullptr);
     lv_timer_set_repeat_count(timer1, 1);
     lv_timer_set_repeat_count(timer2, 1);
 }
