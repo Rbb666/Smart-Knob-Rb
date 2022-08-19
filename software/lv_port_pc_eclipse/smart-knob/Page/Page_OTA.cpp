@@ -82,15 +82,15 @@ static void button_event_cb(lv_event_t *e) {
         } else if (btn == wifi_ap_ota_btn) {
             /*先移除功能按键*/
             wifi_function_btn_remove();
-            show_info_connect_wifi(appWindow, "\nPlease connect\n"
-                                              "#000000 @rbb# and enter \n"
-                                              "  #000000 192.168.121.103#");
+            show_info_connect_wifi(appWindow, "\n  Please enter\n"
+                                              "   #000000 192.168.4.2\n"
+                                              "    #000000 start OTA#\n");
         } else if (btn == wifi_sta_ota_btn) {
             /*先移除功能按键*/
             wifi_function_btn_remove();
-            show_info_connect_wifi(appWindow, "\nPlease connect\n"
-                                              "#000000 @rbb# and enter \n"
-                                              "  #000000 192.168.121.103#");
+            show_info_connect_wifi(appWindow, "\n  Please enter\n"
+                                              " #000000 192.168.121.103#\n"
+                                              "    #000000 start OTA#\n");
         } else if (btn == wifi_exit_button) {
             page.Pop();
         } else if (btn == back_btn) {
@@ -153,7 +153,6 @@ static void wifi_function_btn_add(lv_obj_t *win) {
     /*Create ota button*/
     wifi_ap_ota_btn = lv_btn_create(win);
     lv_obj_set_size(wifi_ap_ota_btn, 70, 25);
-//    lv_obj_add_state(wifi_ap_ota_btn, LV_STATE_DISABLED); // 禁用点击
 
     button_style_create(wifi_ap_ota_btn);
     lv_obj_set_style_bg_color(wifi_ap_ota_btn, lv_color_make(51, 51, 51), LV_STATE_DEFAULT);
