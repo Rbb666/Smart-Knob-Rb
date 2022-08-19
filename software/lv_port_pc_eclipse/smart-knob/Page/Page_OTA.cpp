@@ -30,6 +30,7 @@ static lv_obj_t *wifi_ap_ota_btn;
 static lv_obj_t *wifi_sta_ota_btn;
 static lv_obj_t *wifi_exit_button;
 static lv_obj_t *back_btn;
+static lv_obj_t *last_focused_btn;
 
 static lv_timer_t *conn_wifi_timer;
 static lv_anim_timeline_t *anim_timeline;
@@ -68,7 +69,6 @@ static void onTimer(lv_timer_t *timer) {
 static void button_event_cb(lv_event_t *e) {
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *btn = lv_event_get_target(e);
-
     if (code == LV_EVENT_PRESSED) {
         if (btn == wifi_button) {
             wifi_function_list(appWindow);
@@ -86,14 +86,26 @@ static void button_event_cb(lv_event_t *e) {
                                               "#000000 @rbb# and enter \n"
                                               "  #000000 192.168.121.103#");
         } else if (btn == wifi_sta_ota_btn) {
-//            lv_obj_clear_state(wifi_ap_ota_btn, LV_STATE_DISABLED); // 解除禁止状态
-
+            /*先移除功能按键*/
+            wifi_function_btn_remove();
+            show_info_connect_wifi(appWindow, "\nPlease connect\n"
+                                              "#000000 @rbb# and enter \n"
+                                              "  #000000 192.168.121.103#");
         } else if (btn == wifi_exit_button) {
             page.Pop();
         } else if (btn == back_btn) {
             close_info_connect_wifi();
             wifi_function_btn_add(appWindow);
         }
+    }
+    if (code == LV_EVENT_FOCUSED &&
+        (btn == wifi_conn_button || btn == wifi_ap_ota_btn || btn == wifi_sta_ota_btn || btn == wifi_exit_button)) {
+        lv_obj_add_state(btn, LV_STATE_DISABLED);
+        last_focused_btn = btn;
+    }
+    if (code == LV_EVENT_DEFOCUSED &&
+        (btn == wifi_conn_button || btn == wifi_ap_ota_btn || btn == wifi_sta_ota_btn || btn == wifi_exit_button)) {
+        lv_obj_clear_state(last_focused_btn, LV_STATE_DISABLED);
     }
 }
 
@@ -208,27 +220,27 @@ static void wifi_function_btn_add(lv_obj_t *win) {
 static void wifi_function_btn_remove(void) {
 
     lv_amin_start(wifi_conn_button, lv_obj_get_x(wifi_conn_button), -280,
-                  1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+                  1, 300, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     lv_amin_start(wifi_ap_ota_btn, lv_obj_get_x(wifi_ap_ota_btn), -280,
-                  1, 600, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+                  1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     lv_amin_start(wifi_sta_ota_btn, lv_obj_get_x(wifi_sta_ota_btn), -280,
-                  1, 700, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+                  1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
     lv_amin_start(wifi_exit_button, lv_obj_get_x(wifi_exit_button), -280,
-                  1, 800, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
+                  1, 600, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
-    lv_obj_del_delayed(wifi_conn_button, 500);
+    lv_obj_del_delayed(wifi_conn_button, 300);
     wifi_conn_button = nullptr;
 
-    lv_obj_del_delayed(wifi_ap_ota_btn, 600);
+    lv_obj_del_delayed(wifi_ap_ota_btn, 400);
     wifi_ap_ota_btn = nullptr;
 
-    lv_obj_del_delayed(wifi_sta_ota_btn, 700);
+    lv_obj_del_delayed(wifi_sta_ota_btn, 500);
     wifi_sta_ota_btn = nullptr;
 
-    lv_obj_del_delayed(wifi_exit_button, 800);
+    lv_obj_del_delayed(wifi_exit_button, 600);
     wifi_exit_button = nullptr;
 }
 
@@ -473,6 +485,7 @@ static void Setup() {
  * @retval 无
  */
 static void Exit() {
+
     if (anim_timeline) {
         lv_anim_timeline_del(anim_timeline);
         anim_timeline = nullptr;
@@ -481,7 +494,7 @@ static void Exit() {
     wifi_function_btn_remove();
 
     lv_amin_start(line, lv_obj_get_y(line), 250,
-                  1, 800, 100, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+                  1, 500, 50, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(img_disconn, lv_obj_get_y(img_disconn), -40,
                   1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
@@ -489,7 +502,7 @@ static void Exit() {
     lv_amin_start(wifi_img_cont, lv_obj_get_x(wifi_img_cont), 240,
                   1, 600, 0, (lv_anim_exec_xcb_t) lv_obj_set_x, lv_anim_path_bounce);
 
-    PageDelay(800);
+    PageDelay(600);
     lv_obj_clean(appWindow);
 }
 
