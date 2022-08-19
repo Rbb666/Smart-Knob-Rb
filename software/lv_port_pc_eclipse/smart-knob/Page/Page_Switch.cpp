@@ -153,6 +153,29 @@ static void button_create(lv_obj_t *parent, uint8_t panel_num) {
     lv_obj_align(sw_img, LV_ALIGN_CENTER, 0, 0);
 }
 
+static void slider_create(lv_obj_t *parent, uint8_t panel_num) {
+
+    static const lv_style_prop_t props[] = {LV_STYLE_BG_COLOR, LV_STYLE_PROP_INV};
+    static lv_style_transition_dsc_t transition_dsc;
+    lv_style_transition_dsc_init(&transition_dsc, props, lv_anim_path_linear, 300, 0, NULL);
+
+    lv_obj_t *slider = lv_slider_create(scroll_cont[panel_num]);
+    lv_obj_remove_style_all(slider);
+    lv_obj_set_size(slider, 80, 40);
+    lv_obj_align(slider, LV_ALIGN_BOTTOM_LEFT, 0, 0);
+
+    lv_obj_set_style_bg_opa(slider, LV_OPA_COVER, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(slider, lv_color_make(187, 187, 187), LV_PART_MAIN);
+    lv_obj_set_style_radius(slider, LV_RADIUS_CIRCLE, LV_PART_MAIN);
+
+    lv_obj_set_style_bg_opa(slider, LV_OPA_COVER, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_color(slider, lv_palette_main(LV_PALETTE_CYAN), LV_PART_INDICATOR);
+    lv_obj_set_style_radius(slider, LV_RADIUS_CIRCLE, LV_PART_INDICATOR);
+    lv_obj_set_style_transition(slider, &transition_dsc, LV_PART_INDICATOR);
+
+    lv_obj_set_style_bg_color(slider, lv_palette_darken(LV_PALETTE_CYAN, 2), LV_PART_INDICATOR | LV_STATE_PRESSED);
+}
+
 static void panel_create(lv_obj_t *par, uint8_t page_num, const void *image, const char *infos) {
     /*Create cont*/
     scroll_cont[page_num] = lv_obj_create(par);
@@ -166,9 +189,11 @@ static void panel_create(lv_obj_t *par, uint8_t page_num, const void *image, con
     /*Create image*/
     img_icon[page_num] = lv_img_create(scroll_cont[page_num]);
     lv_img_set_src(img_icon[page_num], image);
-    lv_obj_align(img_icon[page_num], LV_ALIGN_LEFT_MID, 10, 0);
+    lv_obj_align(img_icon[page_num], LV_ALIGN_TOP_LEFT, 0, 0);
 
     button_create(scroll_cont[page_num], page_num);
+
+
 }
 
 static void sw_meter_create(lv_obj_t *win) {

@@ -420,6 +420,7 @@ static void show_info_connect_wifi(lv_obj_t *win, char *info) {
     lv_label_set_recolor(info_label, true);
     lv_label_set_long_mode(info_label, LV_LABEL_LONG_SCROLL_CIRCULAR);
     lv_label_set_text(info_label, info);
+    lv_obj_set_style_text_line_space(info_label, 5, LV_STATE_DEFAULT); // 文字行间距
 
     anim_timeline = lv_anim_timeline_create();
 #define ANIM_DEF(start_time, obj, attr, start, end) \
