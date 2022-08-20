@@ -1,6 +1,7 @@
 #include "Basic/FileGroup.h"
 #include "GUI/DisplayPrivate.h"
 #include "Page_Anim.h"
+
 #include "spectrum_11.h"
 
 #include <Hal/motor.h>
@@ -55,12 +56,15 @@ static const uint16_t rnd_array[30] = {994, 285, 553, 11, 792, 707, 966, 641, 85
 
 static lv_timer_t *spect_timer;
 
+static void Music_view_create(lv_obj_t *win);
+
 static lv_obj_t *Music_meter_create(lv_obj_t *win);
+
+static void spectrum_anim_create(lv_obj_t *win);
 
 static void Music_btn_create(lv_obj_t *win);
 
-static void _lv_music_resume(void);
-
+void lv_music_resume(void);
 extern Ble_Interface ble_dev;
 
 static void onTimer(lv_timer_t *timer)
@@ -74,7 +78,7 @@ static void onTimer(lv_timer_t *timer)
     }
     if (timer == spect_timer)
     {
-        _lv_music_resume();
+        lv_music_resume();
     }
 }
 
@@ -82,8 +86,8 @@ static void onTimer_display(lv_timer_t *timer)
 {
     if (timer == timer_display)
     {
-        Music_meter_create(appWindow);
-        Music_btn_create(appWindow);
+        Music_view_create(appWindow);
+        spectrum_anim_create(appWindow);
     }
 }
 
@@ -467,7 +471,7 @@ static void spectrum_anim_cb(void *a, int32_t v)
     lv_obj_set_style_transform_zoom(music_img_obj, LV_IMG_ZOOM_NONE + spectrum[spectrum_i][0], 0);
 }
 
-static void _lv_music_resume(void)
+void lv_music_resume(void)
 {
     playing = true;
     spectrum_i = spectrum_i_pause;
@@ -488,7 +492,7 @@ static void stop_start_anim(lv_timer_t *t)
     lv_obj_refresh_ext_draw_size(spectrum_obj);
 }
 
-static void _lv_music_pause(void)
+static void lv_music_pause(void)
 {
     playing = false;
     spectrum_i_pause = spectrum_i;
@@ -506,7 +510,10 @@ static void Music_view_create(lv_obj_t *win)
     img_bg = lv_img_create(win);
     lv_img_set_src(img_bg, &IMG_Water_BG);
     lv_obj_align(img_bg, LV_ALIGN_CENTER, 0, 0);
+}
 
+static void spectrum_anim_create(lv_obj_t *win)
+{
     lv_obj_t *cont = create_cont(win);
     lv_obj_set_style_bg_opa(cont, LV_OPA_0, 0);
     spectrum_obj = create_spectrum_obj(cont);
@@ -527,8 +534,10 @@ static void Music_view_create(lv_obj_t *win)
     lv_anim_set_delay(&a, 0);
     lv_anim_set_time(&a, 0);
     lv_anim_start(&a);
-    _lv_music_resume();
+    lv_music_resume();
 }
+
+#if LV_USE_GIF
 
 static void Gif_create(lv_obj_t *win)
 {
@@ -548,6 +557,8 @@ static void Gif_create(lv_obj_t *win)
     lv_amin_start(scroll_cont, 120, -10,
                   1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
 }
+
+#endif
 
 static void set_value(void *indic, int32_t v)
 {
@@ -574,7 +585,7 @@ static lv_obj_t *Music_meter_create(lv_obj_t *win)
 
     /*Create an animation to set the value*/
     lv_amin_start(indic, 0, 100,
-                  1, 500, 0, (lv_anim_exec_xcb_t)set_value, lv_anim_path_bounce);
+                  1, 400, 0, (lv_anim_exec_xcb_t)set_value, lv_anim_path_bounce);
     return lmeter;
 }
 
@@ -588,18 +599,21 @@ static void Setup()
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
 
+#if LV_USE_GIF
     Music_view_create(appWindow);
 
-    spect_timer = lv_timer_create(onTimer, 15 * 1000, NULL);
+    Gif_create(appWindow);
 
-    //
-    //    Gif_create(appWindow);
-    //
-    //    timer_float = lv_timer_create(onTimer, 4500, NULL);
-    //    lv_timer_set_repeat_count(timer_float, 1);
-    //
-    //    timer_display = lv_timer_create(onTimer_display, 4800, NULL);
-    //    lv_timer_set_repeat_count(timer_display, 1);
+    timer_float = lv_timer_create(onTimer, 4500, NULL);
+    lv_timer_set_repeat_count(timer_float, 1);
+
+    timer_display = lv_timer_create(onTimer_display, 4800, NULL);
+    lv_timer_set_repeat_count(timer_display, 1);
+#else
+    Music_view_create(appWindow);
+    spectrum_anim_create(appWindow);
+#endif
+    spect_timer = lv_timer_create(onTimer, 15 * 1000, NULL);
 }
 
 /**
@@ -610,7 +624,7 @@ static void Setup()
 static void Exit()
 {
 
-    _lv_music_pause();
+    lv_music_pause();
 
     lv_amin_start(indic,
                   100, 0,

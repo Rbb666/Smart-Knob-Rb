@@ -12,7 +12,7 @@
 static const uint16_t screenWidth = 240;
 static const uint16_t screenHeight = 240;
 
-#define COLOR_BUFFER (screenWidth * screenHeight / 2)
+#define COLOR_BUFFER (screenWidth * screenHeight / 4)
 
 static lv_disp_draw_buf_t draw_buf;
 void *lv_disp_buf1_p = nullptr;
