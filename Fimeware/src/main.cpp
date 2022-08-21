@@ -27,40 +27,49 @@ InterfaceTask interface_task = InterfaceTask(ESP32_RUNNING_CORE);
 
 void setup()
 {
-  Serial.begin(115200);
+    Serial.begin(115200);
 
-  const char ChappieCore_logo[]{
-      "   _____                              _              _  __                  _ \n"
-      "  / ____|                            | |            | |/ /                 | |\n"
-      " | (___    _ __ ___     __ _   _ __  | |_   ______  | ' /   _ __     ___   | |__\n"
-      "  \\___ \\  | '_ ` _ \\   / _` | | '__| | __| |______| |  <   | '_ \\   / _ \\  | '_ \\\n"
-      "  ____) | | | | | | | | (_| | | |    | |_           | . \\  | | | | | (_) | | |_) |\n"
-      " |_____/  |_| |_| |_|  \\__,_| |_|     \\__|          |_|\\_\\ |_| |_|  \\___/  |_.__/\n"};
+    const char ChappieCore_logo[]
+    {
+        "   _____                              _              _  __                  _ \n"
+        "  / ____|                            | |            | |/ /                 | |\n"
+        " | (___    _ __ ___     __ _   _ __  | |_   ______  | ' /   _ __     ___   | |__\n"
+        "  \\___ \\  | '_ ` _ \\   / _` | | '__| | __| |______| |  <   | '_ \\   / _ \\  | '_ \\\n"
+        "  ____) | | | | | | | | (_| | | |    | |_           | . \\  | | | | | (_) | | |_) |\n"
+        " |_____/  |_| |_| |_|  \\__,_| |_|     \\__|          |_|\\_\\ |_| |_|  \\___/  |_.__/\n"
+    };
 
-  /* Print out */
-  Serial.println(ChappieCore_logo);
+    /* Print out */
+    Serial.println(ChappieCore_logo);
 
-  while (!SPIFFS.begin(true))
-  {
-    delay(500);
-    Serial.print("...");
-  }
+    delay(100);
 
-  xBinarySemaphore = xSemaphoreCreateBinary();
-  motor_msg_Queue = xQueueCreate(10, sizeof(struct _knob_message *));
-  motor_rcv_Queue = xQueueCreate(10, sizeof(struct _knob_message *));
+    while (!SPIFFS.begin(true))
+    {
+        delay(500);
+        Serial.print("...");
+    }
 
-  xTaskCreatePinnedToCore(
-      Task_foc, "Task_foc", 2 * 1024, NULL, 2, &Task_foc_Handle, ESP32_RUNNING_CORE);
+    xBinarySemaphore = xSemaphoreCreateBinary();
+    motor_msg_Queue = xQueueCreate(10, sizeof(struct _knob_message *));
+    motor_rcv_Queue = xQueueCreate(10, sizeof(struct _knob_message *));
 
-  xTaskCreatePinnedToCore(
-      Task_lvgl, "Task_lvgl", 4 * 1024, NULL, 2, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
+    xTaskCreatePinnedToCore(
+        Task_lvgl, "Task_lvgl", 4 * 1024, NULL, 2, &Task_lvgl_Handle, LVGL_RUNNING_CORE);
 
-  wifi_task.begin();
+    delay(100);
 
-  interface_task.begin();
+    xTaskCreatePinnedToCore(
+        Task_foc, "Task_foc", 2 * 1024, NULL, 2, &Task_foc_Handle, ESP32_RUNNING_CORE);
 
-  ble_dev.begin();
+    delay(100);
+    wifi_task.begin();
+    delay(100);
+    interface_task.begin();
+    ble_dev.begin();
 }
 
-void loop() { yield(); }
+void loop()
+{
+    yield();
+}

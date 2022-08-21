@@ -17,6 +17,8 @@ Wifi_Task::~Wifi_Task(void) {}
 
 static void wifi_timeout_callback(TimerHandle_t pxTimer);
 
+static void scan_event_register(void);
+
 void Wifi_Task::run(void)
 {
     // 读取参数
@@ -24,18 +26,29 @@ void Wifi_Task::run(void)
     wifi_state_config();
 
     // 创建wifi超时定时器-1min
-    wifi_timeout_tmr = xTimerCreate("wifi_Timer",
-                                    (1000 * 60),
-                                    pdTRUE,
-                                    (void *)0,
-                                    wifi_timeout_callback);
+    // wifi_timeout_tmr = xTimerCreate("wifi_Timer",
+    //                                 (1000 * 60),
+    //                                 pdTRUE,
+    //                                 (void *)0,
+    //                                 wifi_timeout_callback);
 
     wifi_conn_millis = 0;
 
     while (1)
     {
         FSM_Task();
+        task_idel_trash();
         vTaskDelay(100);
+    }
+}
+
+// 垃圾回收任务
+void Wifi_Task::task_idel_trash(void)
+{
+    if (millis() - trash_LastHandleTime >= (20 * 1000))
+    {
+        // Serial.println("Trash trigger");
+        trash_LastHandleTime = millis();
     }
 }
 
@@ -46,8 +59,10 @@ void Wifi_Task::read_config(SysUtilConfig *cfg)
     char info[128] = {0};
     uint16_t size = g_flashCfg.readFile(CONFIG_PATH, (uint8_t *)info);
     info[size] = 0;
+
     if (size == 0)
-    { // 默认值
+    {
+        // 默认值
         Serial.println("No Data in SPI_FS!");
     }
     else
@@ -101,11 +116,25 @@ void Wifi_Task::write_config(SysUtilConfig *cfg)
     Serial.printf("Write config to SPIFS...\n");
 }
 
-static void wifi_timeout_callback(TimerHandle_t pxTimer)
+static void scan_event_register(void)
 {
-    Serial.println("Close WebServer Service!!");
-    server.close();
-    xTimerStop(pxTimer, 0);
+    WiFi.onEvent([](WiFiEvent_t event, WiFiEventInfo_t info)
+    {
+        Serial.println("Scan AP Done!!");
+        int len = WiFi.scanComplete();
+
+        for (int cnt = 0; cnt < len; cnt++)
+        {
+            Serial.print(cnt + 1);
+            Serial.print(": ");
+            Serial.print(WiFi.SSID(cnt));
+            Serial.print(" (");
+            Serial.print(WiFi.RSSI(cnt));
+            Serial.print(")");
+            Serial.println((WiFi.encryptionType(cnt) == WIFI_AUTH_OPEN) ? " " : "*");
+        }
+    },
+    WiFiEvent_t::ARDUINO_EVENT_WIFI_SCAN_DONE);
 }
 
 // wifi 有限状态机
@@ -118,90 +147,109 @@ void Wifi_Task::FSM_Task(void)
         server.handleClient();
         break;
     }
+
+    case TASK_SCAN_REQUEST:
+    {
+        wifi_event(APP_MESSAGE_WIFI_SCAN);
+        task_state = TASK_TRASH;
+        Serial.println("[task-state]:TASK_SCAN_REQUEST");
+        break;
+    }
+
     case TASK_AP_REQUEST:
     {
         wifi_status = WIFI_AP_IDLE;
 
         boolean wifi_state = wifi_event(APP_MESSAGE_WIFI_AP);
+
         if (wifi_state)
         {
             task_state = TASK_AP_CONNECTED;
             Serial.println("[task-state]:TASK_AP_CONNECTED");
         }
+
         break;
     }
+
     case TASK_AP_CONNECTED:
     {
         Serial.println("Start AP WebServer");
 
         server.on("/", HTTP_GET, [&]()
-                  { server.send_P(200, "text/html", (const char *)index_html, sizeof(index_html)); });
+        {
+            server.send_P(200, "text/html", (const char *)index_html, sizeof(index_html));
+        });
         server.on("/config", [&]()
-                  {
-                String name = server.arg("name").c_str();
-                String password = server.arg("password").c_str();
-                Serial.printf("[AP REC] wifi name:%s pass:%s\n", name, password);
+        {
+            String name = server.arg("name").c_str();
+            String password = server.arg("password").c_str();
+            Serial.printf("[AP REC] wifi name:%s pass:%s\n", name, password);
 
-                // 暂存web转发的信息
-                sys_cfg.ssid_0 = name;
-                sys_cfg.password_0 = password;
+            // 暂存web转发的信息
+            sys_cfg.ssid_0 = name;
+            sys_cfg.password_0 = password;
 
-                // 切换到STA模式尝试连接
-                task_state = TASK_STA_REQUEST;
-                connect_mode = AP_TO_CONNECT_MODE;
-                Serial.printf("Ready to connect[%s]\n", name); });
+            // 切换到STA模式尝试连接
+            task_state = TASK_STA_REQUEST;
+            connect_mode = AP_TO_CONNECT_MODE;
+            Serial.printf("Ready to connect[%s]\n", name);
+        });
 
-        server.begin();
         ElegantOTA.begin(&server);
+        server.begin();
+
         task_state = TASK_IDLE;
         Serial.println("[task-state]:TASK_IDLE");
         break;
     }
+
     case TASK_STA_REQUEST:
     {
         wifi_status = WIFI_STA_IDLE; // 设置wifi为idel模式
 
         boolean wifi_state = wifi_event(APP_MESSAGE_WIFI_STA);
+
         if (wifi_state)
             task_state = TASK_STA_CONNECTED;
         else
             task_state = TASK_DISCONNECT;
+
         break;
     }
+
     case TASK_STA_CONNECTED:
     {
-        Serial.println("Start STA WebServer");
-
-        server.on("/", HTTP_GET, [&]()
-                  { server.send_P(200, "text/html", (const char *)index_html, sizeof(index_html)); });
-        server.on("/config", [&]()
-                  {
-                String name = server.arg("name").c_str();
-                String password = server.arg("password").c_str();
-                Serial.printf("[STA REC] wifi name:%s pass:%s\n", name, password); });
-
-        server.begin();
-        ElegantOTA.begin(&server);
-
         // AP 配网成功后保存参数
         if (connect_mode == AP_TO_CONNECT_MODE)
             task_state = TASK_NET_CONNECTED;
         else
-            task_state = TASK_IDLE;
+            task_state = TASK_TRASH;
 
-        // 开启超时定时器
-        xTimerStart(wifi_timeout_tmr, 0);
-        Serial.println("[task-state]:TASK_IDLE");
+        Serial.println("[task-state]:TASK_TRASH");
+        break;
+    }
+    case TASK_STA_OTA:
+    {
+        Serial.println("Start STA WebServer");
+
+        ElegantOTA.begin(&server);
+        server.begin();
+
+        connect_mode = STA_TO_OTA;
+        task_state = TASK_IDLE;
+
         break;
     }
     case TASK_DISCONNECT:
     {
         static uint8_t recon_count = 0;
         recon_count++;
+
         if (recon_count < 25)
         {
             Serial.printf("wifi connect fail, ready to reconnect[%d]...\n\n", recon_count);
             vTaskDelay(500);
+
             // 重连成功
             if (end_conn_wifi())
                 task_state = TASK_STA_CONNECTED;
@@ -212,18 +260,24 @@ void Wifi_Task::FSM_Task(void)
             task_state = TASK_TRASH;
             recon_count = 0;
         }
+
         break;
     }
+
     // AP 配网成功模式
     case TASK_NET_CONNECTED:
     {
         // 保存配置信息
         write_config(&sys_cfg);
-        task_state = TASK_IDLE;
+        // 开启超时关闭web定时器
+        // xTimerStart(wifi_timeout_tmr, 0);
+        task_state = TASK_TRASH;
         break;
     }
+
     case TASK_TRASH:
         break;
+
     default:
         break;
     }
@@ -231,28 +285,8 @@ void Wifi_Task::FSM_Task(void)
 
 void Wifi_Task::search_wifi(void)
 {
-    Serial.println("scan start");
-    int wifi_num = WiFi.scanNetworks();
-    Serial.println("scan done");
-    if (0 == wifi_num)
-    {
-        Serial.println("no networks found");
-    }
-    else
-    {
-        Serial.print(wifi_num);
-        Serial.println("networks found");
-        for (int cnt = 0; cnt < wifi_num; ++cnt)
-        {
-            Serial.print(cnt + 1);
-            Serial.print(": ");
-            Serial.print(WiFi.SSID(cnt));
-            Serial.print(" (");
-            Serial.print(WiFi.RSSI(cnt));
-            Serial.print(")");
-            Serial.println((WiFi.encryptionType(cnt) == WIFI_AUTH_OPEN) ? " " : "*");
-        }
-    }
+    Serial.println("scan start...");
+    WiFi.scanNetworks(true);
 }
 
 boolean Wifi_Task::start_conn_wifi(const char *ssid, const char *password)
@@ -262,6 +296,7 @@ boolean Wifi_Task::start_conn_wifi(const char *ssid, const char *password)
         Serial.println(F("\nWiFi is Connected.\n"));
         return false;
     }
+
     Serial.println("");
     Serial.print(F("Connecting: "));
     Serial.print(ssid);
@@ -287,6 +322,7 @@ boolean Wifi_Task::end_conn_wifi(void)
         {
             Serial.println(F("\nWiFi connect error.\n"));
         }
+
         return false;
     }
 
@@ -303,6 +339,7 @@ boolean Wifi_Task::open_ap(const char *ap_ssid, const char *ap_password)
     // 修改主机名
     WiFi.setHostname("esp32");
     boolean result = WiFi.softAP(ap_ssid, ap_password); // 开启热点
+
     if (result)
     {
         WiFi.softAPConfig(local_ip, gateway, subnet);
@@ -320,6 +357,7 @@ boolean Wifi_Task::open_ap(const char *ap_ssid, const char *ap_password)
         Serial.println(F("WiFiAP Failed"));
         return false;
     }
+
     return true;
 }
 
@@ -329,6 +367,7 @@ boolean Wifi_Task::close_wifi(void)
     {
         return false;
     }
+
     WiFi.enableSTA(false);
     WiFi.enableAP(false);
     WiFi.mode(WIFI_MODE_NULL);
@@ -346,6 +385,13 @@ boolean Wifi_Task::wifi_event(APP_MESSAGE_TYPE type)
     {
     case APP_MESSAGE_IDLE:
         break;
+
+    case APP_MESSAGE_WIFI_SCAN:
+    {
+        search_wifi();
+        break;
+    }
+
     case APP_MESSAGE_WIFI_STA:
     {
         if (wifi_status == WIFI_STA_IDLE)
@@ -355,19 +401,24 @@ boolean Wifi_Task::wifi_event(APP_MESSAGE_TYPE type)
         }
 
         m_preWifiReqMillis = millis();
+
         if (((WiFi.getMode() & WIFI_MODE_STA) == WIFI_MODE_STA) && (CONN_ERROR != end_conn_wifi()))
         {
             // 在STA模式下 并且还没连接上wifi
             return false;
         }
+
         break;
     }
+
     case APP_MESSAGE_WIFI_AP:
     {
         boolean ap_state;
+
         if (wifi_status == WIFI_AP_IDLE)
         {
             ap_state = open_ap(AP_SSID);
+
             if (ap_state)
             {
                 wifi_status = WIFI_AP_READY;
@@ -381,23 +432,27 @@ boolean Wifi_Task::wifi_event(APP_MESSAGE_TYPE type)
         m_preWifiReqMillis = millis();
         break;
     }
+
     case APP_MESSAGE_WIFI_ALIVE:
     {
         // wifi 心跳
         wifi_status = WIFI_STA_IDLE;
         // 更新请求
         m_preWifiReqMillis = millis();
+        break;
     }
-    break;
+
     case APP_MESSAGE_WIFI_DISCONN:
     {
         close_wifi();
         wifi_status = WIFI_STA_IDLE;
         break;
     }
+
     default:
         break;
     }
+
     return true;
 }
 

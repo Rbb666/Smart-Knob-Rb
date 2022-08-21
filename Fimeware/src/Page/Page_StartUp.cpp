@@ -41,10 +41,11 @@ void StartupView_Create(lv_obj_t *root)
     {start_time, obj, LV_ANIM_EXEC(attr), start, end, 500, lv_anim_path_ease_out, true}
 
     lv_anim_timeline_wrapper_t wrapper[] =
-        {
-            ANIM_DEF(0, ui_cont, width, 0, lv_obj_get_style_width(ui_cont, 0)),
-            ANIM_DEF(500, ui_labelLogo, y, lv_obj_get_style_width(ui_cont, 0), lv_obj_get_y(ui_labelLogo) + 5),
-            LV_ANIM_TIMELINE_WRAPPER_END};
+    {
+        ANIM_DEF(0, ui_cont, width, 0, lv_obj_get_style_width(ui_cont, 0)),
+        ANIM_DEF(500, ui_labelLogo, y, lv_obj_get_style_width(ui_cont, 0), lv_obj_get_y(ui_labelLogo) + 5),
+        LV_ANIM_TIMELINE_WRAPPER_END
+    };
 
     lv_anim_timeline_add_wrapper(anim_timeline, wrapper);
 
@@ -60,11 +61,11 @@ void onTimer(lv_timer_t *timer)
 
     if (timer == timer1)
     {
-
         lv_anim_timeline_wrapper_t wrapper[] =
-            {
-                ANIM_DEF(0, ui_cont, width, lv_obj_get_style_width(ui_cont, 0), 0),
-                LV_ANIM_TIMELINE_WRAPPER_END};
+        {
+            ANIM_DEF(0, ui_cont, width, lv_obj_get_style_width(ui_cont, 0), 0),
+            LV_ANIM_TIMELINE_WRAPPER_END
+        };
         lv_anim_timeline_add_wrapper(anim_timeline, wrapper);
 
         lv_anim_timeline_start(anim_timeline);
@@ -93,6 +94,7 @@ static void Exit()
         lv_anim_timeline_del(anim_timeline);
         anim_timeline = nullptr;
     }
+    lv_obj_del(ui_cont);
     lv_obj_clean(appWindow);
 }
 

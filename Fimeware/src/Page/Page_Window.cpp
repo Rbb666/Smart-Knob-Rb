@@ -30,20 +30,6 @@ static void back_main_menu_cb(lv_event_t *e)
     }
 }
 
-static void Led_show(int count)
-{
-    int led_num = abs(count) % NUM_LEDS;
-    leds[led_num] = CRGB::SkyBlue;
-    FastLED.show();
-    if (led_num != 0)
-    {
-        leds[--led_num] = CRGB::Black;
-        FastLED.show();
-    }
-    leds[++led_num] = CRGB::Black;
-    FastLED.show();
-}
-
 static void SW_LabelUpdate(lv_timer_t *tmr)
 {
     if (tmr == LabelUpdate_timer)

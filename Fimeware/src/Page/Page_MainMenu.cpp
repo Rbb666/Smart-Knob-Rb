@@ -33,7 +33,8 @@ typedef struct
 #define APP_ICON_SIZE_START 0
 #define APP_ICON_SIZE_END APP_ICON_SIZE
 
-static AppICON_TypeDef AppICON_Grp[] = {
+static AppICON_TypeDef AppICON_Grp[] =
+{
     APP_DEF(Switch, "ctrl led"),
     APP_DEF(Smart, "monitor state"),
     APP_DEF(Window, "ble keyboard"),
@@ -122,9 +123,11 @@ static void button_event_cb(lv_event_t *e)
             break;
         case PAGE_Music:
             Page->Push(PAGE_Music);
+            update_motor_config(1);
             break;
         case PAGE_OTA:
             Page->Push(PAGE_OTA);
+            update_motor_config(1);
             break;
         default:
             break;
@@ -143,8 +146,10 @@ void button_style_create(lv_obj_t *obj)
     static lv_style_transition_dsc_t transition_dsc_def;
     static lv_style_transition_dsc_t transition_dsc_pr;
 
-    static lv_style_prop_t props[] = {
-        LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV};
+    static lv_style_prop_t props[] =
+    {
+        LV_STYLE_TRANSFORM_WIDTH, LV_STYLE_TRANSFORM_HEIGHT, LV_STYLE_TEXT_LETTER_SPACE, LV_STYLE_PROP_INV
+    };
 
     lv_style_transition_dsc_init(&transition_dsc_def, props, lv_anim_path_overshoot, 250, 100, NULL);
     lv_style_transition_dsc_init(&transition_dsc_pr, props, lv_anim_path_ease_in_out, 250, 0, NULL);
@@ -237,7 +242,8 @@ void setup_main_page_menu(lv_obj_t *page)
         {
             lv_obj_t *line = lv_line_create(page_cont);
             static lv_point_t line_points[] = {{90, 0},
-                                               {90, 80}};
+                {90, 80}
+            };
 
             lv_obj_set_style_line_width(line, 4, LV_STATE_DEFAULT);
             lv_obj_set_style_line_color(line, lv_color_hex(0xff0000), LV_STATE_DEFAULT);
@@ -299,6 +305,9 @@ static void Exit()
 
     PageDelay(LV_ANIM_TIME_DEFAULT);
     lv_obj_clean(appWindow);
+
+    update_motor_config(1);
+    update_page_status(CHECKOUT_PAGE);
 }
 
 /**

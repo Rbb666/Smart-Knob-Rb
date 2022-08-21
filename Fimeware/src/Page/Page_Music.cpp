@@ -52,7 +52,8 @@ static lv_coord_t start_anim_values[40];
 static const uint16_t (*spectrum)[4];
 static uint32_t spectrum_len;
 static const uint16_t rnd_array[30] = {994, 285, 553, 11, 792, 707, 966, 641, 852, 827, 44, 352, 146, 581, 490, 80, 729,
-                                       58, 695, 940, 724, 561, 124, 653, 27, 292, 557, 506, 382, 199};
+                                       58, 695, 940, 724, 561, 124, 653, 27, 292, 557, 506, 382, 199
+                                      };
 
 static lv_timer_t *spect_timer;
 
@@ -170,7 +171,7 @@ static void Music_btn_create(lv_obj_t *win)
     pause_btn = lv_btn_create(win);
     lv_obj_set_size(pause_btn, 30, 30);
     lv_obj_align(pause_btn, LV_ALIGN_TOP_MID, 0, 0);
-    extern void button_style_create(lv_obj_t * obj);
+    extern void button_style_create(lv_obj_t *obj);
     button_style_create(pause_btn);
     lv_obj_set_style_bg_color(pause_btn, lv_color_white(), LV_STATE_DEFAULT);
 
@@ -504,6 +505,7 @@ static void lv_music_pause(void)
 static void Music_view_create(lv_obj_t *win)
 {
     lv_obj_set_style_bg_opa(win, LV_OPA_0, LV_STATE_DEFAULT);
+
     LV_IMG_DECLARE(IMG_Water_BG);
     lv_obj_set_scrollbar_mode(win, LV_SCROLLBAR_MODE_OFF);
 
@@ -679,6 +681,9 @@ static void Exit()
 
     PageDelay(600);
     lv_obj_clean(appWindow);
+
+    update_motor_config(1);
+    update_page_status(CHECKOUT_PAGE);
 }
 
 /**

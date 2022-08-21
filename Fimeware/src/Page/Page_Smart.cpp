@@ -120,7 +120,7 @@ static void Page_scan_chart_create(lv_obj_t *win)
 {
     chart_cont = lv_obj_create(win);
     lv_obj_remove_style_all(chart_cont);
-    lv_obj_set_style_bg_opa(chart_cont, (lv_opa_t)0, LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_opa(chart_cont, (lv_opa_t) 0, LV_STATE_DEFAULT);
     lv_obj_set_size(chart_cont, 180, 100);
     lv_obj_align(chart_cont, LV_ALIGN_CENTER, 0, 50);
 
@@ -155,10 +155,17 @@ static void Page_scan_chart_create(lv_obj_t *win)
 
     scan_chart_timer = lv_timer_create(page_scan_chart_timer_event, scan_turn_time, NULL);
 
-    lv_amin_start(chart_fre_label, lv_obj_get_width(chart_fre_label), 10, 1, 300, 300, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(contKPaTemp, -70, -45, 1, 400, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(rx_quality_chart, -60, -15, 1, 500, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
-    lv_amin_start(back_img, -28, -10, 1, 1200, 0, (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+    lv_amin_start(chart_fre_label, lv_obj_get_width(chart_fre_label), 10, 1, 300, 300,
+                  (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(contKPaTemp, -70, -45,
+                  1, 400, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(rx_quality_chart, -60, -15,
+                  1, 500, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
+
+    lv_amin_start(back_img, -28, -10,
+                  1, 1200, 0, (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 }
 
 /**
@@ -168,8 +175,6 @@ static void Page_scan_chart_create(lv_obj_t *win)
  */
 static void Setup()
 {
-    Serial.printf("Page Smart -------->\n");
-
     /*将此页面移到前台*/
     lv_obj_move_foreground(appWindow);
 
@@ -191,34 +196,33 @@ static void Exit()
                   1,
                   300,
                   0,
-                  (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+                  (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(contKPaTemp,
-                  lv_obj_get_y(contKPaTemp), -70,
+                  lv_obj_get_y(contKPaTemp), -160,
                   1,
                   300,
                   100,
-                  (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+                  (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(rx_quality_chart,
                   lv_obj_get_y(rx_quality_chart), 60,
                   1,
                   500,
-                  200,
-                  (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+                  100,
+                  (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     lv_amin_start(back_img,
                   lv_obj_get_y(back_img), -28,
                   1,
-                  1200,
-                  300,
-                  (lv_anim_exec_xcb_t)lv_obj_set_y, lv_anim_path_bounce);
+                  800,
+                  100,
+                  (lv_anim_exec_xcb_t) lv_obj_set_y, lv_anim_path_bounce);
 
     if (scan_chart_timer)
         lv_timer_del(scan_chart_timer);
 
-    PageDelay(LV_ANIM_TIME_DEFAULT);
-
+    PageDelay(400);
     lv_obj_clean(appWindow);
 
     update_motor_config(1);

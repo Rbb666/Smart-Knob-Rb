@@ -120,7 +120,7 @@ void Task_lvgl(void *pvParameters)
     DisplayPage_Init();
 
     /*背光渐亮*/
-    Backlight_SetGradual(500, 5000);
+    Backlight_SetGradual(400, 5000);
 
     update_page_status(0);
 

@@ -15,7 +15,7 @@ HX711 scale;
 
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
 
-InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Motor", 2048, 3, task_core) {}
+InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Interface", 2048, 4, task_core) {}
 
 InterfaceTask::~InterfaceTask() {}
 
@@ -53,7 +53,7 @@ void InterfaceTask::run()
 
     while (1)
     {
-        button_next.check();
+        // button_next.check();
 
 #if SK_ALS
         const float LUX_ALPHA = 0.005;
@@ -64,6 +64,7 @@ void InterfaceTask::run()
 
         const int32_t lower = 950000;
         const int32_t upper = 1800000;
+
         if (scale.wait_ready_timeout(100))
         {
             int32_t reading = scale.read();
@@ -72,16 +73,19 @@ void InterfaceTask::run()
             if (reading >= lower - (upper - lower) && reading < upper + (upper - lower) * 2)
             {
                 static uint32_t last_reading_display;
+
                 if (millis() - last_reading_display > 1000)
                 {
                     Serial.print("HX711 reading: ");
                     Serial.println(reading);
                     last_reading_display = millis();
                 }
+
                 long value = CLAMP(reading, lower, upper);
                 press_value_unit = 1. * (value - lower) / (upper - lower);
 
                 static bool pressed;
+
                 // 确认按下
                 if (!pressed && press_value_unit > 0.55)
                 {
@@ -103,6 +107,7 @@ void InterfaceTask::run()
             {
                 leds[i] = CRGB::Red;
             }
+
             FastLED.show();
         }
 
@@ -121,15 +126,15 @@ void InterfaceTask::run()
                 leds[i].g = dim8_video(leds[i].g);
                 leds[i].b = dim8_video(leds[i].b);
             }
+            FastLED.show();
             break;
         }
+
         default:
             break;
         }
 
-        FastLED.show();
-
-        vTaskDelay(50);
+        vTaskDelay(10);
     }
 }
 
@@ -141,9 +146,12 @@ void InterfaceTask::handleEvent(AceButton *button, uint8_t event_type, uint8_t b
         if (button->getPin() == PIN_BUTTON_NEXT)
         {
         }
+
         break;
+
     case AceButton::kEventReleased:
         break;
+
     case AceButton::kEventLongPressed:
         break;
     }
@@ -159,7 +167,7 @@ void InterfaceTask::Firt_Light(void)
         delay(150);
         // Turn our current led back to black for the next loop around
         leds[whiteLed] = CRGB::Black;
-        // FastLED.show();
+        FastLED.show();
     }
 }
 
