@@ -61,6 +61,11 @@ enum CONNECT_MODE
     STA_TO_OTA
 };
 
+struct esp32_time
+{
+    struct tm timeinfo;
+};
+
 class Wifi_Task : public Task<Wifi_Task>
 {
     friend class Task<Wifi_Task>;
@@ -81,7 +86,11 @@ public:
 
     void read_config(SysUtilConfig *cfg);
     void write_config(SysUtilConfig *cfg);
+
+    bool ntp_syn_time(void);
+    bool get_local_time(void);
     void http_get_wether(void);
+    esp32_time ntp_time;
 
     WIFI_TASK_STATE task_state; // 任务状态
 
@@ -91,6 +100,14 @@ protected:
 private:
     const char *AP_SSID = "SM-Knob";    // 热点名
     const char *HOST_NAME = "eps32";    // 主机名
+
+    // NTP
+    const char *ntpServer1 = "ntp.aliyun.com";
+    const char *ntpServer2 = "ntp1.aliyun.com";
+    const char *ntpServer3 = "ntp2.aliyun.com";
+
+    const long  gmtOffset_sec = 28800;
+    const int   daylightOffset_sec = 0;
 
     uint32_t trash_LastHandleTime = 0;
     unsigned long wifi_conn_millis;

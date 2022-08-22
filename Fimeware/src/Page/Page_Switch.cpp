@@ -3,6 +3,7 @@
 #include "Page_Anim.h"
 
 #include <Hal/motor.h>
+#include "Hal/Wifi_Interface.h"
 
 PAGE_EXPORT(Switch);
 

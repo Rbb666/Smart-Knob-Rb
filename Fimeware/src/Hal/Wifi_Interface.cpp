@@ -225,6 +225,8 @@ void Wifi_Task::FSM_Task(void)
         else
             task_state = TASK_TRASH;
 
+        // 获取一次ntp时间
+        ntp_syn_time();
         Serial.println("[task-state]:TASK_TRASH");
         break;
     }
@@ -452,6 +454,36 @@ boolean Wifi_Task::wifi_event(APP_MESSAGE_TYPE type)
     default:
         break;
     }
+
+    return true;
+}
+
+bool Wifi_Task::ntp_syn_time(void)
+{
+    if (WiFi.status() == WL_CONNECTED)
+    {
+        configTime(gmtOffset_sec, daylightOffset_sec, ntpServer1, ntpServer2, ntpServer3);
+        Serial.println("@start ntp obtain time");
+    }
+    else
+    {
+        Serial.println("wifi not connect , please connect wifi first!");
+        return false;
+    }
+    return true;
+}
+
+bool Wifi_Task::get_local_time(void)
+{
+    struct tm timeinfo;
+    if (!getLocalTime(&timeinfo))
+    {
+        Serial.println("Failed to obtain time , try again...");
+        return false;
+    }
+
+    Serial.printf("esp time: %d:%d:%d\r\n", timeinfo.tm_hour, timeinfo.tm_min, timeinfo.tm_sec);
+    ntp_time.timeinfo = timeinfo;
 
     return true;
 }
