@@ -2,7 +2,7 @@
 #include "GUI/DisplayPrivate.h"
 #include "Page_Anim.h"
 
-PAGE_EXPORT(Switch);
+PAGE_EXPORT(Smart);
 
 extern "C"
 {
@@ -192,8 +192,6 @@ static void panel_create(lv_obj_t *par, uint8_t page_num, const void *image, con
     lv_obj_align(img_icon[page_num], LV_ALIGN_TOP_LEFT, 0, 0);
 
     button_create(scroll_cont[page_num], page_num);
-
-
 }
 
 static void sw_meter_create(lv_obj_t *win) {

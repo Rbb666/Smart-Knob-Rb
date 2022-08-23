@@ -29,6 +29,7 @@ static Panel_TypeDef Panel_Grp[] = {
         PANEL_DEF(Swback, "Exit"),
 };
 
+static lv_obj_t *float_cont;
 static lv_obj_t *contTemp;
 static lv_obj_t *labelTime;
 static lv_obj_t *panel;
@@ -36,44 +37,32 @@ static lv_obj_t *panel;
 static lv_obj_t *circle_bg[__Sizeof(Panel_Grp)];
 static lv_obj_t *circle_font[__Sizeof(Panel_Grp)];
 static lv_obj_t *button[__Sizeof(Panel_Grp)];
+static lv_obj_t *slider[__Sizeof(Panel_Grp)];
 static lv_obj_t *scroll_cont[__Sizeof(Panel_Grp)];
 static lv_obj_t *img_icon[__Sizeof(Panel_Grp)];
 
-static lv_timer_t *timer = NULL;
+static lv_timer_t *timer;
 
 static void onTimer(lv_timer_t *tmr) {
     if (tmr == timer) {
     }
 }
 
-static void button_callback(lv_event_t *e) {
+static void event_callback(lv_event_t *e) {
     lv_event_code_t code = lv_event_get_code(e);
     lv_obj_t *btn = lv_event_get_target(e);
 
     if (code == LV_EVENT_PRESSED) {
-        static bool btn_flg = false;
+        if (btn == button[0]) {
 
-        if (btn == button[0] && !btn_flg) {
-            lv_obj_set_style_bg_color(button[0], lv_palette_main(LV_PALETTE_GREY), 0);
-            btn_flg = !btn_flg;
-        } else if (btn == button[0] && btn_flg) {
-            lv_obj_set_style_bg_color(button[0], lv_color_white(), 0);
-            btn_flg = !btn_flg;
+        } else if (btn == button[0]) {
+
         }
-        if (btn == button[1] && !btn_flg) {
-            lv_obj_set_style_bg_color(button[1], lv_palette_main(LV_PALETTE_GREY), 0);
-            btn_flg = !btn_flg;
-        } else if (btn == button[1] && btn_flg) {
-            lv_obj_set_style_bg_color(button[1], lv_color_white(), 0);
-            btn_flg = !btn_flg;
+        if (btn == button[1]) {
+
         }
-        if (btn == button[2] && !btn_flg) {
-            lv_obj_set_style_bg_color(button[2], lv_palette_main(LV_PALETTE_GREY), 0);
-            btn_flg = !btn_flg;
+        if (btn == button[2]) {
             Page->Pop();
-        } else if (btn == button[2] && btn_flg) {
-            lv_obj_set_style_bg_color(button[2], lv_color_white(), 0);
-            btn_flg = !btn_flg;
         }
     }
 }
@@ -144,7 +133,7 @@ static void button_create(lv_obj_t *parent, uint8_t panel_num) {
     lv_obj_set_style_radius(button[panel_num], LV_RADIUS_CIRCLE, LV_STATE_DEFAULT);
     lv_obj_add_flag(button[panel_num], LV_OBJ_FLAG_CHECKABLE);
     lv_obj_align(button[panel_num], LV_ALIGN_CENTER, 0, 0);
-    lv_obj_add_event_cb(button[panel_num], button_callback, LV_EVENT_ALL, nullptr);
+    lv_obj_add_event_cb(button[panel_num], event_callback, LV_EVENT_ALL, nullptr);
 
     LV_IMG_DECLARE(IMG_SW);
     /*Create image*/
@@ -153,27 +142,40 @@ static void button_create(lv_obj_t *parent, uint8_t panel_num) {
     lv_obj_align(sw_img, LV_ALIGN_CENTER, 0, 0);
 }
 
+static void float_cont_create(lv_obj_t *parent) {
+    float_cont = lv_obj_create(parent);
+
+    lv_obj_set_size(float_cont, lv_pct(100), lv_pct(100));
+    lv_obj_clear_flag(float_cont, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_clear_flag(float_cont, LV_OBJ_FLAG_SCROLL_ELASTIC);
+    lv_obj_set_scroll_snap_y(float_cont, LV_SCROLL_SNAP_CENTER);
+}
+
 static void slider_create(lv_obj_t *parent, uint8_t panel_num) {
 
     static const lv_style_prop_t props[] = {LV_STYLE_BG_COLOR, LV_STYLE_PROP_INV};
     static lv_style_transition_dsc_t transition_dsc;
-    lv_style_transition_dsc_init(&transition_dsc, props, lv_anim_path_linear, 300, 0, NULL);
+    lv_style_transition_dsc_init(&transition_dsc, props, lv_anim_path_linear, 300, 0, nullptr);
 
-    lv_obj_t *slider = lv_slider_create(scroll_cont[panel_num]);
-    lv_obj_remove_style_all(slider);
-    lv_obj_set_size(slider, 80, 40);
-    lv_obj_align(slider, LV_ALIGN_BOTTOM_LEFT, 0, 0);
+    slider[panel_num] = lv_slider_create(scroll_cont[panel_num]);
+    lv_obj_remove_style(slider[panel_num], nullptr, LV_PART_MAIN);
+    lv_obj_remove_style(slider[panel_num], nullptr, LV_PART_INDICATOR);
+    lv_obj_remove_style(slider[panel_num], nullptr, LV_PART_KNOB);
 
-    lv_obj_set_style_bg_opa(slider, LV_OPA_COVER, LV_PART_MAIN);
-    lv_obj_set_style_bg_color(slider, lv_color_make(187, 187, 187), LV_PART_MAIN);
-    lv_obj_set_style_radius(slider, LV_RADIUS_CIRCLE, LV_PART_MAIN);
+    lv_obj_set_size(slider[panel_num], 80, 40);
+    lv_obj_align(slider[panel_num], LV_ALIGN_BOTTOM_LEFT, 0, 0);
 
-    lv_obj_set_style_bg_opa(slider, LV_OPA_COVER, LV_PART_INDICATOR);
-    lv_obj_set_style_bg_color(slider, lv_palette_main(LV_PALETTE_CYAN), LV_PART_INDICATOR);
-    lv_obj_set_style_radius(slider, LV_RADIUS_CIRCLE, LV_PART_INDICATOR);
-    lv_obj_set_style_transition(slider, &transition_dsc, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_opa(slider[panel_num], LV_OPA_COVER, LV_PART_MAIN);
+    lv_obj_set_style_bg_color(slider[panel_num], lv_color_make(187, 187, 187), LV_PART_MAIN);
+    lv_obj_set_style_radius(slider[panel_num], 18, LV_PART_MAIN);
 
-    lv_obj_set_style_bg_color(slider, lv_palette_darken(LV_PALETTE_CYAN, 2), LV_PART_INDICATOR | LV_STATE_PRESSED);
+    lv_obj_set_style_bg_opa(slider[panel_num], LV_OPA_COVER, LV_PART_INDICATOR);
+    lv_obj_set_style_bg_color(slider[panel_num], lv_palette_main(LV_PALETTE_CYAN), LV_PART_INDICATOR);
+    lv_obj_set_style_radius(slider[panel_num], 5, LV_PART_INDICATOR);
+    lv_obj_set_style_transition(slider[panel_num], &transition_dsc, LV_PART_INDICATOR);
+
+    lv_obj_set_style_bg_color(slider[panel_num], lv_palette_darken(LV_PALETTE_CYAN, 2),
+                              LV_PART_INDICATOR | LV_STATE_PRESSED);
 }
 
 static void panel_create(lv_obj_t *par, uint8_t page_num, const void *image, const char *infos) {
@@ -193,7 +195,7 @@ static void panel_create(lv_obj_t *par, uint8_t page_num, const void *image, con
 
     button_create(scroll_cont[page_num], page_num);
 
-
+//    slider_create(scroll_cont[page_num], page_num);
 }
 
 static void sw_meter_create(lv_obj_t *win) {
@@ -228,6 +230,7 @@ static void Setup() {
     labelTime_Create();
     sw_meter_create(appWindow);
 
+    float_cont_create(appWindow);
     // timer = lv_timer_create(onTimer, 100, NULL);
 }
 

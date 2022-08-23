@@ -101,11 +101,10 @@ static void button_event_cb(lv_event_t *e) {
     if (code == LV_EVENT_FOCUSED &&
         (btn == wifi_conn_button || btn == wifi_ap_ota_btn || btn == wifi_sta_ota_btn || btn == wifi_exit_button)) {
         lv_obj_add_state(btn, LV_STATE_DISABLED);
-        last_focused_btn = btn;
     }
     if (code == LV_EVENT_DEFOCUSED &&
         (btn == wifi_conn_button || btn == wifi_ap_ota_btn || btn == wifi_sta_ota_btn || btn == wifi_exit_button)) {
-        lv_obj_clear_state(last_focused_btn, LV_STATE_DISABLED);
+        lv_obj_clear_state(btn, LV_STATE_DISABLED);
     }
 }
 
