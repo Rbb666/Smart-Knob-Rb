@@ -29,7 +29,7 @@ static Panel_TypeDef Panel_Grp[] = {
         PANEL_DEF(Swback, "Exit"),
 };
 
-static lv_obj_t *float_cont;
+static lv_obj_t *main_cont;
 static lv_obj_t *contTemp;
 static lv_obj_t *labelTime;
 static lv_obj_t *panel;
@@ -42,6 +42,8 @@ static lv_obj_t *scroll_cont[__Sizeof(Panel_Grp)];
 static lv_obj_t *img_icon[__Sizeof(Panel_Grp)];
 
 static lv_timer_t *timer;
+
+#define FLOAT_HANDLE_SIZE 30
 
 static void onTimer(lv_timer_t *tmr) {
     if (tmr == timer) {
@@ -142,13 +144,38 @@ static void button_create(lv_obj_t *parent, uint8_t panel_num) {
     lv_obj_align(sw_img, LV_ALIGN_CENTER, 0, 0);
 }
 
-static void float_cont_create(lv_obj_t *parent) {
-    float_cont = lv_obj_create(parent);
+static lv_obj_t *float_cont_create(lv_obj_t *parent) {
+    main_cont = lv_obj_create(parent);
+    lv_obj_clear_flag(main_cont, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_clear_flag(main_cont, LV_OBJ_FLAG_SCROLL_ELASTIC);
+    lv_obj_remove_style_all(main_cont);                            /*Make it transparent*/
+    lv_obj_set_size(main_cont, 240, 240);
+    lv_obj_align(main_cont, LV_ALIGN_CENTER, 0, 0);
+    lv_obj_set_scroll_snap_y(main_cont, LV_SCROLL_SNAP_CENTER);    /*Snap the children to the center*/
 
-    lv_obj_set_size(float_cont, lv_pct(100), lv_pct(100));
-    lv_obj_clear_flag(float_cont, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_clear_flag(float_cont, LV_OBJ_FLAG_SCROLL_ELASTIC);
-    lv_obj_set_scroll_snap_y(float_cont, LV_SCROLL_SNAP_CENTER);
+    lv_obj_t *float_cont = lv_obj_create(main_cont);
+    lv_obj_set_y(float_cont, -FLOAT_HANDLE_SIZE);
+    lv_obj_set_size(float_cont, LV_HOR_RES, LV_VER_RES + FLOAT_HANDLE_SIZE * 2);
+    lv_obj_clear_flag(float_cont, LV_OBJ_FLAG_SNAPABLE);
+    lv_obj_set_style_bg_color(float_cont, lv_color_hex(0xffffff), 0);
+    lv_obj_set_style_border_width(float_cont, 0, 0);
+    lv_obj_set_style_pad_all(float_cont, 0, 0);
+    lv_obj_set_scroll_dir(float_cont, LV_DIR_VER);
+
+    lv_obj_t *placeholder1 = lv_obj_create(main_cont);
+    lv_obj_remove_style_all(placeholder1);
+    lv_obj_clear_flag(placeholder1, LV_OBJ_FLAG_CLICKABLE);
+
+    lv_obj_t *placeholder2 = lv_obj_create(main_cont);
+    lv_obj_remove_style_all(placeholder2);
+    lv_obj_clear_flag(placeholder2, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_set_size(placeholder1, lv_pct(100), LV_VER_RES);
+    lv_obj_set_y(placeholder1, 0);
+
+    lv_obj_set_size(placeholder2, lv_pct(100), LV_VER_RES - 2 * FLOAT_HANDLE_SIZE);
+    lv_obj_set_y(placeholder2, LV_VER_RES + 20);
+
+    return float_cont;
 }
 
 static void slider_create(lv_obj_t *parent, uint8_t panel_num) {
