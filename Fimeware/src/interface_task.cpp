@@ -15,16 +15,18 @@ HX711 scale;
 
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
 
-InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Interface", 2048, 4, task_core) {}
+InterfaceTask::InterfaceTask(const uint8_t task_core) : Task("Interface", 4048, 1, task_core) {}
 
 InterfaceTask::~InterfaceTask() {}
 
 void InterfaceTask::run()
 {
+#if 0
     pinMode(PIN_BUTTON_NEXT, INPUT_PULLUP);
 
     AceButton button_next((uint8_t)PIN_BUTTON_NEXT);
     button_next.getButtonConfig()->setIEventHandler(this);
+#endif
 
     FastLED.addLeds<SK6812, PIN_LED_DATA, GRB>(leds, NUM_LEDS);
 

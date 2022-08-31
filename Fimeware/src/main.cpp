@@ -23,7 +23,7 @@ _knob_message MOTOR_MSG;
 
 Ble_Interface ble_dev;
 Wifi_Task wifi_task = Wifi_Task(ESP32_RUNNING_CORE);
-InterfaceTask interface_task = InterfaceTask(ESP32_RUNNING_CORE);
+InterfaceTask interface_task = InterfaceTask(LVGL_RUNNING_CORE);
 
 void setup()
 {
