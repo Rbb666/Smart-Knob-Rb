@@ -500,6 +500,7 @@ static void lv_music_pause(void)
     spectrum_i = 0;
     lv_anim_del(spectrum_obj, spectrum_anim_cb);
     lv_obj_invalidate(spectrum_obj);
+    spectrum_obj = nullptr;
 }
 
 static void Music_view_create(lv_obj_t *win)
@@ -625,7 +626,6 @@ static void Setup()
  */
 static void Exit()
 {
-
     lv_music_pause();
 
     lv_amin_start(indic,

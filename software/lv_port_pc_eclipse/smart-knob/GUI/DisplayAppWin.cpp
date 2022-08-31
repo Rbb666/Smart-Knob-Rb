@@ -20,6 +20,7 @@ void AppWindow_Create(lv_obj_t *par) {
         lv_obj_add_style(obj, &style, LV_PART_MAIN);
         lv_obj_set_size(obj, lv_obj_get_width(par), lv_obj_get_height(par));
         lv_obj_align(obj, LV_ALIGN_CENTER, 0, 0);
+        lv_obj_set_scrollbar_mode(obj, LV_SCROLLBAR_MODE_OFF);
 
         appWindow_Grp[i] = obj;
     }

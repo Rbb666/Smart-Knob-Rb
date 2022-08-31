@@ -59,7 +59,7 @@ void Wifi_Task::read_config(SysUtilConfig *cfg)
     char info[128] = {0};
     uint16_t size = g_flashCfg.readFile(CONFIG_PATH, (uint8_t *)info);
     info[size] = 0;
-
+    Serial.printf("size:%d\n\n", size);
     if (size == 0)
     {
         // 默认值
