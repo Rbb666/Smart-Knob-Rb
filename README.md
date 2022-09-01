@@ -14,15 +14,15 @@ Todo~
 
 * 在 `2.Fimeware` 文件夹中鼠标右键，使用通过Code打开工程
 
-![](5.Docs\image\1.png)
+![](5.Docs/image/1.png)
 
 * 固件使用的 `Espressif 32 ` 版本为 `5.1.0` ，如果没安装需要先在 `platformio` 中安装一下
 
-![](5.Docs\image\2.png)
+![](5.Docs/image/2.png)
 
 * 在Vscode中，进行编译、下载固件
 
-![](5.Docs\image\3.png)
+![](5.Docs/image/3.png)
 
 ## 3. Clion 模拟器
 
@@ -30,6 +30,6 @@ Todo~
 
 > 这样省的每次修改都要重新交叉编译Arduino的固件，提升开发效率。
 
-![](5.Docs\image\4.png)
+![](5.Docs/image/4.png)
 
 ## 其他的后续再补充，有用的话记得点星星~
